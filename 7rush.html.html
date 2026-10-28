@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>7 RUSH SLOT</title>
+
+<style>
+:root{
+  --bg:#10131d;
+  --panel:#1c2232;
+  --line:#39445d;
+  --gold:#ffd76a;
+  --cyan:#7de7ff;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{
+  margin:0;
+  background:radial-gradient(ellipse at top,#202b43 0,#10131d 65%);
+  color:#fff;
+  font-family:system-ui,-apple-system,sans-serif;
+  text-align:center;
+  min-height:100vh;
+}
+
+main{width:min(100%,520px);margin:auto;padding:14px 12px 24px}
+
+h1{
+  margin:4px 0 2px;
+  font-size:30px;
+  letter-spacing:2px;
+  color:var(--gold);
+  text-shadow:0 0 18px #ffb52d66
+}
+
+.subtitle{font-size:12px;color:#b6c5dc;margin-bottom:14px}
+
+.panel{
+  background:#1b2232ef;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  margin:10px 0;
+  box-shadow:0 8px 22px #0003
+}
+
+/* 液晶 */
+
+.lcd-panel{
+  position:relative;
+  overflow:hidden;
+  padding:12px;
+  margin:12px 0;
+  border:2px solid #405b83;
+  border-radius:15px;
+  background:
+    radial-gradient(ellipse at 50% 0%,#23426a 0%,transparent 65%),
+    linear-gradient(145deg,#101b32,#080e1b 65%,#172744);
+  box-shadow:inset 0 0 18px #000b,0 0 12px #3c8fff22;
+}
+
+.lcd-panel::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:8%;
+  width:84%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#7de7ff,transparent);
+  opacity:.8
+}
+
+.lcd-panel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 4px,
+    #7de7ff 5px
+  )
+}
+
+.lcd-content{position:relative;z-index:1}
+
+.lcd-status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px
+}
+
+.lcd-status-label{
+  font-size:10px;
+  color:#91b7e9;
+  letter-spacing:2px;
+  font-weight:800
+}
+
+.lcd-rush{
+  color:#ff8a9c;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-shadow:0 0 8px #ff315c88
+}
+
+.lcd-rush.seven-rush{
+  color:#ffe18a;
+  text-shadow:0 0 12px #ffb52d
+}
+
+/* 液晶上部の777 */
+
+.seven-indicator{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(16px,7vw,34px);
+  margin:2px auto 13px;
+  padding:5px 0 9px;
+  border-bottom:1px solid #3d5273;
+}
+
+.seven-mark{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:49px;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:43px;
+  line-height:1;
+  font-weight:1000;
+  font-style:italic;
+  color:#e7edf8;
+  -webkit-text-stroke:1.5px #53627d;
+  text-shadow:2px 3px 0 #070b14;
+  transition:color .35s,filter .35s,transform .35s;
+}
+
+.seven-mark.rainbow{
+  color:transparent;
+  background:linear-gradient(
+    135deg,
+    #ff3434 0%,
+    #ffad33 17%,
+    #fff05a 32%,
+    #52ff86 47%,
+    #4ceaff 62%,
+    #6584ff 77%,
+    #ed68ff 92%
+  );
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-stroke:1.5px #fff;
+  filter:drop-shadow(0 0 5px #fff7) drop-shadow(0 0 11px #d96bff);
+  transform:scale(1.08);
+  animation:rainbowPulse 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes rainbowPulse{
+  from{filter:drop-shadow(0 0 4px #fff7)}
+  to{filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 13px #d96bff)}
+}
+
+.lcd-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px
+}
+
+.lcd-box{
+  min-width:0;
+  border-radius:10px;
+  padding:9px 5px;
+  background:linear-gradient(180deg,#0b1325,#101d34);
+  border:1px solid #30466b;
+  box-shadow:inset 0 0 12px #0007
+}
+
+.lcd-label{
+  font-size:12px;
+  font-weight:800;
+  color:#a9c6ed;
+  letter-spacing:1px;
+  margin-bottom:4px
+}
+
+.lcd-value{
+  font-family:ui-monospace,monospace;
+  font-size:clamp(27px,7.5vw,38px);
+  line-height:1.15;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap
+}
+
+.lcd-value.games{
+  color:#7de7ff;
+  text-shadow:0 0 5px #7de7ff99,0 0 15px #249dff66
+}
+
+.lcd-value.points{
+  color:#ffe18a;
+  text-shadow:0 0 5px #ffd76a99,0 0 15px #ffae2766
+}
+
+.lcd-unit{font-size:12px;margin-left:3px}
+
+.gauge-box{
+  margin-top:10px;
+  border:1px solid #30466b;
+  border-radius:10px;
+  background:linear-gradient(180deg,#0b1325,#101d34);
+  padding:10px;
+  box-shadow:inset 0 0 12px #0007
+}
+
+.gauge-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px
+}
+
+.gauge-title{
+  font-size:11px;
+  font-weight:900;
+  color:#b9d8ff;
+  letter-spacing:1px
+}
+
+.gauge-range{
+  font-size:11px;
+  color:#ffe18a;
+  font-weight:900;
+  font-variant-numeric:tabular-nums
+}
+
+.gauge-track{
+  width:100%;
+  height:18px;
+  padding:2px;
+  border-radius:20px;
+  background:#050a14;
+  border:1px solid #435777;
+  overflow:hidden;
+  box-shadow:inset 0 0 6px #000
+}
+
+.gauge-fill{
+  width:0%;
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,#168bff,#55e6ff,#fff0a0);
+  box-shadow:0 0 10px #42cfff99;
+  transition:width .35s ease
+}
+
+.gauge-fill.max{
+  background:linear-gradient(90deg,#ff7b28,#ffda5e,#fff7bd);
+  box-shadow:0 0 15px #ffb52d;
+  animation:gaugePulse .7s ease-in-out infinite alternate
+}
+
+@keyframes gaugePulse{
+  from{filter:brightness(1)}
+  to{filter:brightness(1.5)}
+}
+
+.gauge-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:7px;
+  font-size:10px;
+  color:#9fb4d4
+}
+
+.lcd-message{
+  margin-top:9px;
+  min-height:18px;
+  font-size:11px;
+  font-weight:800;
+  color:#8feaff;
+  letter-spacing:.5px
+}
+
+.lcd-message.hot{
+  color:#ffe18a;
+  text-shadow:0 0 9px #ff9e24
+}
+
+/* リール */
+
+.reel-stage{
+  position:relative;
+  width:100%;
+  isolation:isolate;
+}
+
+.reels{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin:12px auto;
+  max-width:390px
+}
+
+.reel{
+  position:relative;
+  display:grid;
+  grid-template-rows:repeat(3,1fr);
+  gap:6px;
+  padding:4px;
+  background:#0c101a;
+  border:2px solid #46536c;
+  border-radius:14px;
+  overflow:hidden
+}
+
+.reel.spinning{
+  border-color:#7de7ff;
+  box-shadow:0 0 14px #7de7ff66
+}
+
+.reel.stopped{border-color:#71809c}
+
+.reel.cherry-stop{
+  border-color:#ff5479;
+  box-shadow:0 0 18px #ff315c88
+}
+
+.cell{
+  height:clamp(65px,19vw,94px);
+  max-height:94px;
+  border-radius:9px;
+  border:2px solid #46536c;
+  background:linear-gradient(145deg,#f7f8fb,#cbd5e5);
+  color:#111827;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(29px,9vw,43px);
+  font-weight:900;
+  box-shadow:inset 0 -5px 0 #0001;
+  position:relative
+}
+
+.cell.seven{
+  color:#ff263b;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(43px,12vw,60px);
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:-3px;
+  -webkit-text-stroke:1.3px #70000b;
+  text-shadow:1px 2px 0 #71000a,2px 3px 0 #420008,0 0 5px #ff263b88;
+  background:linear-gradient(145deg,#fff,#d8dce8)
+}
+
+.cell.hit{
+  border-color:var(--gold);
+  background:linear-gradient(145deg,#fff4b9,#ffc94f);
+  box-shadow:0 0 15px #ffd76a77,inset 0 -5px 0 #b87a12
+}
+
+.cell.cherry-hit{
+  border-color:#ff426c;
+  background:linear-gradient(145deg,#ffe0e8,#ff7897);
+  box-shadow:0 0 18px #ff426c99
+}
+
+.reel.spinning .cell{
+  animation:reelFlash .11s linear infinite alternate
+}
+
+@keyframes reelFlash{
+  from{filter:brightness(1);transform:translateY(-2px)}
+  to{filter:brightness(1.25);transform:translateY(2px)}
+}
+
+@keyframes cherryStage{
+  0%,100%{transform:scale(1);filter:brightness(1)}
+  50%{transform:scale(1.12);filter:brightness(1.8);box-shadow:0 0 25px #ff174f}
+}
+
+.cell.strong-stage{animation:cherryStage .28s ease-in-out}
+
+.line-note{font-size:11px;color:#9eabc2;line-height:1.7}
+
+.result{font-size:18px;font-weight:800;min-height:28px;margin:9px 0 3px}
+
+.detail{color:#cbd5e1;font-size:13px;min-height:20px}
+
+button{
+  font:inherit;
+  font-weight:800;
+  border:0;
+  border-radius:12px;
+  padding:13px 16px;
+  cursor:pointer
+}
+
+#spin{
+  width:100%;
+  font-size:22px;
+  color:#231700;
+  background:linear-gradient(180deg,#ffe58a,#ffb92e);
+  box-shadow:0 5px 0 #9b6412;
+  margin:7px 0 5px
+}
+
+#spin:disabled{opacity:.45;box-shadow:none}
+
+.secondary{
+  background:#303b52;
+  color:white;
+  border:1px solid #52617d;
+  margin:5px;
+  font-size:13px
+}
+
+.info{font-size:12px;color:#b7c2d6;line-height:1.7;text-align:left}
+
+.info summary{cursor:pointer;font-weight:800;color:#fff}
+
+.log{
+  max-height:150px;
+  overflow:auto;
+  text-align:left;
+  font-size:12px;
+  color:#c9d4e7;
+  line-height:1.6
+}
+
+.log div{border-bottom:1px solid #ffffff12;padding:4px 0}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#050812dd;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:50
+}
+
+.overlay.show{display:flex}
+
+.modal{
+  width:min(100%,390px);
+  background:#202a3d;
+  border:2px solid var(--gold);
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 0 35px #0009
+}
+
+.modal h2{font-size:32px;color:var(--gold);margin:0 0 10px}
+
+.modal p{line-height:1.7;color:#e3e9f4;white-space:pre-line}
+
+.modal button{width:100%;margin-top:8px}
+
+.modal .hidden{display:none}
+
+.small{font-size:11px;color:#8e9bb3}
+
+/* ベルの獲得PTをリールに重ねて表示 */
+
+.point-pop{
+  position:absolute;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+}
+
+.point-pop.show{
+  visibility:visible;
+  animation:pointPop 1.45s ease-out forwards
+}
+
+.point-pop span{
+  display:inline-block;
+  padding:9px 17px;
+  border-radius:14px;
+  border:2px solid #ffe3a0;
+  background:linear-gradient(180deg,#301b08d9,#100b06e8);
+  color:#ff9b27;
+  font-size:clamp(31px,10vw,48px);
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:1px;
+  white-space:nowrap;
+  -webkit-text-stroke:.6px #fff0bd;
+  text-shadow:
+    3px 3px 0 #6c2700,
+    -2px -2px 0 #6c2700,
+    0 0 10px #ff7a00,
+    0 0 24px #ff9b27;
+  box-shadow:0 0 20px #ff8c2466;
+}
+
+@keyframes pointPop{
+  0%{opacity:0;transform:scale(.45)}
+  13%{opacity:1;transform:scale(1.16)}
+  24%{opacity:1;transform:scale(1)}
+  72%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.12);visibility:hidden}
+}
+
+/* 777 RUSH */
+
+.seven-rush-screen{
+  border-color:#ffe18a;
+  background:
+    radial-gradient(ellipse at top,#6b3c9e 0%,transparent 65%),
+    linear-gradient(145deg,#25164a,#100d24 65%,#39205d);
+  box-shadow:inset 0 0 20px #000b,0 0 18px #c06bff55
+}
+
+.seven-rush-screen .gauge-fill{
+  background:linear-gradient(90deg,#9d48ff,#ff63d8,#fff0a0);
+  box-shadow:0 0 12px #db77ff
+}
+
+.judge-message{color:#ffe18a;text-shadow:0 0 12px #ffb52d}
+
+/* プチュン暗転・巨大な虹色7 */
+
+.puchun{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  overflow:hidden;
+  transition:background .25s ease;
+}
+
+.puchun.show{
+  opacity:1;
+  visibility:visible;
+}
+
+/* 虹色の光線と光の粒 */
+
+.puchun::before,
+.puchun::after{
+  content:"";
+  position:absolute;
+  inset:-50%;
+  pointer-events:none;
+  opacity:0;
+}
+
+.puchun::before{
+  background:repeating-conic-gradient(
+    from 0deg,
+    #ff3131 0deg 8deg,
+    #ffb52d 8deg 16deg,
+    #fff34f 16deg 24deg,
+    #38ff83 24deg 32deg,
+    #35eaff 32deg 40deg,
+    #6574ff 40deg 48deg,
+    #e64cff 48deg 56deg
+  );
+  -webkit-mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
+  mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
+}
+
+.puchun::after{
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 50%,#ffffffee 0%,transparent 12%),
+    radial-gradient(circle at 20% 25%,#ff42caaa 0%,transparent 30%),
+    radial-gradient(circle at 80% 20%,#42eaffaa 0%,transparent 30%),
+    radial-gradient(circle at 20% 80%,#fff34faa 0%,transparent 30%),
+    radial-gradient(circle at 80% 80%,#9d4dffaa 0%,transparent 30%);
+}
+
+.puchun.reveal{
+  background:radial-gradient(
+    circle at center,
+    #fff 0%,
+    #fff2a8 9%,
+    #ff4dc8 27%,
+    #5722a9 58%,
+    #080012 100%
+  );
+  animation:puchunFlash .5s ease-in-out 2;
+}
+
+.puchun.reveal::before{
+  opacity:.42;
+  animation:rainbowRays 2.5s linear infinite;
+}
+
+.puchun.reveal::after{
+  opacity:1;
+  animation:rainbowBurst 1.2s ease-out both;
+}
+
+.puchun-number{
+  position:relative;
+  z-index:2;
+  font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
+  font-size:clamp(180px,65vw,360px);
+  font-weight:1000;
+  font-style:italic;
+  line-height:1;
+  color:transparent;
+  background:linear-gradient(
+    135deg,
+    #ff2222 0%,
+    #ff9e26 15%,
+    #fff34f 30%,
+    #45ff7b 45%,
+    #35eaff 60%,
+    #5871ff 75%,
+    #d947ff 90%,
+    #ff70c9 100%
+  );
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-stroke:3px #fff;
+  filter:
+    drop-shadow(0 0 10px #fff)
+    drop-shadow(0 0 30px #ff49d7)
+    drop-shadow(0 0 55px #43eaff);
+  opacity:0;
+  transform:scale(.15) rotate(-12deg);
+}
+
+.puchun.reveal .puchun-number{
+  animation:bigRainbowSeven 1.2s cubic-bezier(.15,.85,.2,1) forwards;
+}
+
+@keyframes bigRainbowSeven{
+  0%{opacity:0;transform:scale(.15) rotate(-12deg)}
+  35%{opacity:1;transform:scale(1.22) rotate(5deg)}
+  60%{opacity:1;transform:scale(.95) rotate(-2deg)}
+  78%{opacity:1;transform:scale(1.04) rotate(0)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+
+@keyframes rainbowRays{
+  from{transform:rotate(0deg) scale(1)}
+  to{transform:rotate(360deg) scale(1)}
+}
+
+@keyframes rainbowBurst{
+  0%{opacity:0;transform:scale(.2)}
+  25%{opacity:1}
+  100%{opacity:.85;transform:scale(1.2)}
+}
+
+@keyframes puchunFlash{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.8)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .seven-mark.rainbow{animation:none}
+  .puchun.reveal .puchun-number{
+    animation:none;
+    opacity:1;
+    transform:scale(1)
+  }
+}
+
+/* 777揃い専用の派手な表示 */
+.puchun-number{
+  font-size:clamp(110px, 42vw, 260px);
+  font-weight:1000;
+  letter-spacing:-0.08em;
+  white-space:nowrap;
+  text-shadow:
+    0 0 15px #fff,
+    0 0 35px #ffdf00,
+    0 0 65px #ff00ff,
+    0 0 100px #00eaff;
+}
+
+/* 777表示後の暗転 */
+.puchun.blackout{
+  background:#000 !important;
+}
+
+.puchun.blackout::before,
+.puchun.blackout::after{
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+.puchun.blackout .puchun-number{
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+</style>
+</head>
+
+<body>
+<main>
+<h1>7 RUSH SLOT</h1>
+<div class="subtitle">BUILD POINTS · ENTER THE RUSH</div>
+
+<section class="lcd-panel" id="lcdPanel">
+  <div class="lcd-content">
+    <div class="lcd-status">
+      <div class="lcd-status-label">7 RUSH SLOT SYSTEM</div>
+      <div id="rushBadge" class="lcd-rush"></div>
+    </div>
+
+    <div class="seven-indicator" aria-label="7ジャッジ成功表示">
+      <span class="seven-mark" id="sevenMark0">7</span>
+      <span class="seven-mark" id="sevenMark1">7</span>
+      <span class="seven-mark" id="sevenMark2">7</span>
+    </div>
+
+    <div class="lcd-grid">
+      <div class="lcd-box">
+        <div class="lcd-label" id="gamesLabel">残りG数</div>
+        <div class="lcd-value games">
+          <span id="games">10</span><span class="lcd-unit" id="gamesUnit">G</span>
+        </div>
+      </div>
+      <div class="lcd-box">
+        <div class="lcd-label">累計PT</div>
+        <div class="lcd-value points">
+          <span id="points">0</span><span class="lcd-unit">PT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gauge-box">
+      <div class="gauge-top">
+        <span class="gauge-title" id="gaugeTitle">POINT GAUGE</span>
+        <span class="gauge-range" id="gaugeRange">0〜777 PT</span>
+      </div>
+      <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+      <div class="gauge-bottom">
+        <span id="gaugeCurrent">0 PT</span>
+        <span id="gaugeMax">MAX 777 PT</span>
+      </div>
+    </div>
+
+    <div id="lcdMessage" class="lcd-message">777PTを超えてチャンスをつかめ！</div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="reel-stage" id="reelStage">
+    <div class="reels" id="reels">
+      <div class="reel">
+        <div class="cell seven">7</div>
+        <div class="cell">🍒</div>
+        <div class="cell">🍉</div>
+      </div>
+      <div class="reel">
+        <div class="cell">🔔</div>
+        <div class="cell">🍒</div>
+        <div class="cell seven">7</div>
+      </div>
+      <div class="reel">
+        <div class="cell">🍉</div>
+        <div class="cell">🔔</div>
+        <div class="cell">🍒</div>
+      </div>
+    </div>
+
+    <div class="point-pop" id="pointPop" aria-live="polite">
+      <span id="pointPopText">+300pt</span>
+    </div>
+  </div>
+
+  <div class="line-note">
+    有効ライン：上段／中段／下段<br>
+    左上→中中→右下／左下→中中→右上
+  </div>
+
+  <div id="result" class="result">SPIN READY</div>
+  <div id="detail" class="detail">10G以内に777ptを超えよう！</div>
+  <button id="spin">SPIN</button>
+
+  <div>
+    <button class="secondary" id="reset">最初から</button>
+    <button class="secondary" id="showRules">ルール確認</button>
+  </div>
+</section>
+
+<details class="panel info">
+  <summary>現在のルール・確率</summary>
+
+  <p><b>通常ゲーム：</b>10G以内に777ptを超えるとPT特化ゾーン。777ptちょうどでは突破扱いにならない。777pt突破後も残りG数を消費してポイントを獲得する。全G数消費後に7 RUSHへ突入。ベルと7揃いのみポイント獲得。7揃いは+1000pt。</p>
+
+  <p><b>設定選択確率：</b>設定1=10%／設定2=15%／設定3=30%／設定4=20%／設定5=15%／設定6=10%。</p>
+
+  <p><b>通常時の設定別小役確率：</b><br>
+    設定1：ベル60%／ハズレ25.5%／弱スイカ5%／弱チェリー7%／強スイカ0.5%／強チェリー1.5%／チャンス目0.4%／7揃い0.1%。<br>
+    設定2：ベル60%／ハズレ22%／弱スイカ6%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
+    設定3：ベル62%／ハズレ20%／弱スイカ6%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
+    設定4：ベル62%／ハズレ18%／弱スイカ8%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
+    設定5：ベル60%／ハズレ17%／弱スイカ9%／弱チェリー10%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
+    設定6：ベル63.5%／ハズレ10%／弱スイカ10%／弱チェリー12%／強スイカ1%／強チェリー1.5%／チャンス目1%／7揃い1%。
+  </p>
+
+  <p><b>ベル内部振り分け：</b><br>
+    通常ベル：70%。左上・中中・右下。30pt・50ptを各50%。<br>
+    強ベル：10%。上段。300ptが70%、500ptが20%、600ptが10%。<br>
+    中ベル：設定1・2では20%、設定3以上では15%。中段。50ptが50%、100ptが30%、200ptが10%、300ptが10%。<br>
+    特殊ベル：設定3以上で5%。下段。設定3=333pt、設定4=444pt、設定5=555pt、設定6=666pt。
+  </p>
+
+  <p><b>ベル停止順：</b><br>通常ベル：中→左→右<br>強ベル：右→中→左<br>中ベル：中→右→左<br>特殊ベル：右→左→中</p>
+
+  <p><b>チェリー告知：</b>左リールにチェリーが止まったらチェリー系レア役確定。チェリー系レア役以外では左リールにチェリーは出ない。</p>
+
+  <p><b>レア役：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12Gから抽選。</p>
+
+  <p><b>7 RUSH：</b>5G固定。ベルと7揃いのポイントは通常時の2倍。ベル以外のレア役はポイント・G数加算なし。終了後は7 JUDGEへ。</p>
+
+  <p><b>7 JUDGE：</b>3G固定。毎G継続抽選。ハズレの継続率は設定別、レア役は継続確定。7揃いは継続確定＋777 RUSH突入。</p>
+
+  <p><b>7 JUDGE中の小役確率・ハズレ継続率：</b><br>
+    設定1：ハズレ90%（継続15%）／弱スイカ3%／弱チェリー5%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
+    設定2：ハズレ85%（継続20%）／弱スイカ5%／弱チェリー8%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
+    設定3：ハズレ80%（継続30%）／弱スイカ7%／弱チェリー10%／強スイカ0.5%／強チェリー1.8%／チャンス目0.5%／7揃い0.2%。<br>
+    設定4：ハズレ75%（継続35%）／弱スイカ9%／弱チェリー12%／強スイカ0.5%／強チェリー2%／チャンス目0.5%／7揃い1%。<br>
+    設定5：ハズレ70%（継続40%）／弱スイカ10%／弱チェリー12%／強スイカ0.5%／強チェリー2%／チャンス目0.5%／7揃い5%。<br>
+    設定6：ハズレ65%（継続42%）／弱スイカ12%／弱チェリー12%／強スイカ0%／強チェリー1%／チャンス目0%／7揃い10%。<br>
+    レア役は継続確定。7揃いは777 RUSHへ。
+  </p>
+
+  <p><b>777 RUSH：</b>7G固定で開始。レア役は777pt獲得＋通常時と同じG数加算。ベルと7揃いのポイントは通常時の2倍。0Gになると7 JUDGEへ戻る。</p>
+
+  <p><b>通常時のゲーム数加算：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12G。</p>
+
+  <p><b>RUSHゲージ：</b><br>777〜1000pt → 1000〜1500pt → 1500〜2500pt → 2500〜5000pt → 5000〜7500pt → 7500〜12500pt → 12500〜18000pt。</p>
+
+  <p class="small">※設定は内部抽選です。現在の設定は画面に表示されません。</p>
+</details>
+
+<section class="panel">
+  <div style="font-weight:800;margin-bottom:6px">SPIN LOG</div>
+  <div id="log" class="log">ゲーム開始！</div>
+</section>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">7 RUSH!</h2>
+    <p id="modalText"></p>
+    <button id="modalMain" style="background:linear-gradient(180deg,#ffe58a,#ffb92e);color:#231700">続ける</button>
+    <button id="modalSecond" class="secondary hidden">ホームに戻る</button>
+    <button id="modalReset" class="secondary">最初から遊ぶ</button>
+  </div>
+</div>
+
+<div class="puchun" id="puchun" aria-hidden="true">
+  <div class="puchun-number">777</div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const SYMBOL = {
+  bell:"🔔",
+  cherry:"🍒",
+  watermelon:"🍉",
+  seven:"7"
+};
+
+const NORMAL_SYMBOLS = [SYMBOL.bell,SYMBOL.watermelon,SYMBOL.seven];
+const ALL_SYMBOLS = [SYMBOL.bell,SYMBOL.cherry,SYMBOL.watermelon,SYMBOL.seven];
+
+const lines = [
+  [[0,0],[1,0],[2,0]],
+  [[0,1],[1,1],[2,1]],
+  [[0,2],[1,2],[2,2]],
+  [[0,0],[1,1],[2,2]],
+  [[0,2],[1,1],[2,0]]
+];
+
+const RUSH_LIMITS = [1000,1500,2500,5000,7500,12500,18000];
+
+const SETTING_WEIGHTS = [
+  {value:1,weight:10},
+  {value:2,weight:15},
+  {value:3,weight:30},
+  {value:4,weight:20},
+  {value:5,weight:15},
+  {value:6,weight:10}
+];
+
+/* 通常時の小役確率 */
+const ROLE_TABLES = {
+  1:[
+    {value:"bell",weight:6000},
+    {value:"miss",weight:2550},
+    {value:"weakWatermelon",weight:500},
+    {value:"weakCherry",weight:700},
+    {value:"strongWatermelon",weight:50},
+    {value:"strongCherry",weight:150},
+    {value:"chance",weight:40},
+    {value:"seven",weight:10}
+  ],
+  2:[
+    {value:"bell",weight:6000},
+    {value:"miss",weight:2200},
+    {value:"weakWatermelon",weight:600},
+    {value:"weakCherry",weight:800},
+    {value:"strongWatermelon",weight:100},
+    {value:"strongCherry",weight:180},
+    {value:"chance",weight:100},
+    {value:"seven",weight:20}
+  ],
+  3:[
+    {value:"bell",weight:6200},
+    {value:"miss",weight:2000},
+    {value:"weakWatermelon",weight:600},
+    {value:"weakCherry",weight:800},
+    {value:"strongWatermelon",weight:100},
+    {value:"strongCherry",weight:180},
+    {value:"chance",weight:100},
+    {value:"seven",weight:20}
+  ],
+  4:[
+    {value:"bell",weight:6200},
+    {value:"miss",weight:1800},
+    {value:"weakWatermelon",weight:800},
+    {value:"weakCherry",weight:800},
+    {value:"strongWatermelon",weight:100},
+    {value:"strongCherry",weight:180},
+    {value:"chance",weight:100},
+    {value:"seven",weight:20}
+  ],
+  5:[
+    {value:"bell",weight:6000},
+    {value:"miss",weight:1700},
+    {value:"weakWatermelon",weight:900},
+    {value:"weakCherry",weight:1000},
+    {value:"strongWatermelon",weight:100},
+    {value:"strongCherry",weight:180},
+    {value:"chance",weight:100},
+    {value:"seven",weight:20}
+  ],
+  6:[
+    {value:"bell",weight:6350},
+    {value:"miss",weight:1000},
+    {value:"weakWatermelon",weight:1000},
+    {value:"weakCherry",weight:1200},
+    {value:"strongWatermelon",weight:100},
+    {value:"strongCherry",weight:150},
+    {value:"chance",weight:100},
+    {value:"seven",weight:100}
+  ]
+};
+
+/* 7 JUDGE専用の小役確率 */
+const JUDGE_TABLES = {
+  1:[
+    {value:"miss",weight:9000},
+    {value:"weakWatermelon",weight:300},
+    {value:"weakCherry",weight:500},
+    {value:"strongWatermelon",weight:40},
+    {value:"strongCherry",weight:100},
+    {value:"chance",weight:40},
+    {value:"seven",weight:20}
+  ],
+  2:[
+    {value:"miss",weight:8500},
+    {value:"weakWatermelon",weight:500},
+    {value:"weakCherry",weight:800},
+    {value:"strongWatermelon",weight:40},
+    {value:"strongCherry",weight:100},
+    {value:"chance",weight:40},
+    {value:"seven",weight:20}
+  ],
+  3:[
+    {value:"miss",weight:8000},
+    {value:"weakWatermelon",weight:700},
+    {value:"weakCherry",weight:1000},
+    {value:"strongWatermelon",weight:50},
+    {value:"strongCherry",weight:180},
+    {value:"chance",weight:50},
+    {value:"seven",weight:20}
+  ],
+  4:[
+    {value:"miss",weight:7500},
+    {value:"weakWatermelon",weight:900},
+    {value:"weakCherry",weight:1200},
+    {value:"strongWatermelon",weight:50},
+    {value:"strongCherry",weight:200},
+    {value:"chance",weight:50},
+    {value:"seven",weight:100}
+  ],
+  5:[
+    {value:"miss",weight:7000},
+    {value:"weakWatermelon",weight:1000},
+    {value:"weakCherry",weight:1200},
+    {value:"strongWatermelon",weight:50},
+    {value:"strongCherry",weight:200},
+    {value:"chance",weight:50},
+    {value:"seven",weight:500}
+  ],
+  6:[
+    {value:"miss",weight:6500},
+    {value:"weakWatermelon",weight:1200},
+    {value:"weakCherry",weight:1200},
+    {value:"strongWatermelon",weight:0},
+    {value:"strongCherry",weight:100},
+    {value:"chance",weight:0},
+    {value:"seven",weight:1000}
+  ]
+};
+
+const JUDGE_MISS_CONTINUE = {
+  1:15, 2:20, 3:30, 4:35, 5:40, 6:42
+};
+
+let mode = "normal";
+let games = 10;
+let points = 0;
+let setting = 1;
+let ended = false;
+let busy = false;
+let spinCount = 0;
+let board = [];
+let animationTimer = null;
+let gaugeStage = 0;
+let gaugeAdvancePending = false;
+let specialZone = false;
+let judgeContinue = false;
+
+let rainbowSevens = 0;
+let pointPopTimer = null;
+
+/* =========================
+   効果音（外部音源不要）
+   iPhoneでもWeb Audio APIで再生
+========================= */
+
+let audioContext = null;
+
+function ensureAudio(){
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if(!AudioCtx)return null;
+
+  if(!audioContext){
+    audioContext = new AudioCtx();
+  }
+
+  if(audioContext.state === "suspended"){
+    audioContext.resume().catch(()=>{});
+  }
+
+  return audioContext;
+}
+
+function tone(freq,duration,type="sine",volume=0.05,delay=0,endFreq=null){
+  const ctx = ensureAudio();
+  if(!ctx)return;
+
+  const start = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq,start);
+
+  if(endFreq !== null){
+    osc.frequency.exponentialRampToValueAtTime(
+      Math.max(1,endFreq),
+      start+duration
+    );
+  }
+
+  gain.gain.setValueAtTime(0.0001,start);
+  gain.gain.exponentialRampToValueAtTime(volume,start+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(start);
+  osc.stop(start+duration+0.03);
+}
+
+function playSound(name){
+  switch(name){
+
+    case "spin":
+      tone(180,0.12,"sawtooth",0.025);
+      tone(250,0.10,"sawtooth",0.02,0.08);
+      break;
+
+    case "stop":
+      tone(760,0.07,"square",0.035);
+      tone(420,0.08,"triangle",0.025,0.035);
+      break;
+
+    case "rare":
+      tone(620,0.12,"triangle",0.055);
+      tone(880,0.16,"triangle",0.05,0.10);
+      tone(1175,0.20,"sine",0.05,0.22);
+      break;
+
+    case "points":
+      tone(880,0.08,"sine",0.045);
+      tone(1175,0.12,"sine",0.055,0.07);
+      tone(1568,0.18,"sine",0.06,0.15);
+      break;
+
+    case "puchun":
+      tone(90,0.45,"sawtooth",0.10,0,28);
+      tone(45,0.55,"sine",0.09,0.03,25);
+      break;
+
+    case "rainbow":
+      tone(440,0.18,"sine",0.07);
+      tone(660,0.18,"sine",0.07,0.12);
+      tone(880,0.20,"sine",0.07,0.24);
+      tone(1320,0.35,"triangle",0.08,0.36);
+      tone(1760,0.40,"sine",0.07,0.50);
+      break;
+  }
+}
+
+function randInt(n){return Math.floor(Math.random()*n)}
+function pick(arr){return arr[randInt(arr.length)]}
+
+function weighted(items){
+  const available=items.filter(item=>item.weight>0);
+  const total=available.reduce((sum,item)=>sum+item.weight,0);
+  let r=Math.random()*total;
+
+  for(const item of available){
+    r-=item.weight;
+    if(r<0)return item.value;
+  }
+
+  return available[available.length-1].value;
+}
+
+function sleep(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+function addLog(text){
+  const row=document.createElement("div");
+  row.textContent=text;
+  $("log").prepend(row);
+
+  while($("log").children.length>40){
+    $("log").lastChild.remove();
+  }
+}
+
+/* ベル獲得PTをリールに重ねて表示 */
+function showPointPop(amount){
+  const pop=$("pointPop");
+  const text=$("pointPopText");
+
+  if(pointPopTimer){
+    clearTimeout(pointPopTimer);
+    pointPopTimer=null;
+  }
+
+  pop.classList.remove("show");
+  void pop.offsetWidth;
+
+  text.textContent=`+${amount.toLocaleString("ja-JP")}pt`;
+  pop.classList.add("show");
+
+  pointPopTimer=setTimeout(()=>{
+    pop.classList.remove("show");
+    pointPopTimer=null;
+  },1500);
+}
+
+/* 液晶上部の777を更新 */
+function updateSevenIndicators(){
+  for(let i=0;i<3;i++){
+    $(`sevenMark${i}`).classList.toggle("rainbow",i<rainbowSevens);
+  }
+}
+
+/* プチュン→巨大な虹色7→暗転して復帰 */
+async function playPuchun(){
+  const layer = $("puchun");
+  const number = layer.querySelector(".puchun-number");
+
+  // 7を表示する
+  number.textContent = "7";
+
+  layer.classList.remove("show", "reveal", "blackout");
+  void layer.offsetWidth;
+
+  // 画面をプチュンと暗転
+  layer.classList.add("show");
+  playSound("puchun");
+
+  await sleep(650);
+
+  // 暗闇から巨大な虹色7が出現！
+  layer.classList.add("reveal");
+  playSound("rainbow");
+
+  await sleep(1550);
+
+  // 7を消して、画面全体を暗転
+  layer.classList.add("blackout");
+
+  await sleep(350);
+
+  // 次の画面へ
+  layer.classList.remove("show", "reveal", "blackout");
+
+  // 次に通常の7を表示する場合に備えて戻す
+  number.textContent = "7";
+}
+
+function getGaugeBounds(){
+  if(mode==="normal")return {start:0,end:777};
+
+  const end=RUSH_LIMITS[Math.min(gaugeStage,RUSH_LIMITS.length-1)];
+  const start=gaugeStage===0?777:RUSH_LIMITS[gaugeStage-1];
+
+  return {start,end};
+}
+
+function updateGauge(){
+  const fill=$("gaugeFill");
+  const bounds=getGaugeBounds();
+  const start=bounds.start;
+  const end=bounds.end;
+  let ratio;
+
+  if(mode==="normal"){
+    ratio=Math.min(points/777,1);
+  }else{
+    ratio=Math.min(Math.max((points-start)/(end-start),0),1);
+  }
+
+  fill.style.width=`${ratio*100}%`;
+  fill.classList.toggle("max",ratio>=1);
+
+  $("gaugeRange").textContent=
+    `${start.toLocaleString("ja-JP")}〜${end.toLocaleString("ja-JP")} PT`;
+
+  $("gaugeCurrent").textContent=`${Math.floor(points).toLocaleString("ja-JP")} PT`;
+  $("gaugeMax").textContent=`MAX ${end.toLocaleString("ja-JP")} PT`;
+}
+
+function update(){
+  $("games").textContent=mode==="judge"&&games===0?"Last":games;
+  $("gamesUnit").style.display=mode==="judge"&&games===0?"none":"inline";
+  $("gamesLabel").textContent=mode==="judge"?"JUDGE 残りG数":"残りG数";
+
+  $("points").textContent=points.toLocaleString("ja-JP");
+
+  const badge=$("rushBadge");
+  badge.classList.remove("seven-rush");
+
+  if(mode==="rush"){
+    badge.textContent="7 RUSH";
+  }else if(mode==="judge"){
+    badge.textContent="7 JUDGE";
+  }else if(mode==="sevenRush"){
+    badge.textContent="777 RUSH";
+    badge.classList.add("seven-rush");
+  }else{
+    badge.textContent="";
+  }
+
+  $("lcdPanel").classList.toggle("seven-rush-screen",mode==="sevenRush");
+  $("gaugeTitle").textContent=
+    mode==="sevenRush"?"777 RUSH POINT GAUGE":"POINT GAUGE";
+
+  if(mode==="normal"&&specialZone){
+    $("lcdMessage").textContent="PT特化ゾーン！残りG数で稼げ！";
+    $("lcdMessage").classList.add("hot");
+  }else if(mode==="normal"){
+    $("lcdMessage").textContent="777PTを超えてチャンスをつかめ！";
+    $("lcdMessage").classList.remove("hot");
+  }else if(mode==="rush"){
+    $("lcdMessage").textContent="7 RUSH！ベルと7揃いで大量ポイント！";
+    $("lcdMessage").classList.add("hot");
+  }else if(mode==="judge"){
+    $("lcdMessage").textContent="継続をつかめ！レア役なら継続確定！";
+    $("lcdMessage").classList.add("hot");
+  }else{
+    $("lcdMessage").textContent="777 RUSH！レア役で777PT＋ゲーム数加算！";
+    $("lcdMessage").classList.add("hot");
+  }
+
+  updateSevenIndicators();
+  updateGauge();
+
+  $("spin").disabled=busy||ended||games<=0;
+  $("spin").textContent=mode==="judge"?"JUDGE SPIN":"SPIN";
+}
+
+/* ポイントはリール停止後に加算する */
+function awardPoints(amount){
+  if(amount<=0)return;
+
+  if((mode==="rush"||mode==="sevenRush")&&gaugeAdvancePending){
+    if(gaugeStage<RUSH_LIMITS.length-1)gaugeStage++;
+    gaugeAdvancePending=false;
+  }
+
+  points+=amount;
+
+  if(mode==="normal"&&points>777){
+    specialZone=true;
+  }
+
+  if(mode==="rush"||mode==="sevenRush"){
+    const bounds=getGaugeBounds();
+    if(points>=bounds.end)gaugeAdvancePending=true;
+  }
+
+  update();
+}
+
+function getOutcome(){
+  return weighted(ROLE_TABLES[setting]);
+}
+
+function getJudgeOutcome(){
+  return weighted(JUDGE_TABLES[setting]);
+}
+
+/* ベル内部振り分け */
+function getBellPattern(){
+  const patterns=[
+    {
+      name:"通常ベル",weight:700,
+      cells:[[0,0],[1,1],[2,2]],symbol:SYMBOL.bell,
+      stopOrder:[1,0,2],
+      pointOptions:[{value:30,weight:50},{value:50,weight:50}]
+    },
+    {
+      name:"強ベル",weight:100,
+      cells:[[0,0],[1,0],[2,0]],symbol:SYMBOL.bell,
+      stopOrder:[2,1,0],
+      pointOptions:[
+        {value:300,weight:70},
+        {value:500,weight:20},
+        {value:600,weight:10}
+      ]
+    },
+    {
+      name:"中ベル",weight:setting<=2?200:150,
+      cells:[[0,1],[1,1],[2,1]],symbol:SYMBOL.bell,
+      stopOrder:[1,2,0],
+      pointOptions:[
+        {value:50,weight:50},
+        {value:100,weight:30},
+        {value:200,weight:10},
+        {value:300,weight:10}
+      ]
+    },
+    {
+      name:"特殊ベル",weight:setting<=2?0:50,
+      cells:[[0,2],[1,2],[2,2]],symbol:SYMBOL.bell,
+      stopOrder:[2,0,1],
+      pointOptions:[{value:setting*111,weight:100}]
+    }
+  ];
+
+  const pattern=weighted(patterns.map(p=>({value:p,weight:p.weight})));
+  pattern.payout=weighted(pattern.pointOptions);
+
+  return pattern;
+}
+
+function sameCells(a,b){
+  if(!a||!b||a.length!==b.length)return false;
+
+  const key=cells=>cells.map(([x,y])=>`${x},${y}`).sort().join("|");
+  return key(a)===key(b);
+}
+
+function lineHasTriple(line){
+  const [a,b,c]=line;
+  const s1=board[a[1]][a[0]];
+  const s2=board[b[1]][b[0]];
+  const s3=board[c[1]][c[0]];
+
+  return s1===s2&&s2===s3;
+}
+
+function hasUnintendedTriple(target){
+  for(const line of lines){
+    if(!lineHasTriple(line))continue;
+    if(target&&sameCells(line,target))continue;
+    return true;
+  }
+
+  return false;
+}
+
+function createBoard(role,target,fixedCells={}){
+  const cherryRole=role==="weakCherry"||role==="strongCherry";
+
+  for(let attempt=0;attempt<2000;attempt++){
+    board=Array.from({length:3},(_,y)=>
+      Array.from({length:3},(_,x)=>{
+        if(x===0&&!cherryRole)return pick(NORMAL_SYMBOLS);
+        return pick(ALL_SYMBOLS);
+      })
+    );
+
+    if(cherryRole){
+      board[0][0]=SYMBOL.seven;
+      board[1][0]=SYMBOL.cherry;
+      board[2][0]=role==="strongCherry"?SYMBOL.watermelon:SYMBOL.bell;
+    }
+
+    for(const [key,symbol] of Object.entries(fixedCells)){
+      const [x,y]=key.split(",").map(Number);
+      board[y][x]=symbol;
+    }
+
+    if(target&&target.symbol){
+      target.cells.forEach(([x,y])=>{board[y][x]=target.symbol});
+    }
+
+    if(
+      !cherryRole&&
+      (board[0][0]===SYMBOL.cherry||
+       board[1][0]===SYMBOL.cherry||
+       board[2][0]===SYMBOL.cherry)
+    )continue;
+
+    const allowedLine=target&&target.symbol?target.cells:null;
+
+    if(!hasUnintendedTriple(allowedLine))return;
+  }
+
+  board=[
+    [SYMBOL.bell,SYMBOL.watermelon,SYMBOL.seven],
+    [SYMBOL.watermelon,SYMBOL.cherry,SYMBOL.bell],
+    [SYMBOL.seven,SYMBOL.bell,SYMBOL.watermelon]
+  ];
+
+  if(target&&target.symbol){
+    target.cells.forEach(([x,y])=>{board[y][x]=target.symbol});
+  }
+}
+
+/* 結果作成。ここではポイントを加算しない */
+function buildOutcome(role){
+  let target=null;
+  let targetSymbol=null;
+  let name="";
+  let detail="";
+  let extraGames=0;
+  let stopOrder=[0,1,2];
+  let pointGain=0;
+  const fixedCells={};
+
+  if(role==="bell"){
+    const pattern=getBellPattern();
+    target=pattern.cells;
+    targetSymbol=SYMBOL.bell;
+    stopOrder=pattern.stopOrder;
+    pointGain=pattern.payout;
+    name=pattern.name;
+    detail=`+${pointGain}pt`;
+
+  }else if(role==="seven"){
+    target=pick(lines);
+    targetSymbol=SYMBOL.seven;
+    pointGain=1000;
+    name="7揃い";
+    detail="+1000pt！！";
+
+  }else if(role==="weakCherry"){
+    target=[[0,1],[1,1],[2,1]];
+    targetSymbol=SYMBOL.cherry;
+    extraGames=pick([2,4]);
+    name="弱チェリー";
+    detail=`🍒 チェリー成立！ ゲーム数 +${extraGames}G`;
+
+  }else if(role==="strongCherry"){
+    target=[[0,1],[1,1],[2,1]];
+    targetSymbol=SYMBOL.cherry;
+    extraGames=pick([6,8,12]);
+    name="🔥 強チェリー ★★★";
+    detail=`🍒🍒🍒 強チェリー3段階！ ゲーム数 +${extraGames}G`;
+
+  }else if(role==="weakWatermelon"){
+    target=[[0,0],[1,1],[2,2]];
+    targetSymbol=SYMBOL.watermelon;
+    extraGames=pick([2,4]);
+    name="弱スイカ";
+    detail=`🍉 弱スイカ成立！ ゲーム数 +${extraGames}G`;
+
+  }else if(role==="strongWatermelon"){
+    target=[[0,0],[1,0],[2,0]];
+    targetSymbol=SYMBOL.watermelon;
+    extraGames=pick([6,8,12]);
+    name="強スイカ";
+    detail=`🍉 強スイカ成立！ ゲーム数 +${extraGames}G`;
+
+  }else if(role==="chance"){
+    target=[[0,0],[1,1],[2,2]];
+    fixedCells["0,0"]=SYMBOL.seven;
+    fixedCells["1,1"]=SYMBOL.cherry;
+    fixedCells["2,2"]=SYMBOL.watermelon;
+    extraGames=pick([6,8,12]);
+    name="チャンス目";
+    detail=`チャンス目成立！ ゲーム数 +${extraGames}G`;
+
+  }else{
+    name="ハズレ";
+    detail="ポイント獲得なし";
+  }
+
+  createBoard(
+    role,
+    target&&targetSymbol?{cells:target,symbol:targetSymbol}:null,
+    fixedCells
+  );
+
+  return {
+    role,name,detail,target,targetSymbol,extraGames,stopOrder,pointGain
+  };
+}
+
+/* JUDGE用の結果作成。ベルは抽選対象外 */
+function buildJudgeOutcome(role){
+  const outcome=buildOutcome(role);
+
+  if(role==="miss"){
+    outcome.name="ハズレ";
+    outcome.detail="継続抽選中…";
+    outcome.extraGames=0;
+    outcome.pointGain=0;
+  }
+
+  return outcome;
+}
+
+function drawBoard(){
+  const reels=$("reels");
+  reels.innerHTML="";
+
+  for(let x=0;x<3;x++){
+    const reel=document.createElement("div");
+    reel.className="reel";
+    reel.dataset.reel=x;
+
+    for(let y=0;y<3;y++){
+      const cell=document.createElement("div");
+      cell.className="cell";
+      cell.textContent=board[y][x];
+      cell.dataset.x=x;
+      cell.dataset.y=y;
+
+      if(board[y][x]===SYMBOL.seven){
+        cell.classList.add("seven");
+      }
+
+      reel.appendChild(cell);
+    }
+
+    reels.appendChild(reel);
+  }
+}
+
+function clearHighlights(){
+  document.querySelectorAll(".cell").forEach(cell=>{
+    cell.classList.remove("hit","cherry-hit","strong-stage");
+  });
+
+  document.querySelectorAll(".reel").forEach(reel=>{
+    reel.classList.remove("spinning","stopped","cherry-stop");
+  });
+}
+
+function highlight(cells){
+  if(!cells)return;
+
+  cells.forEach(([x,y])=>{
+    const el=document.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
+    if(el)el.classList.add("hit");
+  });
+}
+
+function highlightCherry(){
+  document.querySelectorAll('.cell[data-x="0"]').forEach(cell=>{
+    if(cell.textContent===SYMBOL.cherry){
+      cell.classList.add("cherry-hit");
+    }
+  });
+}
+
+/* 役に応じた停止順でリールを止める */
+async function spinAnimation(outcome){
+  const reels=Array.from(document.querySelectorAll(".reel"));
+
+  reels.forEach(reel=>{
+    reel.classList.add("spinning");
+    reel.classList.remove("stopped");
+  });
+
+  animationTimer=setInterval(()=>{
+    reels.forEach((reel,x)=>{
+      if(!reel.classList.contains("spinning"))return;
+
+      reel.querySelectorAll(".cell").forEach(cell=>{
+        let symbol=pick(ALL_SYMBOLS);
+
+        if(
+          x===0&&
+          outcome.role!=="weakCherry"&&
+          outcome.role!=="strongCherry"
+        ){
+          symbol=pick(NORMAL_SYMBOLS);
+        }
+
+        cell.textContent=symbol;
+        cell.classList.toggle("seven",symbol===SYMBOL.seven);
+      });
+    });
+  },75);
+
+  const stopOrder=outcome.stopOrder||[0,1,2];
+
+  for(const x of stopOrder){
+    await sleep(650);
+
+    const reel=reels[x];
+    reel.classList.remove("spinning");
+    reel.classList.add("stopped");
+
+    /* リール停止音 */
+    playSound("stop");
+
+    reel.querySelectorAll(".cell").forEach(cell=>{
+      const cx=Number(cell.dataset.x);
+      const cy=Number(cell.dataset.y);
+
+      cell.textContent=board[cy][cx];
+      cell.classList.toggle("seven",board[cy][cx]===SYMBOL.seven);
+    });
+
+    if(
+      x===0&&
+      (outcome.role==="weakCherry"||outcome.role==="strongCherry")
+    ){
+      reel.classList.add("cherry-stop");
+      highlightCherry();
+
+      if(outcome.role==="strongCherry"){
+        const cherryCells=Array.from(reel.querySelectorAll(".cell"))
+          .filter(cell=>cell.textContent===SYMBOL.cherry);
+
+        for(let stage=1;stage<=3;stage++){
+          $("result").textContent=`🔥 強チェリー ${stage}段階！`;
+          cherryCells.forEach(cell=>cell.classList.add("strong-stage"));
+          await sleep(280);
+          cherryCells.forEach(cell=>cell.classList.remove("strong-stage"));
+          await sleep(100);
+        }
+      }else{
+        $("result").textContent="🍒 弱チェリー成立！";
+      }
+    }
+  }
+
+  clearInterval(animationTimer);
+  animationTimer=null;
+
+  highlight(outcome.target);
+
+  if(outcome.role==="weakCherry"||outcome.role==="strongCherry"){
+    highlightCherry();
+  }
+
+  await sleep(150);
+}
+
+function showModal(title,text,mainText,mainAction,secondText=null,secondAction=null){
+  $("modalTitle").textContent=title;
+  $("modalText").textContent=text;
+  $("modalMain").textContent=mainText;
+  $("overlay").classList.add("show");
+
+  const second=$("modalSecond");
+  second.classList.toggle("hidden",!secondText);
+
+  if(secondText){
+    second.textContent=secondText;
+    second.onclick=()=>{
+      $("overlay").classList.remove("show");
+      if(secondAction)secondAction();
+    };
+  }
+
+  $("modalMain").onclick=()=>{
+    $("overlay").classList.remove("show");
+    mainAction();
+  };
+}
+
+function enterRush(){
+  mode="rush";
+  games=5;
+  gaugeStage=0;
+  gaugeAdvancePending=false;
+
+  addLog("🎉 PT特化ゾーン終了！7 RUSH突入！");
+  update();
+
+  showModal(
+    "7 RUSH!",
+    `累計 ${points.toLocaleString("ja-JP")}pt！\n\n7 RUSH突入！\n5G固定！ベルと7揃いのポイントが2倍！`,
+    "7 RUSH開始",
+    ()=>update()
+  );
+}
+
+function enterJudge(){
+  mode="judge";
+  games=3;
+  judgeContinue=false;
+
+  addLog("7 RUSH終了！7 JUDGEへ突入！");
+  update();
+
+  showModal(
+    "7 JUDGE",
+    "継続ジャッジ！\n3Gの間に継続をつかめ！\n\nハズレは設定別の継続抽選。\nレア役は継続確定！\n7揃いなら777 RUSH突入！",
+    "JUDGE開始",
+    ()=>update()
+  );
+}
+
+function enter777Rush(){
+  mode="sevenRush";
+  games=7;
+  gaugeStage=0;
+  gaugeAdvancePending=false;
+
+  addLog("🌈 7揃い！777 RUSH（スリーセブンラッシュ）突入！");
+  update();
+
+  showModal(
+    "🌈 777 RUSH 🌈",
+    "SPECIAL POINT ZONE\n\n7Gスタート！\nレア役で777PT獲得＋ゲーム数加算！\nベルと7揃いのポイントも2倍！",
+    "777 RUSH開始",
+    ()=>update()
+  );
+}
+
+function endJudge(){
+  mode="judge";
+  ended=true;
+  busy=false;
+
+  addLog("7 JUDGE終了！継続できず終了画面へ。");
+  update();
+
+  showModal(
+    "RUSH END",
+    `7 JUDGE失敗…\n\n最終ポイント：${points.toLocaleString("ja-JP")}pt`,
+    "もう一度",
+    reset,
+    "ホームに戻る",
+    goHome
+  );
+}
+
+function goHome(){
+  reset();
+  $("result").textContent="SPIN READY";
+  $("detail").textContent="10G以内に777ptを超えよう！";
+  $("lcdMessage").textContent="777PTを超えてチャンスをつかめ！";
+}
+
+/* JUDGE中の継続抽選 */
+function judgeLottery(role){
+  if(role==="seven")return "seven";
+  if(role!=="miss")return "continue";
+
+  return Math.random()*100<JUDGE_MISS_CONTINUE[setting]?"continue":"fail";
+}
+
+async function spin(){
+  if(busy||ended||games<=0)return;
+
+  busy=true;
+  spinCount++;
+
+  /* 回転開始音 */
+  playSound("spin");
+
+  const currentMode=mode;
+  games--;
+
+  let role;
+  let outcome;
+
+  if(currentMode==="judge"){
+    role=getJudgeOutcome();
+    outcome=buildJudgeOutcome(role);
+  }else{
+    role=getOutcome();
+    outcome=buildOutcome(role);
+  }
+
+  /* 通常時と777 RUSH中だけレア役でゲーム数を加算 */
+  if(
+    outcome.extraGames>0&&
+    (currentMode==="normal"||currentMode==="sevenRush")
+  ){
+    games+=outcome.extraGames;
+  }
+
+  /* 7 RUSH中はベル以外のレア役でG数を増やさない */
+  if(currentMode==="rush"){
+    outcome.extraGames=0;
+
+    if(role!=="bell"&&role!=="seven"){
+      outcome.pointGain=0;
+      outcome.detail="7 RUSH中はポイント・G数加算なし";
+    }
+  }
+
+  /* 777 RUSHではレア役で777pt＋通常時と同じG数加算 */
+  if(currentMode==="sevenRush"){
+    if(role!=="bell"&&role!=="miss"){
+      outcome.pointGain=777;
+      outcome.detail=`${outcome.name}！ +777PT ＋${outcome.extraGames}G`;
+    }
+  }
+
+  /* 7 RUSHと777 RUSHではベル・7揃いのptが2倍 */
+  if(
+    (currentMode==="rush"||currentMode==="sevenRush")&&
+    role==="bell"
+  ){
+    outcome.pointGain*=2;
+    outcome.detail=`${outcome.name}！ +${outcome.pointGain}pt（2倍）`;
+  }
+
+  if(
+    (currentMode==="rush"||currentMode==="sevenRush")&&
+    role==="seven"
+  ){
+    if(currentMode==="rush"){
+      outcome.pointGain=2000;
+      outcome.detail="+2000pt！！（2倍）";
+    }else{
+      outcome.pointGain=777;
+      outcome.detail="7揃い！ +777PT";
+    }
+  }
+
+  drawBoard();
+  clearHighlights();
+
+  $("result").textContent=currentMode==="judge"
+    ?(games===0?"⚖️ JUDGE LAST":"JUDGE 抽選中…")
+    :"リール回転中…";
+
+  $("detail").textContent="リール回転中…";
+  update();
+
+  await spinAnimation(outcome);
+
+  /* レア役成立音 */
+  if([
+    "weakCherry",
+    "strongCherry",
+    "weakWatermelon",
+    "strongWatermelon",
+    "chance",
+    "seven"
+  ].includes(role)){
+    playSound("rare");
+  }
+
+  /* 全リール停止後にポイント加算 */
+  if(outcome.pointGain>0){
+    awardPoints(outcome.pointGain);
+  }
+
+  /* ベルの獲得PTだけリール上にオーバーレイ */
+  if(role==="bell"&&outcome.pointGain>0){
+    showPointPop(outcome.pointGain);
+    playSound("points");
+  }
+
+  $("result").textContent=outcome.name;
+  $("detail").textContent=outcome.detail;
+
+  addLog(
+    `${spinCount}G｜${
+      currentMode==="normal"
+        ?(specialZone?"PT特化":"通常")
+        :currentMode==="rush"
+          ?"7 RUSH"
+          :currentMode==="judge"
+            ?"7 JUDGE"
+            :"777 RUSH"
+    }｜${outcome.name}｜${outcome.detail}`
+  );
+
+  busy=false;
+
+  /* 通常時 */
+  if(currentMode==="normal"){
+    if(points>777)specialZone=true;
+
+    if(games<=0){
+      if(points>777){
+        update();
+        enterRush();
+        return;
+      }
+
+      ended=true;
+      update();
+
+      showModal(
+        "GAME OVER",
+        `ゲーム終了！\n777ptを超えられなかった…\n\n最終ポイント：${points.toLocaleString("ja-JP")}pt`,
+        "もう一度遊ぶ",
+        reset,
+        "ホームに戻る",
+        goHome
+      );
+
+      return;
+    }
+
+    update();
+    return;
+  }
+
+  /* 7 RUSH：5G消化後に7 JUDGEへ */
+  if(currentMode==="rush"){
+    if(games<=0){
+      update();
+      enterJudge();
+      return;
+    }
+
+    update();
+    return;
+  }
+
+  /* 7 JUDGE：継続抽選とプチュン演出 */
+  if(currentMode==="judge"){
+    const judgeResult=judgeLottery(role);
+
+    /* 7揃いは専用演出から777 RUSHへ */
+    if(judgeResult==="seven"){
+      rainbowSevens=Math.min(3,rainbowSevens+1);
+      updateSevenIndicators();
+
+      addLog("7 JUDGE中の7揃い！継続確定＋777 RUSH！");
+      update();
+
+      busy=true;
+      await playPuchun();
+      busy=false;
+
+      enter777Rush();
+      return;
+    }
+
+    if(judgeResult==="continue"){
+      judgeContinue=true;
+
+      /* 成功するたびに上部の7を左から虹色に */
+      rainbowSevens=Math.min(3,rainbowSevens+1);
+      updateSevenIndicators();
+
+      addLog(
+        role==="miss"
+          ?"JUDGE：ハズレから継続当選！"
+          :"JUDGE：レア役で継続確定！"
+      );
+    }else{
+      addLog("JUDGE：継続抽選に非当選。");
+    }
+
+    /* Lastまで消化した時点で継続成功なら暗転演出 */
+    if(games<=0){
+      if(judgeContinue){
+        update();
+
+        busy=true;
+        await playPuchun();
+        busy=false;
+
+        addLog("🌈 プチュン演出成功！7 RUSHへ復帰！");
+        enterRush();
+        return;
+      }
+
+      endJudge();
+      return;
+    }
+
+    update();
+    return;
+  }
+
+  /* 777 RUSH：0Gで7 JUDGEへ戻る */
+  if(currentMode==="sevenRush"){
+    if(games<=0){
+      update();
+      addLog("777 RUSH終了！7 JUDGEへ戻る！");
+      enterJudge();
+      return;
+    }
+
+    update();
+    return;
+  }
+
+  update();
+}
+
+function reset(){
+  if(animationTimer){
+    clearInterval(animationTimer);
+    animationTimer=null;
+  }
+
+  if(pointPopTimer){
+    clearTimeout(pointPopTimer);
+    pointPopTimer=null;
+  }
+
+  $("pointPop").classList.remove("show");
+  $("puchun").classList.remove("show","reveal");
+
+  mode="normal";
+  games=10;
+  points=0;
+  setting=weighted(SETTING_WEIGHTS);
+
+  ended=false;
+  busy=false;
+  spinCount=0;
+  gaugeStage=0;
+  gaugeAdvancePending=false;
+  specialZone=false;
+  judgeContinue=false;
+
+  rainbowSevens=0;
+  updateSevenIndicators();
+
+  board=[
+    [SYMBOL.seven,SYMBOL.bell,SYMBOL.watermelon],
+    [SYMBOL.watermelon,SYMBOL.cherry,SYMBOL.bell],
+    [SYMBOL.bell,SYMBOL.seven,SYMBOL.cherry]
+  ];
+
+  drawBoard();
+  clearHighlights();
+
+  $("result").textContent="SPIN READY";
+  $("detail").textContent="10G以内に777ptを超えよう！";
+  $("log").innerHTML="<div>ゲーム開始！</div>";
+  $("overlay").classList.remove("show");
+
+  update();
+}
+
+$("spin").addEventListener("click",spin);
+
+$("reset").addEventListener("click",()=>{
+  if(!busy)reset();
+});
+
+$("modalReset").addEventListener("click",()=>{
+  if(busy)return;
+
+  $("overlay").classList.remove("show");
+  reset();
+});
+
+$("showRules").addEventListener("click",()=>{
+  const details=document.querySelector("details");
+  details.open=!details.open;
+});
+
+reset();
+
+})();
+</script>
+</body>
+</html>

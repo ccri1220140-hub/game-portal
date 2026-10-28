@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>モンスターバトルスロット</title>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html{min-height:100%;background:#10131d}
+body{margin:0;background:#10131d;color:white;font-family:system-ui,sans-serif;text-align:center}
+
+button{
+ border:0;border-radius:12px;padding:11px 16px;font-size:15px;
+ font-weight:bold;color:white;background:#df8b24;cursor:pointer
+}
+button:disabled{opacity:.45}
+.hidden{display:none!important}
+
+#game{width:100%;max-width:500px;margin:auto;padding:3px 7px 6px}
+h1{font-size:21px;color:#ffd36b;text-shadow:0 0 12px #ff9d27;margin:3px 0 1px}
+.subtitle{display:none}
+
+.panel{background:#202638;border:1px solid #414d69;border-radius:13px;padding:6px;margin:4px 0}
+#status{display:none!important}
+.statusBox{flex:1;background:#141a29;border-radius:10px;padding:8px 2px;font-size:12px}
+.statusBox strong{display:block;font-size:15px;margin-top:4px}
+#scenarioProgress{display:none!important}
+
+#monsterArea{
+ position:relative;min-height:240px;height:auto;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;overflow:hidden;
+ background:radial-gradient(ellipse at center,#34405c,#141a29);
+ border-radius:13px;border:1px solid #53617d;margin-top:3px;padding:5px
+}
+#monsterName{font-size:18px;font-weight:bold;z-index:2;line-height:1.2;flex-shrink:0}
+#monster{font-size:70px;line-height:1;z-index:2;filter:drop-shadow(0 0 10px #ff6c32);transition:filter .15s;flex-shrink:0}
+#monsterArt{width:180px!important;height:160px!important;max-width:100%;flex-shrink:0}
+#monsterInfo{z-index:2;font-size:10px;color:#e3e8f5;margin:2px 0;line-height:1.2;flex-shrink:0}
+#monsterHPText{z-index:2;font-size:11px;margin:2px 0;line-height:1.2;flex-shrink:0}
+.hpBar{width:78%;height:10px;border-radius:10px;background:#4b2430;overflow:hidden;border:1px solid #8c5362;z-index:2;flex-shrink:0}
+#monsterHPBar{height:100%;width:100%;background:linear-gradient(90deg,#f33b48,#ff9655);transition:width .25s}
+
+#monsterEffect{position:absolute;inset:20px 0 0;pointer-events:none;z-index:5;overflow:hidden}
+.effectText{
+ position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+ font-weight:1000;font-size:30px;white-space:nowrap;
+ animation:effectPop .6s ease-out forwards;text-shadow:0 0 8px currentColor,2px 3px 3px #000
+}
+.damageText{
+ position:absolute;left:50%;top:30%;transform:translateX(-50%);color:#fff;
+ font-size:25px;font-weight:1000;text-shadow:0 0 8px red,2px 3px 3px #000;
+ animation:damageFloat .9s ease-out forwards;white-space:nowrap
+}
+.slashEffect{
+ position:absolute;left:50%;top:45%;width:165px;height:7px;
+ background:linear-gradient(90deg,transparent,white,#ff3131,white,transparent);
+ border-radius:100%;box-shadow:0 0 12px #ff3c3c;
+ transform:translate(-50%,-50%) rotate(-30deg) scaleX(0);
+ animation:slashHit .32s ease-out forwards
+}
+.slashEffect.second{transform:translate(-50%,-50%) rotate(30deg) scaleX(0);animation:slashHit2 .32s ease-out forwards}
+.poisonCloud{
+ position:absolute;left:50%;top:43%;width:165px;height:120px;
+ transform:translate(-50%,-50%);border-radius:50%;
+ background:radial-gradient(ellipse,#bd46ff99,#6c25c455,transparent 72%);
+ animation:poisonPulse 1s infinite alternate
+}
+.poisonCloud:before{
+ content:"☠️ ☠️ ☠️";position:absolute;width:100%;left:0;top:10px;
+ font-size:22px;text-shadow:0 0 12px #d46aff
+}
+.electricEffect{
+ position:absolute;inset:8px 30px;border:5px dashed #76f8ff;border-radius:50%;
+ box-shadow:0 0 20px #35efff,inset 0 0 20px #35efff;
+ animation:electricPulse .12s infinite alternate
+}
+.specialEffect{
+ position:absolute;left:50%;top:43%;width:185px;height:185px;
+ transform:translate(-50%,-50%);border:8px solid #fff4a1;border-radius:50%;
+ box-shadow:0 0 18px white,0 0 35px gold,inset 0 0 25px #ff8b24;
+ animation:specialBlast .7s forwards
+}
+
+.dodgeBanner{
+ position:absolute;left:50%;top:43%;z-index:10;
+ transform:translate(-50%,-50%);
+ min-width:180px;padding:12px 18px;
+ border:3px solid #a4f7ff;border-radius:18px;
+ background:linear-gradient(135deg,#103c58ee,#161a35f5);
+ color:#bdfaff;font-size:38px;font-weight:1000;
+ text-shadow:0 0 12px #00eaff,2px 3px 3px #000;
+ box-shadow:0 0 25px #00dfff99;
+ animation:dodgeBanner 2.2s ease-out forwards;
+ white-space:nowrap
+}
+
+#playerArea{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+ gap:4px 9px;font-size:12px;line-height:1.3;padding:4px 6px;margin:4px 0
+}
+#playerArea>div:first-child{font-size:12px;font-weight:bold}
+#playerHearts{font-size:16px;letter-spacing:0;line-height:1.2;min-height:0;white-space:nowrap}
+#playerStatus{width:100%;font-size:10px;color:#d6e1f7;line-height:1.2;min-height:12px}
+
+#slotGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:4px 0 6px}
+.reel{
+ min-width:0;display:grid;grid-template-rows:repeat(3,60px);gap:3px;
+ background:#121827;padding:4px;border:2px solid #5b6c8d;border-radius:10px
+}
+.reel.spinning{border-color:#ffd15a;box-shadow:0 0 12px #e8a932}
+.symbol{
+ display:flex;align-items:center;justify-content:center;font-size:32px;
+ border-radius:7px;background:linear-gradient(145deg,#303b55,#1b2234);
+ border:1px solid #4d5c79;min-width:0
+}
+#spinButton{
+ width:100%;max-width:300px;font-size:18px;padding:10px;
+ background:linear-gradient(180deg,#ffbb45,#c86b17);box-shadow:0 3px 0 #7b3d10
+}
+#message{min-height:25px;font-size:12px;font-weight:bold;color:#ffe5a2;padding:5px 3px 0;line-height:1.4}
+#history{min-height:12px;color:#aab8d4;font-size:10px}
+#rulesPanel{padding:4px;margin:4px 0}
+#rulesButton{
+ width:100%;padding:8px;font-size:13px;
+ background:linear-gradient(180deg,#52658b,#34425f);border:1px solid #7f96c2
+}
+.rules{font-size:12px;color:#c1cce0;line-height:1.7;text-align:left}
+
+.overlay{
+ position:fixed;inset:0;background:#050711ef;display:flex;align-items:center;
+ justify-content:center;padding:14px;z-index:100;overflow-y:auto
+}
+.overlayCard{
+ width:100%;max-width:390px;background:#20283b;border:2px solid #ffd16b;
+ border-radius:18px;padding:18px 15px;box-shadow:0 0 35px #f5a02e55;
+ max-height:88dvh;overflow-y:auto
+}
+.overlayTitle{font-size:36px;font-weight:1000;color:#ffd36b;margin:0 0 8px}
+.overlayCard p{line-height:1.6}
+.overlayCard button{width:100%;margin-top:9px}
+.secondaryButton{background:#46536e}
+#attackFlash{position:fixed;inset:0;background:#ff182b;opacity:0;pointer-events:none;z-index:50}
+#winScenarioInfo{margin-top:10px;text-align:left}
+.scenarioToggle{background:linear-gradient(180deg,#52658b,#34425f);border:1px solid #7f96c2}
+.scenarioList{background:#141a29;border:1px solid #bd8e36;border-radius:12px;padding:10px;margin-top:9px}
+.scenarioListTitle{color:#ffd36b;font-size:16px;font-weight:bold;text-align:center;margin-bottom:8px}
+.scenarioHint{font-size:12px;color:#cbd6eb;line-height:1.7;margin-bottom:10px;text-align:center}
+.scenarioCandidate{background:#222d43;border:1px solid #4a5a78;border-radius:10px;padding:9px;margin-top:8px}
+.scenarioCandidateName{font-weight:bold;color:#ffe3a0;font-size:14px;margin-bottom:7px}
+.scenarioRoute{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.routeCell{background:#141a29;border-radius:7px;padding:6px 2px;font-size:11px;text-align:center;color:#e8edf8}
+.routeCell strong{display:block;font-size:11px;color:#9eafcc;margin-bottom:3px}
+.routeColor{font-size:13px;white-space:nowrap}
+.scenarioFinal{background:#141a29;border:1px solid #bd8e36;border-radius:12px;padding:12px}
+.scenarioFinalTitle{font-weight:bold;font-size:17px;color:#ffd36b;text-align:center;margin-bottom:8px}
+.scenarioRevealName{font-size:20px;font-weight:bold;text-align:center;margin:12px 0;color:#ffe3a0}
+.loseScenarioBox{background:#141a29;border:1px solid #8d4555;border-radius:12px;padding:12px;margin:10px 0;text-align:center}
+.loseScenarioTitle{font-size:14px;color:#ffb4bd;margin-bottom:8px;font-weight:bold}
+.loseScenarioName{font-size:21px;font-weight:bold;color:#ffd36b;margin:8px 0}
+.loseScenarioRoute{font-size:12px;color:#d5dff2;line-height:1.9}
+.completeCard{border-color:#ffd36b;box-shadow:0 0 40px #ffc33b66,0 0 90px #f5a02e22}
+.completeTitle{font-size:34px;font-weight:1000;color:#ffe47a;text-shadow:0 0 12px #ffb52e,0 0 25px #ff8b24;margin-bottom:8px;animation:completeGlow 1.4s infinite alternate}
+.completeSubtitle{font-size:14px;color:#fff0bd;font-weight:bold}
+.completeTrophy{font-size:44px;animation:trophyBounce 1.1s infinite alternate}
+.completeScenarioBox{background:#141a29;border:1px solid #bd8e36;border-radius:12px;padding:12px;margin-top:12px}
+.completeScenarioLabel{font-size:13px;color:#ffd36b;font-weight:bold}
+.completeScenarioName{font-size:21px;color:#ffe3a0;font-weight:1000;margin:8px 0 12px}
+.completeRoute{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.completeRoute .routeCell{border:1px solid #bd8e36}
+.completePrimary,.homePrimary{background:linear-gradient(180deg,#ffcf58,#d77918);box-shadow:0 3px 0 #814314}
+
+@media(max-height:740px){
+ #game{padding:2px 6px 5px}h1{font-size:19px;margin:2px 0}
+ .panel{margin:3px 0}#playerArea{padding:3px 5px;gap:3px 8px}
+ #slotGrid{gap:4px;margin:3px 0 5px}#spinButton{padding:9px;font-size:17px}
+ #message{min-height:23px;padding-top:4px;font-size:11px}
+ #history{min-height:11px;font-size:10px}#rulesButton{padding:7px;font-size:12px}
+}
+@media(max-width:360px){
+ #game{padding:2px 4px}h1{font-size:18px}#playerHearts{font-size:15px}
+}
+
+@keyframes completeGlow{from{filter:brightness(1)}to{filter:brightness(1.35)}}
+@keyframes trophyBounce{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-6px) rotate(5deg)}}
+@keyframes effectPop{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+ 35%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}
+ 100%{opacity:0;transform:translate(-50%,-65%) scale(.9)}
+}
+@keyframes dodgeBanner{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}
+ 12%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+ 25%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 82%{opacity:1;transform:translate(-50%,-55%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-65%) scale(.95)}
+}
+@keyframes damageFloat{
+ 0%{opacity:0;transform:translate(-50%,20px) scale(.7)}
+ 20%{opacity:1;transform:translate(-50%,0) scale(1.2)}
+ 100%{opacity:0;transform:translate(-50%,-48px) scale(1)}
+}
+@keyframes slashHit{
+ 0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(0)}
+ 35%{opacity:1;transform:translate(-50%,-50%) rotate(-30deg) scaleX(1.2)}
+ 100%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scaleX(.7)}
+}
+@keyframes slashHit2{
+ 0%{opacity:0;transform:translate(-50%,-50%) rotate(30deg) scaleX(0)}
+ 35%{opacity:1;transform:translate(-50%,-50%) rotate(30deg) scaleX(1.2)}
+ 100%{opacity:0;transform:translate(-50%,-50%) rotate(30deg) scaleX(.7)}
+}
+@keyframes poisonPulse{
+ from{opacity:.5;transform:translate(-50%,-50%) scale(.85)}
+ to{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+}
+@keyframes electricPulse{from{opacity:.4;filter:brightness(1)}to{opacity:1;filter:brightness(2)}}
+@keyframes specialBlast{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}
+ 35%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}
+}
+@keyframes monsterHit{
+ 0%,100%{transform:translateX(0) rotate(0);filter:brightness(1)}
+ 20%{transform:translateX(-10px) rotate(-5deg);filter:brightness(2) sepia(1) saturate(5)}
+ 50%{transform:translateX(10px) rotate(5deg);filter:brightness(1.8) sepia(1) saturate(5)}
+ 75%{transform:translateX(-5px);filter:brightness(1.5)}
+}
+@keyframes monsterAttack{
+ 0%{transform:translateX(0) scale(1)}
+ 35%{transform:translateX(-30px) scale(1.15)}
+ 70%{transform:translateX(65px) scale(1.2)}
+ 100%{transform:translateX(0) scale(1)}
+}
+@keyframes playerShake{
+ 0%,100%{transform:translateX(0)}
+ 25%{transform:translateX(-8px)}
+ 50%{transform:translateX(8px)}
+ 75%{transform:translateX(-5px)}
+}
+@keyframes playerFlash{0%,100%{color:white}50%{color:#ff3131}}
+</style>
+</head>
+
+<body>
+<div id="attackFlash"></div>
+
+<div id="game">
+<h1>🐲 モンスターバトルスロット</h1>
+<div class="subtitle">リールを回してモンスターを討伐しよう！</div>
+
+<div class="panel" id="status">
+ <div class="statusBox">討伐数<strong id="huntCount">0体</strong></div>
+ <div class="statusBox">自分のHP<strong id="playerHPText">5 / 5</strong></div>
+ <div class="statusBox">敵のHP<strong id="monsterHPShort">100 / 100</strong></div>
+</div>
+
+<div id="scenarioProgress" class="panel hidden">
+ <div id="scenarioProgressTitle">📜 シナリオ進行中</div>
+ <div id="scenarioNameDisplay"></div>
+ <div id="scenarioProgressText"></div>
+ <div id="scenarioProgressColors"></div>
+ <div id="scenarioDetails"></div>
+</div>
+
+<div id="monsterArea">
+ <div id="monsterName">モンスター</div>
+ <div id="monster">
+  <svg id="monsterArt" viewBox="0 0 200 180" style="width:180px;height:160px;max-width:100%;">
+    <defs>
+      <radialGradient id="bodyColor">
+        <stop offset="0%" stop-color="#b8f0a0"/>
+        <stop offset="100%" stop-color="#27834b"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="100" cy="158" rx="57" ry="10" fill="#000" opacity=".3"/>
+    <path d="M60 65 L42 20 L80 43 Q100 28 120 43 L158 20 L140 68" fill="#27834b" stroke="#173d2a" stroke-width="5" stroke-linejoin="round"/>
+    <ellipse cx="100" cy="100" rx="54" ry="52" fill="url(#bodyColor)" stroke="#173d2a" stroke-width="5"/>
+    <ellipse cx="80" cy="87" rx="12" ry="16" fill="white"/>
+    <ellipse cx="120" cy="87" rx="12" ry="16" fill="white"/>
+    <circle cx="83" cy="90" r="6" fill="#17221b"/>
+    <circle cx="117" cy="90" r="6" fill="#17221b"/>
+    <path d="M82 119 Q100 135 118 119" fill="none" stroke="#173d2a" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="66" cy="109" r="8" fill="#ff9d9d" opacity=".8"/>
+    <circle cx="134" cy="109" r="8" fill="#ff9d9d" opacity=".8"/>
+  </svg>
+ </div>
+ <div id="monsterInfo"></div>
+ <div id="monsterHPText">HP 100 / 100</div>
+ <div class="hpBar"><div id="monsterHPBar"></div></div>
+ <div id="monsterEffect"></div>
+</div>
+
+<div class="panel" id="playerArea">
+ <div>❤️ プレイヤー</div>
+ <div id="playerHearts">❤️❤️❤️❤️❤️</div>
+ <div id="playerStatus">準備完了！</div>
+</div>
+
+<div class="panel">
+ <b>🎰 3リール・5ライン</b>
+ <div id="slotGrid">
+  <div class="reel" id="reel0"><div class="symbol">🗡️</div><div class="symbol">☠️</div><div class="symbol">💪</div></div>
+  <div class="reel" id="reel1"><div class="symbol">⚔️</div><div class="symbol">🌈</div><div class="symbol">🪤</div></div>
+  <div class="reel" id="reel2"><div class="symbol">💪</div><div class="symbol">🗡️</div><div class="symbol">⚔️</div></div>
+ </div>
+ <button id="spinButton" onclick="spin()">🎰 回す！</button>
+ <div id="message">役を揃えて攻撃しよう！</div>
+ <div id="history"></div>
+</div>
+
+<div class="panel" id="rulesPanel">
+ <button id="rulesButton" type="button" onclick="toggleRules()">📖 役の効果を見る</button>
+</div>
+</div>
+
+<div id="rulesOverlay" class="overlay hidden">
+ <div class="overlayCard">
+  <div class="overlayTitle" style="font-size:26px">📖 役の効果</div>
+  <div class="rules">
+   🗡️ <b>剣</b>：12〜17ダメージ<br>
+   ⚔️ <b>双剣</b>：2〜4回攻撃、1回8〜13ダメージ。回避判定は最初の1回だけ！<br>
+   ☠️ <b>毒</b>：最大HPの1/8ダメージを合計3回、防御貫通<br>
+   🪤 <b>罠</b>：モンスターの回避率がずっと0％になる！次の2回は剣・双剣・低確率の必殺技だけ<br>
+   💪 <b>攻撃力UP</b>：次の双剣攻撃が1.5倍<br>
+   🌈 <b>必殺技</b>：100〜140ダメージ<br><br>
+   🎯 <b>弱点</b>：毒弱点は毒2倍、必殺技弱点は必殺技2倍。罠弱点は素早さ0！<br>
+   🛡️ <b>毒耐性</b>：毒ダメージ0.5倍<br>
+   🏃 <b>素早さ</b>：数値がそのまま回避率（％）。罠が当たると0％になる！<br>
+   💨 <b>プレイヤー回避</b>：ハズレ時に20％で敵の攻撃を回避！<br><br>
+   剣・双剣・必殺技などは敵の防御力ぶんダメージが減るよ。<br>
+   毒は防御力を無視するよ。<br>
+   横3ライン＋斜め2ラインの合計5ライン。
+  </div>
+  <button class="secondaryButton" type="button" onclick="toggleRules()">閉じる</button>
+ </div>
+</div>
+
+<div id="winOverlay" class="overlay hidden">
+ <div class="overlayCard">
+  <div class="overlayTitle" id="winTitle">🏆 WIN!</div>
+  <p id="winText">討伐成功！</p>
+  <button id="nextButton" onclick="nextMonster()">次のモンスターを狩りに行く</button>
+  <button id="finishButton" class="secondaryButton" onclick="finishGame()">ここで終わる</button>
+  <button id="scenarioToggleButton" class="scenarioToggle" onclick="toggleScenarioList()">📜 シナリオを表示</button>
+  <div id="winScenarioInfo" class="hidden"></div>
+ </div>
+</div>
+
+<div id="loseOverlay" class="overlay hidden">
+ <div class="overlayCard">
+  <div class="overlayTitle" style="color:#ff5a6a">💀 LOSE</div>
+  <p id="loseText">力尽きてしまった……！</p>
+  <div id="loseScenarioInfo" class="loseScenarioBox hidden"></div>
+  <button onclick="retryGame()">もう一度狩りに行く</button>
+  <button class="secondaryButton" onclick="homeGame()">ホームに戻る</button>
+ </div>
+</div>
+
+<div id="completeOverlay" class="overlay hidden">
+ <div class="overlayCard completeCard">
+  <div class="completeTrophy">🏆</div>
+  <div class="completeTitle">COMPLETE!!</div>
+  <div class="completeSubtitle">🎉 全8戦完全制覇！ 🎉</div>
+  <p>すべてのモンスターを討伐した！<br>おめでとう！</p>
+  <div id="completeScenarioInfo" class="completeScenarioBox"></div>
+  <button class="completePrimary" onclick="retryGame()">🐉 もう一狩り行く！</button>
+  <button class="secondaryButton" onclick="homeGame()">🏠 ホームに戻る</button>
+ </div>
+</div>
+
+<div id="homeOverlay" class="overlay">
+ <div class="overlayCard">
+  <div class="overlayTitle">🐲 HUNT!</div>
+  <p style="font-size:20px;font-weight:bold;color:#ffd36b">もう一狩り行く？</p>
+  <p>モンスターバトルスロット</p>
+  <p>リールを回して役を揃え、モンスターを討伐しよう！</p>
+  <button class="homePrimary" onclick="startGame()">🐉 狩りに出発する！</button>
+ </div>
+</div>
+
+<script>
+const SYMBOLS=["🗡️","⚔️","☠️","🪤","💪","🌈"];
+
+const ROLE_PROBABILITIES=[
+ {role:"🗡️",weight:25},
+ {role:"⚔️",weight:22.8},
+ {role:"MISS",weight:30},
+ {role:"☠️",weight:7},
+ {role:"🪤",weight:7},
+ {role:"💪",weight:7},
+ {role:"🌈",weight:1.2}
+];
+
+const LINES=[[0,1,2],[3,4,5],[6,7,8],[0,4,8],[2,4,6]];
+
+const MONSTERS=[
+ {name:"モケモケ",emoji:"🐑",rarity:"白",stars:5,hp:50,def:0,weak:"罠",resist:"なし",atkMin:1.5,atkMax:1.5,speed:20},
+ {name:"カチコチ",emoji:"🪨",rarity:"白",stars:4,hp:80,def:5,weak:"毒",resist:"なし",atkMin:1.5,atkMax:1.5,speed:0},
+ {name:"ラプトル",emoji:"🦖",rarity:"緑",stars:4,hp:100,def:0,weak:"罠",resist:"なし",atkMin:2.0,atkMax:2.0,speed:0},
+ {name:"グナプス",emoji:"🐊",rarity:"緑",stars:3,hp:120,def:5,weak:"毒",resist:"なし",atkMin:2.0,atkMax:2.0,speed:0},
+ {name:"イサベリ",emoji:"🦎",rarity:"緑",stars:3,hp:100,def:0,weak:"罠",resist:"なし",atkMin:2.0,atkMax:2.0,speed:20},
+ {name:"ブリトラ",emoji:"🐉",rarity:"赤",stars:4,hp:120,def:0,weak:"罠",resist:"なし",atkMin:1.5,atkMax:1.5,speed:50},
+ {name:"イグニス",emoji:"🔥",rarity:"赤",stars:3,hp:80,def:0,weak:"なし",resist:"なし",atkMin:2.5,atkMax:2.5,speed:0},
+ {name:"カルデラ",emoji:"🌋",rarity:"赤",stars:2,hp:150,def:8,weak:"毒",resist:"なし",atkMin:2.0,atkMax:2.0,speed:0},
+ {name:"アルミス",emoji:"🐇",rarity:"金",stars:5,hp:20,def:0,weak:"なし",resist:"なし",atkMin:0.5,atkMax:0.5,speed:0},
+ {name:"セリオン",emoji:"🦁",rarity:"金",stars:4,hp:120,def:0,weak:"なし",resist:"なし",atkMin:1.5,atkMax:1.5,speed:0},
+ {name:"ユニコン",emoji:"🦄",rarity:"虹",stars:5,hp:50,def:0,weak:"なし",resist:"なし",atkMin:1.5,atkMax:1.5,speed:0},
+ {name:"ノワール",emoji:"🖤",rarity:"黒（特殊）",stars:1,hp:200,def:8,weak:"必殺技",resist:"毒",atkMin:2.5,atkMax:2.5,speed:0}
+];
+
+const SCENARIOS=[
+ {name:"骨折り損",colors:["白","白","緑","赤","黒","白","白","黒"]},
+ {name:"小さな実り",colors:["白","金","白","緑","白","緑","白","金"]},
+ {name:"最後の災禍",colors:["緑","白","赤","白","緑","赤","金","黒"]},
+ {name:"追撃",colors:["白","白","緑","赤","赤","白","緑","金"]},
+ {name:"最後の大物",colors:["緑","白","赤","白","緑","赤","金","赤"]},
+ {name:"黄金の寄り道",colors:["金","緑","赤","金","白","白","緑","赤"]},
+ {name:"逆襲の竜王",colors:["金","黒","金","金","金","金","金","金"]},
+ {name:"最強の黒",colors:["黒","金","金","金","金","金","金","金"]},
+ {name:"黒門番",colors:["白","白","緑","赤","黒","金","金","虹"]},
+ {name:"虹の凱旋",colors:["緑","白","赤","白","緑","赤","金","虹"]},
+ {name:"折り返し",colors:["緑","赤","金","虹","赤","緑","白","白"]},
+ {name:"難所の先へ",colors:["白","金","赤","黒","白","緑","金","虹"]},
+ {name:"もう一花",colors:["緑","赤","金","虹","金","赤","白","緑"]},
+ {name:"ギャンブラー",colors:["金","黒","金","黒","虹","黒","虹","金"]},
+ {name:"大物街道",colors:["赤","赤","金","赤","赤","赤","虹","金"]}
+];
+
+const COLOR_PROBABILITIES=[
+ {color:"白",weight:50},
+ {color:"緑",weight:20},
+ {color:"赤",weight:10},
+ {color:"金",weight:10},
+ {color:"黒",weight:10}
+];
+
+const COLOR_EMOJI={"白":"⚪","緑":"🟢","赤":"🔴","金":"🟡","黒":"⚫","虹":"🌈"};
+
+const $=id=>document.getElementById(id);
+const randomItem=a=>a[Math.floor(Math.random()*a.length)];
+const randomInt=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+
+let playerHP=5,playerMaxHP=5;
+let monsterHP=100,monsterMaxHP=100;
+let monsterIndex=0,hunts=0;
+let busy=false,gameEnded=true;
+let attackUp=false,poisonTurns=0,trapTurns=0,poisonDamage=0;
+let trapActiveAtSpinStart=false;
+let board=Array.from({length:9},()=>"🗡️");
+let spinTimer=null,effectTimers=[];
+
+let activeScenario=null;
+let scenarioBattleIndex=0;
+let firstBattle=true;
+let observedScenarioColors=[];
+let scenarioCandidates=[];
+let scenarioListOpen=false;
+
+let audioContext=null;
+
+const PLAYER_EVASION_RATE=20;
+
+/* 罠を引いた後、そのモンスターの回避率を0に固定する */
+let monsterSpeedOverride=null;
+
+function getMonsterSpeed(){
+ if(monsterSpeedOverride!==null)return monsterSpeedOverride;
+ return MONSTERS[monsterIndex].speed;
+}
+
+function toggleRules(){
+ $("rulesOverlay").classList.toggle("hidden");
+}
+
+function initAudio(){
+ if(!audioContext){
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(AudioCtx)audioContext=new AudioCtx();
+ }
+ if(audioContext&&audioContext.state==="suspended")audioContext.resume();
+}
+
+function tone(freq,duration=0.12,type="sine",volume=0.05,delay=0){
+ if(!audioContext)return;
+ const start=audioContext.currentTime+delay;
+ const osc=audioContext.createOscillator();
+ const gain=audioContext.createGain();
+ osc.type=type;
+ osc.frequency.setValueAtTime(freq,start);
+ gain.gain.setValueAtTime(0.0001,start);
+ gain.gain.exponentialRampToValueAtTime(volume,start+0.012);
+ gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+ osc.connect(gain);
+ gain.connect(audioContext.destination);
+ osc.start(start);
+ osc.stop(start+duration+0.03);
+}
+
+function sfx(name){
+ initAudio();
+ if(!audioContext)return;
+
+ if(name==="spin"){
+  tone(240,.12,"sawtooth",.035);
+  tone(330,.12,"sawtooth",.025,.08);
+ }else if(name==="stop"){
+  tone(500,.08,"square",.035);
+ }else if(name==="match"){
+  tone(660,.12,"triangle",.05);
+  tone(880,.16,"triangle",.05,.1);
+ }else if(name==="attack"){
+  tone(180,.1,"sawtooth",.06);
+  tone(100,.16,"triangle",.05,.06);
+ }else if(name==="dual"){
+  tone(520,.07,"sawtooth",.045);
+  tone(350,.07,"sawtooth",.045,.09);
+  tone(520,.07,"sawtooth",.045,.18);
+ }else if(name==="poison"){
+  tone(220,.18,"sawtooth",.035);
+  tone(160,.22,"sine",.045,.12);
+ }else if(name==="trap"){
+  tone(700,.08,"square",.035);
+  tone(1050,.1,"square",.04,.08);
+ }else if(name==="buff"){
+  tone(440,.1,"triangle",.04);
+  tone(660,.1,"triangle",.04,.1);
+  tone(880,.16,"triangle",.05,.2);
+ }else if(name==="special"){
+  tone(180,.2,"sawtooth",.045);
+  tone(440,.18,"triangle",.05,.12);
+  tone(880,.28,"sine",.06,.24);
+ }else if(name==="hurt"){
+  tone(150,.16,"sawtooth",.05);
+  tone(90,.22,"triangle",.05,.12);
+ }else if(name==="win"){
+  tone(523,.15,"triangle",.055);
+  tone(659,.15,"triangle",.055,.15);
+  tone(784,.22,"triangle",.06,.3);
+  tone(1047,.35,"triangle",.06,.48);
+ }else if(name==="lose"){
+  tone(440,.2,"triangle",.05);
+  tone(330,.22,"triangle",.05,.2);
+  tone(220,.38,"sawtooth",.045,.4);
+ }
+}
+
+function chooseMonsterColor(){
+ let roll=Math.random()*100,total=0;
+ for(const item of COLOR_PROBABILITIES){
+  total+=item.weight;
+  if(roll<total)return item.color;
+ }
+ return "白";
+}
+
+function pickMonsterByColor(color,previousIndex=-1){
+ const candidates=MONSTERS
+  .map((monster,index)=>({monster,index}))
+  .filter(item=>{
+   const rarity=item.monster.rarity==="黒（特殊）"?"黒":item.monster.rarity;
+   return rarity===color&&item.index!==previousIndex;
+  });
+
+ if(candidates.length===0){
+  const fallback=MONSTERS
+   .map((monster,index)=>({monster,index}))
+   .filter(item=>{
+    const rarity=item.monster.rarity==="黒（特殊）"?"黒":item.monster.rarity;
+    return rarity===color;
+   });
+  if(fallback.length===0)return 0;
+  return randomItem(fallback).index;
+ }
+ return randomItem(candidates).index;
+}
+
+function chooseRole(){
+ let roll=Math.random()*100,total=0;
+ for(const item of ROLE_PROBABILITIES){
+  total+=item.weight;
+  if(roll<total)return item.role;
+ }
+ return "MISS";
+}
+
+function randomBoard(){
+ return Array.from({length:9},()=>randomItem(SYMBOLS));
+}
+
+function getMatchingLines(b){
+ return LINES.filter(line=>{
+  const a=b[line[0]];
+  return a===b[line[1]]&&a===b[line[2]];
+ });
+}
+
+function generateBoard(role){
+ if(role==="MISS"){
+  for(let i=0;i<50000;i++){
+   const candidate=randomBoard();
+   if(getMatchingLines(candidate).length===0)return candidate;
+  }
+  return ["🗡️","⚔️","☠️","🪤","💪","🌈","⚔️","🗡️","🪤"];
+ }
+
+ for(let i=0;i<50000;i++){
+  const candidate=randomBoard();
+  const line=randomItem(LINES);
+  line.forEach(pos=>candidate[pos]=role);
+  const matches=getMatchingLines(candidate);
+  if(matches.length===1&&matches[0].every(pos=>candidate[pos]===role))return candidate;
+ }
+ return [role,role,role,"⚔️","☠️","🪤","💪","🌈","🗡️"];
+}
+
+function renderBoard(){
+ for(let col=0;col<3;col++){
+  const cells=$("reel"+col).querySelectorAll(".symbol");
+  for(let row=0;row<3;row++){
+   cells[row].textContent=board[row*3+col];
+  }
+ }
+}
+
+function renderStatus(){
+ const m=MONSTERS[monsterIndex];
+
+ $("huntCount").textContent=hunts+"体";
+ $("playerHPText").textContent=Number(playerHP.toFixed(1))+" / "+playerMaxHP;
+ $("monsterHPShort").textContent=Math.max(0,monsterHP)+" / "+monsterMaxHP;
+ $("monsterHPText").textContent="HP "+Math.max(0,monsterHP)+" / "+monsterMaxHP;
+ $("monsterHPBar").style.width=Math.max(0,monsterHP/monsterMaxHP*100)+"%";
+
+ const full=Math.floor(Math.max(0,playerHP));
+ const half=playerHP-full;
+
+ $("playerHearts").textContent=
+  "❤️".repeat(full)+
+  (half>0?"💔":"")+
+  "🖤".repeat(Math.max(0,playerMaxHP-full-(half>0?1:0)));
+
+ $("playerStatus").textContent=
+  (attackUp?"💪 攻撃力UP中！ 次の双剣まで有効 ":"")+
+  (poisonTurns>0?"☠️ 毒残り"+poisonTurns+"回 ":"")+
+  (trapTurns>0?"⚡ 罠発動中・残り"+trapTurns+"回":"");
+
+ $("monsterName").textContent=m.name;
+
+ const art=$("monsterArt");
+ const designs={
+  "モケモケ":{body:"#f4f0df",dark:"#b8b0a0",horn:"#fff5cc",eye:"#332b28"},
+  "カチコチ":{body:"#9aa6b8",dark:"#566174",horn:"#dce4ee",eye:"#172033"},
+  "ラプトル":{body:"#64d66f",dark:"#238344",horn:"#d6ff9c",eye:"#fff0a8"},
+  "グナプス":{body:"#65b6a0",dark:"#286b62",horn:"#b8e8cf",eye:"#ffed9c"},
+  "イサベリ":{body:"#c5df72",dark:"#668a3c",horn:"#fff0a8",eye:"#392c23"},
+  "ブリトラ":{body:"#d94b45",dark:"#76252e",horn:"#ffd36b",eye:"#fff5a8"},
+  "イグニス":{body:"#ff7b35",dark:"#b62b22",horn:"#ffe27a",eye:"#fff9db"},
+  "カルデラ":{body:"#b56b4c",dark:"#633b3b",horn:"#f2bd86",eye:"#ffe9a1"},
+  "アルミス":{body:"#f5e7dc",dark:"#d9a8b8",horn:"#fff7f2",eye:"#d84a72"},
+  "セリオン":{body:"#e8bd51",dark:"#9a632b",horn:"#fff0a1",eye:"#fff7d0"},
+  "ユニコン":{body:"#dba6ff",dark:"#7752c7",horn:"#fff9a1",eye:"#67f4ff"},
+  "ノワール":{body:"#393342",dark:"#111018",horn:"#a79abf",eye:"#ff334f"}
+ };
+
+ const d=designs[m.name];
+
+ if(art&&d){
+  art.style.filter="drop-shadow(0 0 10px "+d.horn+")";
+
+  const body=art.querySelector('ellipse[rx="54"]');
+  if(body){
+   body.setAttribute("fill",d.body);
+   body.setAttribute("stroke",d.dark);
+  }
+
+  art.querySelectorAll("path").forEach(el=>el.setAttribute("stroke",d.dark));
+
+  art.querySelectorAll("circle").forEach(el=>{
+   if(el.getAttribute("r")==="6")el.setAttribute("fill",d.eye);
+  });
+ }
+
+ const weakText=m.weak==="なし"?"なし":m.weak;
+ const resistText=m.resist&&m.resist!=="なし"?"　抵抗："+m.resist:"";
+ $("monsterInfo").textContent=
+  "レアリティ："+m.rarity+"　"+
+  ("⭐".repeat(m.stars))+
+  "　防御 "+m.def+"　弱点："+weakText+resistText+
+  "　素早さ "+getMonsterSpeed()+"%";
+}
+
+function setMessage(s){
+ $("message").textContent=s;
+}
+
+function clearEffects(){
+ effectTimers.forEach(clearTimeout);
+ effectTimers=[];
+ $("monsterEffect").innerHTML="";
+}
+
+function addEffect(className,text=""){
+ const el=document.createElement("div");
+ el.className=className;
+ el.textContent=text;
+ $("monsterEffect").appendChild(el);
+ effectTimers.push(setTimeout(()=>el.remove(),className==="dodgeBanner"?2300:1300));
+ return el;
+}
+
+function showDamage(amount,label=""){
+ const el=addEffect("damageText",(label?label+" ":"")+"-"+amount);
+ el.style.color=amount>=100?"#fff6a1":"#ffffff";
+}
+
+function monsterHitAnimation(){
+ const m=$("monster");
+ m.style.animation="none";
+ void m.offsetWidth;
+ m.style.animation="monsterHit .35s ease-out";
+}
+
+function showSlash(second=false){
+ addEffect("slashEffect"+(second?" second":""));
+ monsterHitAnimation();
+}
+
+function showPoisonVisual(){
+ addEffect("poisonCloud");
+ $("monster").style.filter="drop-shadow(0 0 18px #c044ff) hue-rotate(55deg)";
+}
+
+function showElectricVisual(){
+ addEffect("electricEffect");
+ $("monster").style.filter="drop-shadow(0 0 18px #55f5ff)";
+}
+
+function showSpecialVisual(){
+ addEffect("specialEffect");
+ addEffect("effectText","必殺！");
+ monsterHitAnimation();
+}
+
+function showDodge(){
+ addEffect("dodgeBanner","避けた！");
+ sfx("stop");
+}
+
+function updateScenarioCandidates(){
+ if(!observedScenarioColors.length){
+  scenarioCandidates=[];
+  return;
+ }
+
+ scenarioCandidates=SCENARIOS.filter(s=>
+  observedScenarioColors.every((color,index)=>s.colors[index]===color)
+ );
+}
+
+function resetWinScenarioDisplay(){
+ $("winScenarioInfo").innerHTML="";
+ $("winScenarioInfo").classList.add("hidden");
+ $("scenarioToggleButton").classList.remove("hidden");
+ $("scenarioToggleButton").textContent="📜 シナリオを表示";
+ scenarioListOpen=false;
+}
+
+function toggleScenarioList(){
+ const box=$("winScenarioInfo");
+
+ if(box.classList.contains("hidden")){
+  if(!box.innerHTML.trim())renderScenarioCandidates();
+  box.classList.remove("hidden");
+  scenarioListOpen=true;
+  $("scenarioToggleButton").textContent="📜 シナリオを閉じる";
+ }else{
+  box.classList.add("hidden");
+  scenarioListOpen=false;
+  $("scenarioToggleButton").textContent="📜 シナリオを表示";
+ }
+}
+
+function renderScenarioCandidates(){
+ const box=$("winScenarioInfo");
+ box.innerHTML="";
+
+ const list=document.createElement("div");
+ list.className="scenarioList";
+
+ const title=document.createElement("div");
+ title.className="scenarioListTitle";
+ title.textContent="📜 シナリオ候補";
+ list.appendChild(title);
+
+ const hint=document.createElement("div");
+ hint.className="scenarioHint";
+ hint.textContent="これまでに戦った色と一致する候補だけを表示中。本当に抽選されたシナリオはまだ秘密！";
+ list.appendChild(hint);
+
+ if(scenarioCandidates.length===0){
+  const empty=document.createElement("div");
+  empty.className="scenarioHint";
+  empty.textContent="この条件に合うシナリオはありません。";
+  list.appendChild(empty);
+ }else{
+  const count=document.createElement("div");
+  count.className="scenarioHint";
+  count.textContent="残り候補："+scenarioCandidates.length+"種類";
+  list.appendChild(count);
+
+  scenarioCandidates.forEach((scenario,index)=>{
+   const card=document.createElement("div");
+   card.className="scenarioCandidate";
+
+   const name=document.createElement("div");
+   name.className="scenarioCandidateName";
+   name.textContent=(index+1)+". "+scenario.name;
+   card.appendChild(name);
+
+   const route=document.createElement("div");
+   route.className="scenarioRoute";
+
+   scenario.colors.forEach((color,i)=>{
+    const cell=document.createElement("div");
+    cell.className="routeCell";
+
+    const round=document.createElement("strong");
+    round.textContent=(i+1)+"戦目";
+    cell.appendChild(round);
+
+    const colorText=document.createElement("div");
+    colorText.className="routeColor";
+    colorText.textContent=(COLOR_EMOJI[color]||"❔")+" "+color;
+    cell.appendChild(colorText);
+
+    if(i<observedScenarioColors.length)cell.style.border="1px solid #68c98a";
+    route.appendChild(cell);
+   });
+
+   card.appendChild(route);
+   list.appendChild(card);
+  });
+ }
+
+ box.appendChild(list);
+}
+
+function renderFinalScenario(){
+ const box=$("winScenarioInfo");
+ box.innerHTML="";
+
+ const panel=document.createElement("div");
+ panel.className="scenarioFinal";
+
+ const title=document.createElement("div");
+ title.className="scenarioFinalTitle";
+ title.textContent="🎉 シナリオ完全公開！";
+ panel.appendChild(title);
+
+ const name=document.createElement("div");
+ name.className="scenarioRevealName";
+ name.textContent="「"+activeScenario.name+"」";
+ panel.appendChild(name);
+
+ const message=document.createElement("div");
+ message.style.cssText="font-size:13px;text-align:center;margin-bottom:10px";
+ message.textContent="全8戦のルートを踏破した！";
+ panel.appendChild(message);
+
+ const route=document.createElement("div");
+ route.className="scenarioRoute";
+
+ activeScenario.colors.forEach((color,i)=>{
+  const cell=document.createElement("div");
+  cell.className="routeCell";
+  cell.style.border="1px solid #bd8e36";
+
+  const round=document.createElement("strong");
+  round.textContent=(i+1)+"戦目";
+  cell.appendChild(round);
+
+  const colorText=document.createElement("div");
+  colorText.className="routeColor";
+  colorText.textContent=(COLOR_EMOJI[color]||"❔")+" "+color;
+  cell.appendChild(colorText);
+
+  route.appendChild(cell);
+ });
+
+ panel.appendChild(route);
+ box.appendChild(panel);
+ box.classList.remove("hidden");
+ $("scenarioToggleButton").classList.add("hidden");
+}
+
+function selectScenarioForFirstMonster(){
+ const monster=MONSTERS[monsterIndex];
+ const color=monster.rarity==="黒（特殊）"?"黒":monster.rarity;
+
+ observedScenarioColors=[color];
+ updateScenarioCandidates();
+
+ if(scenarioCandidates.length===0){
+  activeScenario=null;
+  scenarioBattleIndex=0;
+  return null;
+ }
+
+ activeScenario=randomItem(scenarioCandidates);
+ scenarioBattleIndex=0;
+ return activeScenario;
+}
+
+async function damageMonster(rawDamage,label="",visual="slash",damageMultiplier=1){
+ if(gameEnded)return;
+
+ const m=MONSTERS[monsterIndex];
+ const normalDamage=Math.max(0,Math.floor(rawDamage-m.def));
+ const damage=Math.max(0,Math.floor(normalDamage*damageMultiplier));
+
+ if(visual==="slash")showSlash();
+ if(visual==="dual")showSlash(Math.random()<0.5);
+ if(visual==="special")showSpecialVisual();
+
+ if(visual==="poison"){
+  showPoisonVisual();
+  addEffect("effectText","毒ダメージ！");
+ }
+
+ sfx(visual==="special"?"special":
+     visual==="poison"?"poison":
+     visual==="dual"?"dual":"attack");
+
+ monsterHP=Math.max(0,monsterHP-damage);
+ showDamage(damage,label);
+ renderStatus();
+
+ if(damage===0)setMessage("防御力が高く、ダメージを与えられない！");
+
+ await sleep(360);
+
+ if(monsterHP<=0&&!gameEnded)winGame();
+}
+
+function winGame(){
+ if(gameEnded)return;
+
+ gameEnded=true;
+ busy=false;
+ hunts++;
+ sfx("win");
+ renderStatus();
+
+ $("winOverlay").classList.add("hidden");
+ $("completeOverlay").classList.add("hidden");
+ $("loseOverlay").classList.add("hidden");
+
+ resetWinScenarioDisplay();
+
+ $("winTitle").textContent="🏆 WIN!";
+ $("winText").textContent=MONSTERS[monsterIndex].name+"を討伐した！";
+ $("nextButton").classList.remove("hidden");
+ $("finishButton").classList.remove("hidden");
+
+ if(firstBattle&&!activeScenario){
+  firstBattle=false;
+  const selected=selectScenarioForFirstMonster();
+
+  if(selected){
+   $("winText").textContent=MONSTERS[monsterIndex].name+"を討伐！次の展開を推理しよう。";
+   $("scenarioToggleButton").classList.remove("hidden");
+   $("scenarioToggleButton").disabled=false;
+   renderScenarioCandidates();
+   $("winScenarioInfo").classList.add("hidden");
+   $("nextButton").textContent="次のモンスターを狩りに行く";
+  }else{
+   $("scenarioToggleButton").classList.add("hidden");
+   $("winText").textContent="討伐成功！この色から始まるシナリオはありません。";
+   $("nextButton").textContent="次のモンスターを狩りに行く";
+  }
+ }else if(activeScenario&&scenarioBattleIndex===7){
+  renderCompleteScreen();
+  return;
+ }else if(activeScenario){
+  $("winText").textContent=(scenarioBattleIndex+1)+"戦目クリア！候補シナリオを確認してみよう。";
+  $("scenarioToggleButton").classList.remove("hidden");
+  $("scenarioToggleButton").disabled=false;
+  renderScenarioCandidates();
+  $("winScenarioInfo").classList.add("hidden");
+  $("nextButton").textContent="次のモンスターを狩りに行く";
+ }else{
+  $("scenarioToggleButton").classList.add("hidden");
+  $("nextButton").textContent="次のモンスターを狩りに行く";
+ }
+
+ $("winOverlay").classList.remove("hidden");
+ $("spinButton").disabled=true;
+}
+
+function renderCompleteScreen(){
+ if(!activeScenario)return;
+
+ $("winOverlay").classList.add("hidden");
+ $("loseOverlay").classList.add("hidden");
+ $("completeOverlay").classList.remove("hidden");
+
+ const box=$("completeScenarioInfo");
+ box.innerHTML="";
+
+ const label=document.createElement("div");
+ label.className="completeScenarioLabel";
+ label.textContent="📜 今回のシナリオは……";
+ box.appendChild(label);
+
+ const name=document.createElement("div");
+ name.className="completeScenarioName";
+ name.textContent="「"+activeScenario.name+"」";
+ box.appendChild(name);
+
+ const route=document.createElement("div");
+ route.className="completeRoute";
+
+ activeScenario.colors.forEach((color,i)=>{
+  const cell=document.createElement("div");
+  cell.className="routeCell";
+
+  const round=document.createElement("strong");
+  round.textContent=(i+1)+"戦目";
+  cell.appendChild(round);
+
+  const colorText=document.createElement("div");
+  colorText.className="routeColor";
+  colorText.textContent=(COLOR_EMOJI[color]||"❔")+" "+color;
+  cell.appendChild(colorText);
+
+  route.appendChild(cell);
+ });
+
+ box.appendChild(route);
+ $("spinButton").disabled=true;
+}
+
+function loseGame(){
+ if(gameEnded)return;
+
+ gameEnded=true;
+ busy=false;
+ sfx("lose");
+
+ const lostScenario=activeScenario;
+ const lostRoute=lostScenario?lostScenario.colors.slice():[];
+
+ $("loseText").textContent="力尽きてしまった……！";
+
+ const box=$("loseScenarioInfo");
+ box.innerHTML="";
+
+ if(lostScenario){
+  box.classList.remove("hidden");
+
+  const title=document.createElement("div");
+  title.className="loseScenarioTitle";
+  title.textContent="📜 今回のシナリオは……";
+  box.appendChild(title);
+
+  const name=document.createElement("div");
+  name.className="loseScenarioName";
+  name.textContent="「"+lostScenario.name+"」";
+  box.appendChild(name);
+
+  const routeTitle=document.createElement("div");
+  routeTitle.style.cssText="font-size:12px;color:#cbd6eb;margin:10px 0 5px";
+  routeTitle.textContent="全8戦のルート";
+  box.appendChild(routeTitle);
+
+  const route=document.createElement("div");
+  route.className="loseScenarioRoute";
+
+  lostRoute.forEach((color,i)=>{
+   const line=document.createElement("div");
+   line.textContent=(i+1)+"戦目　"+(COLOR_EMOJI[color]||"❔")+" "+color;
+   route.appendChild(line);
+  });
+
+  box.appendChild(route);
+ }else{
+  box.classList.add("hidden");
+ }
+
+ activeScenario=null;
+ scenarioBattleIndex=0;
+ observedScenarioColors=[];
+ scenarioCandidates=[];
+ scenarioListOpen=false;
+
+ $("winScenarioInfo").innerHTML="";
+ $("scenarioProgress").classList.add("hidden");
+
+ $("completeOverlay").classList.add("hidden");
+ $("winOverlay").classList.add("hidden");
+ $("loseOverlay").classList.remove("hidden");
+ $("spinButton").disabled=true;
+}
+
+async function playerGetsHit(){
+ if(gameEnded)return;
+
+ const enemy=MONSTERS[monsterIndex];
+ const m=$("monster");
+
+ m.style.animation="none";
+ void m.offsetWidth;
+ m.style.animation="monsterAttack .55s ease-in-out";
+
+ setMessage(enemy.name+"の攻撃！");
+ await sleep(360);
+
+ if(gameEnded)return;
+
+ if(Math.random()*100<PLAYER_EVASION_RATE){
+  setMessage("💨 避けた！ "+enemy.name+"の攻撃を回避！");
+  showDodge();
+
+  await sleep(1800);
+
+  $("playerArea").style.animation="";
+  $("playerHearts").style.animation="";
+  m.style.animation="";
+  return;
+ }
+
+ sfx("hurt");
+
+ $("playerArea").style.animation="playerShake .3s";
+ $("playerHearts").style.animation="playerFlash .35s";
+ $("attackFlash").style.opacity=".22";
+
+ setTimeout(()=>$("attackFlash").style.opacity="0",120);
+
+ const damage=enemy.atkMin;
+
+ playerHP=Math.max(0,Math.round((playerHP-damage)*10)/10);
+ renderStatus();
+
+ setMessage(enemy.name+"の攻撃！ ❤️-"+damage);
+
+ await sleep(350);
+
+ $("playerArea").style.animation="";
+ $("playerHearts").style.animation="";
+
+ if(playerHP<=0)loseGame();
+}
+
+function calculatePoisonDamage(monster){
+ let multiplier=1;
+ let label="☠️ 毒";
+
+ if(monster.weak==="毒"){
+  multiplier=2;
+  label="☠️ 弱点×2";
+ }else if(monster.resist==="毒"){
+  multiplier=0.5;
+  label="☠️ 毒耐性";
+ }
+
+ const damage=Math.floor((monster.hp/8)*multiplier);
+ return {damage:Math.max(0,damage),label,multiplier};
+}
+
+async function applyPoisonTick(){
+ if(gameEnded||poisonTurns<=0)return;
+
+ const monster=MONSTERS[monsterIndex];
+
+ showPoisonVisual();
+ addEffect("effectText",monster.weak==="毒"?"弱点！毒2倍！":monster.resist==="毒"?"毒耐性！":"毒ダメージ！");
+ sfx("poison");
+
+ monsterHP=Math.max(0,monsterHP-poisonDamage);
+ showDamage(poisonDamage,"☠️");
+ renderStatus();
+
+ await sleep(360);
+
+ if(monsterHP<=0&&!gameEnded){
+  winGame();
+  return;
+ }
+
+ poisonTurns--;
+ renderStatus();
+}
+
+/*
+ 敵の回避判定。
+ 回避するのは剣・双剣だけ。
+ 毒・罠・攻撃力UP・必殺技には適用しない。
+ 罠を引いた後は getMonsterSpeed() が0になるため、
+ そのモンスターを倒すまで剣・双剣が必ず命中する。
+*/
+function monsterDodges(role){
+ if(role!=="🗡️"&&role!=="⚔️")return false;
+
+ const speed=Math.max(0,Math.min(100,getMonsterSpeed()));
+ if(speed<=0)return false;
+
+ return Math.random()*100<speed;
+}
+
+async function showMonsterDodge(){
+ setMessage("💨 "+MONSTERS[monsterIndex].name+"が攻撃を回避！");
+ addEffect("dodgeBanner","回避された！");
+ sfx("stop");
+ await sleep(1800);
+}
+
+async function applyRole(role){
+ if(gameEnded)return;
+
+ const monster=MONSTERS[monsterIndex];
+
+ if(role==="🗡️"){
+  sfx("match");
+  setMessage("🗡️ 剣が"+monster.name+"に命中！");
+  await damageMonster(randomInt(12,17),"斬撃","slash");
+
+ }else if(role==="⚔️"){
+  /*
+   双剣は連撃開始時に回避判定を1回だけ行う。
+   回避された場合は全段ミス。
+   命中した場合は2〜4回の攻撃がすべて命中する。
+  */
+  if(monsterDodges("⚔️")){
+   await showMonsterDodge();
+   return;
+  }
+
+  sfx("match");
+
+  const hits=randomInt(2,4);
+  setMessage("⚔️ 双剣の連続攻撃！");
+
+  for(let i=0;i<hits;i++){
+   if(gameEnded)break;
+
+   let damage=randomInt(8,13);
+   let label="連撃 "+(i+1)+"/"+hits;
+
+   if(attackUp){
+    damage=Math.round(damage*1.5);
+    label+=" 強化";
+   }
+
+   await damageMonster(damage,label,"dual");
+
+   if(gameEnded)break;
+   await sleep(180);
+  }
+
+  attackUp=false;
+  renderStatus();
+
+ }else if(role==="☠️"){
+  sfx("match");
+
+  const poison=calculatePoisonDamage(monster);
+  poisonDamage=poison.damage;
+  poisonTurns=3;
+
+  showPoisonVisual();
+
+  if(monster.weak==="毒"){
+   addEffect("effectText","弱点！毒ダメージ2倍！");
+   setMessage("☠️ 弱点を突いた！毒ダメージ2倍！");
+  }else if(monster.resist==="毒"){
+   addEffect("effectText","毒耐性！");
+   setMessage("☠️ "+monster.name+"は毒に抵抗！ダメージ半減！");
+  }else{
+   addEffect("effectText","毒状態！");
+   setMessage("☠️ "+monster.name+"を毒状態にした！");
+  }
+
+  await applyPoisonTick();
+
+ }else if(role==="🪤"){
+  sfx("match");
+  sfx("trap");
+
+  trapTurns=2;
+
+  /*
+   罠が揃ったら、弱点かどうかに関係なく
+   このモンスターの回避率を0％に固定する。
+   trapTurnsが0になっても解除しない。
+   次のモンスターに切り替わるとresetBattleで解除される。
+  */
+  monsterSpeedOverride=0;
+
+  showElectricVisual();
+
+  if(monster.weak==="罠"){
+   addEffect("effectText","弱点！回避率0％！");
+   setMessage("🪤 弱点を突いた！"+monster.name+"の回避率が0％になった！");
+  }else{
+   addEffect("effectText","回避率0％！");
+   setMessage("🪤 罠が命中！"+monster.name+"の回避率が0％になった！");
+  }
+
+  renderStatus();
+
+ }else if(role==="💪"){
+  sfx("match");
+  sfx("buff");
+
+  attackUp=true;
+
+  addEffect("effectText","攻撃力UP！");
+  setMessage("💪 攻撃力1.5倍！次の双剣まで持続！");
+
+  renderStatus();
+
+ }else if(role==="🌈"){
+  sfx("match");
+
+  const isWeak=monster.weak==="必殺技";
+  const multiplier=isWeak?2:1;
+
+  if(isWeak){
+   setMessage("🌈 弱点を突いた！必殺技ダメージ2倍！");
+  }else{
+   setMessage("🌈 必殺技が"+monster.name+"に直撃！");
+  }
+
+  await damageMonster(
+   randomInt(100,140),
+   isWeak?"必殺技【弱点×2】":"必殺技",
+   "special",
+   multiplier
+  );
+ }
+}
+
+function getTrapRole(){
+ const roll=Math.random()*100;
+ if(roll<49)return "🗡️";
+ if(roll<98)return "⚔️";
+ return "🌈";
+}
+
+async function animateReels(finalBoard){
+ const reels=[$("reel0"),$("reel1"),$("reel2")];
+ const stopped=[false,false,false];
+
+ reels.forEach(reel=>reel.classList.add("spinning"));
+ sfx("spin");
+
+ spinTimer=setInterval(()=>{
+  for(let col=0;col<3;col++){
+   if(stopped[col])continue;
+   const cells=reels[col].querySelectorAll(".symbol");
+   for(let row=0;row<3;row++)cells[row].textContent=randomItem(SYMBOLS);
+  }
+ },70);
+
+ for(let col=0;col<3;col++){
+  await sleep(650);
+  stopped[col]=true;
+
+  const cells=reels[col].querySelectorAll(".symbol");
+  for(let row=0;row<3;row++)cells[row].textContent=finalBoard[row*3+col];
+
+  reels[col].classList.remove("spinning");
+  sfx("stop");
+ }
+
+ clearInterval(spinTimer);
+ spinTimer=null;
+
+ board=finalBoard.slice();
+ renderBoard();
+}
+
+async function spin(){
+ if(busy||gameEnded)return;
+
+ initAudio();
+ busy=true;
+ $("spinButton").disabled=true;
+
+ clearEffects();
+
+ trapActiveAtSpinStart=trapTurns>0;
+
+ const role=trapActiveAtSpinStart?getTrapRole():chooseRole();
+ const finalBoard=generateBoard(role);
+
+ setMessage("リール回転中……");
+ $("history").textContent="";
+
+ await animateReels(finalBoard);
+
+ if(gameEnded){
+  busy=false;
+  return;
+ }
+
+ if(role==="MISS"){
+  setMessage("ハズレ！揃わなかった！");
+  await playerGetsHit();
+
+ }else if(role==="🗡️"&&monsterDodges("🗡️")){
+  /*
+   剣だけここで回避判定。
+   双剣はapplyRole内で1回だけ判定する。
+   毒・罠・攻撃力UP・必殺技は回避判定しない。
+  */
+  $("history").textContent="揃った役："+role;
+  await showMonsterDodge();
+
+ }else{
+  sfx("match");
+  $("history").textContent="揃った役："+role;
+  await applyRole(role);
+ }
+
+ if(gameEnded){
+  busy=false;
+  return;
+ }
+
+ if(role!=="☠️"&&poisonTurns>0)await applyPoisonTick();
+
+ if(gameEnded){
+  busy=false;
+  return;
+ }
+
+ if(trapActiveAtSpinStart&&trapTurns>0){
+  trapTurns--;
+
+  if(trapTurns===0){
+   /*
+    ここでは回避率0％を解除しない。
+    罠の回避率低下はモンスターを倒すまで継続。
+   */
+   $("monster").style.filter="";
+  }else{
+   showElectricVisual();
+  }
+ }
+
+ renderStatus();
+
+ if(!gameEnded){
+  setMessage("次の回転に進もう！");
+  $("spinButton").disabled=false;
+ }
+
+ busy=false;
+}
+
+function pickRandomMonster(previousIndex=-1,first=false){
+ if(first){
+  const color=chooseMonsterColor();
+  return pickMonsterByColor(color,-1);
+ }
+
+ if(MONSTERS.length<=1)return 0;
+
+ let index;
+ do{
+  index=Math.floor(Math.random()*MONSTERS.length);
+ }while(index===previousIndex);
+
+ return index;
+}
+
+function resetBattle(randomEnemy=true,first=false,forcedColor=null){
+ playerHP=playerMaxHP;
+
+ if(forcedColor){
+  monsterIndex=pickMonsterByColor(forcedColor,monsterIndex);
+ }else if(randomEnemy){
+  monsterIndex=pickRandomMonster(monsterIndex,first);
+ }
+
+ monsterMaxHP=MONSTERS[monsterIndex].hp;
+ monsterHP=monsterMaxHP;
+
+ attackUp=false;
+ poisonTurns=0;
+ trapTurns=0;
+ poisonDamage=0;
+ trapActiveAtSpinStart=false;
+
+ /* 新しいモンスターになったら罠の回避率0％効果を解除 */
+ monsterSpeedOverride=null;
+
+ busy=false;
+ gameEnded=false;
+
+ clearEffects();
+
+ $("winOverlay").classList.add("hidden");
+ $("loseOverlay").classList.add("hidden");
+ $("completeOverlay").classList.add("hidden");
+ $("homeOverlay").classList.add("hidden");
+
+ $("spinButton").disabled=false;
+
+ $("monster").style.animation="";
+ $("monster").style.filter="";
+
+ resetWinScenarioDisplay();
+
+ $("loseScenarioInfo").innerHTML="";
+ $("loseScenarioInfo").classList.add("hidden");
+
+ board=randomBoard();
+ renderBoard();
+ renderStatus();
+
+ $("scenarioProgress").classList.add("hidden");
+
+ if(activeScenario){
+  setMessage((scenarioBattleIndex+1)+"戦目！役を揃えよう！");
+ }else{
+  setMessage("狩り開始！役を揃えよう！");
+ }
+
+ $("history").textContent="";
+}
+
+function startGame(){
+ hunts=0;
+
+ activeScenario=null;
+ scenarioBattleIndex=0;
+ firstBattle=true;
+
+ observedScenarioColors=[];
+ scenarioCandidates=[];
+ scenarioListOpen=false;
+
+ $("homeOverlay").classList.add("hidden");
+ $("completeOverlay").classList.add("hidden");
+ $("loseOverlay").classList.add("hidden");
+ $("winOverlay").classList.add("hidden");
+
+ resetBattle(true,true);
+}
+
+function nextMonster(){
+ $("winOverlay").classList.add("hidden");
+
+ if(activeScenario&&scenarioBattleIndex===7){
+  activeScenario=null;
+  scenarioBattleIndex=0;
+  observedScenarioColors=[];
+  scenarioCandidates=[];
+  firstBattle=false;
+
+  resetBattle(true,false);
+  return;
+ }
+
+ if(activeScenario){
+  scenarioBattleIndex++;
+
+  const nextColor=activeScenario.colors[scenarioBattleIndex];
+
+  observedScenarioColors.push(nextColor);
+  updateScenarioCandidates();
+
+  resetBattle(false,false,nextColor);
+  return;
+ }
+
+ resetBattle(true,false);
+}
+
+function retryGame(){
+ activeScenario=null;
+ scenarioBattleIndex=0;
+ firstBattle=true;
+
+ observedScenarioColors=[];
+ scenarioCandidates=[];
+ scenarioListOpen=false;
+
+ $("completeOverlay").classList.add("hidden");
+ $("loseOverlay").classList.add("hidden");
+ $("winOverlay").classList.add("hidden");
+ $("homeOverlay").classList.add("hidden");
+
+ resetBattle(true,true);
+}
+
+function homeGame(){
+ gameEnded=true;
+ busy=false;
+
+ activeScenario=null;
+ scenarioBattleIndex=0;
+ firstBattle=true;
+
+ observedScenarioColors=[];
+ scenarioCandidates=[];
+ scenarioListOpen=false;
+
+ resetWinScenarioDisplay();
+
+ $("loseScenarioInfo").innerHTML="";
+ $("loseScenarioInfo").classList.add("hidden");
+
+ $("scenarioProgress").classList.add("hidden");
+
+ $("loseOverlay").classList.add("hidden");
+ $("winOverlay").classList.add("hidden");
+ $("completeOverlay").classList.add("hidden");
+
+ $("homeOverlay").classList.remove("hidden");
+
+ $("spinButton").disabled=true;
+ setMessage("ホーム画面");
+}
+
+function finishGame(){
+ homeGame();
+}
+
+/* 初期表示 */
+renderStatus();
+renderBoard();
+$("scenarioProgress").classList.add("hidden");
+$("spinButton").disabled=true;
+</script>
+</body>
+</html>
