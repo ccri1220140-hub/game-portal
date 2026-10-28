@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<title>初リドカジ｜GAME PORTAL</title>
+
+<style>
+:root {
+  --bg: #090b13;
+  --panel: #141827;
+  --line: #293149;
+  --text: #ffffff;
+  --muted: #9ca8c1;
+  --accent: #8b7cff;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 50% 0%, #27204e 0%, transparent 45%),
+    var(--bg);
+  font-family:
+    -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", sans-serif;
+}
+
+button, a {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ヘッダー */
+
+.header {
+  padding: 34px 20px 24px;
+  text-align: center;
+}
+
+.logo-mark {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #9285ff;
+  border-radius: 23px;
+  background: linear-gradient(145deg, #302568, #111522);
+  box-shadow: 0 0 35px #7864ff35;
+  transform: rotate(-5deg);
+}
+
+.logo-mark span {
+  font-size: 42px;
+  font-weight: 1000;
+  color: #fff;
+  text-shadow: 0 0 16px #a99cff;
+  transform: rotate(5deg);
+}
+
+.logo-title {
+  margin: 0;
+  font-size: clamp(30px, 8vw, 42px);
+  font-weight: 1000;
+  letter-spacing: 3px;
+  background: linear-gradient(
+    90deg, #ffffff, #b8aaff, #83e5ff, #ffffff
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.logo-subtitle {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 5px;
+}
+
+.header-line {
+  width: 70px;
+  height: 3px;
+  margin: 22px auto 0;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #8b7cff, #62e7ff);
+}
+
+/* メイン紹介 */
+
+.hero {
+  margin: 0 16px 30px;
+  padding: 24px 20px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #1a1e34, #10131f);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero::after {
+  content: "GAME";
+  position: absolute;
+  right: -10px;
+  bottom: -17px;
+  font-size: 75px;
+  font-weight: 1000;
+  letter-spacing: -5px;
+  color: #ffffff06;
+  pointer-events: none;
+}
+
+.hero-label {
+  color: #a99dff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.hero h2 {
+  margin: 10px 0;
+  font-size: 25px;
+  line-height: 1.5;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* ゲーム一覧 */
+
+.library {
+  padding: 0 16px 40px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin: 0 2px 18px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.section-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.game-count {
+  color: #a99dff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+/* ゲームカード */
+
+.game-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--panel);
+  transition: transform .18s, border-color .18s;
+}
+
+.game-card:active {
+  transform: scale(.97);
+}
+
+.thumbnail {
+  aspect-ratio: 1.12 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.thumbnail::before {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  filter: blur(35px);
+  opacity: .35;
+}
+
+.thumbnail.monster {
+  background: linear-gradient(145deg, #301c37, #121523);
+}
+
+.thumbnail.monster::before {
+  background: #ff473d;
+}
+
+.thumbnail.slot {
+  background: linear-gradient(145deg, #36270c, #171522);
+}
+
+.thumbnail.slot::before {
+  background: #ffb72e;
+}
+
+.thumbnail.coming {
+  background: linear-gradient(145deg, #20283b, #111522);
+}
+
+.thumbnail.coming::before {
+  background: #697dff;
+}
+
+.art {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(48px, 13vw, 74px);
+  filter: drop-shadow(0 5px 14px #0008);
+}
+
+.thumbnail.slot .art {
+  color: #ffe28a;
+  font-weight: 1000;
+  font-size: clamp(48px, 13vw, 72px);
+  text-shadow:
+    0 0 8px #ffcb46,
+    0 0 25px #ff8a21;
+}
+
+.thumbnail-tag {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  z-index: 2;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #080b13b8;
+  border: 1px solid #ffffff25;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.card-info {
+  padding: 12px;
+}
+
+.card-info h3 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 42px;
+  overflow-wrap: anywhere;
+}
+
+.card-info p {
+  margin: 5px 0 12px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+  min-height: 34px;
+}
+
+.play-button {
+  width: 100%;
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #8b7cff;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(100deg, #6753d9, #5140a8);
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.play-button .plus {
+  font-size: 19px;
+  line-height: 1;
+}
+
+.play-button.disabled {
+  background: #20263a;
+  border-color: #343d56;
+  color: #8590a8;
+}
+
+/* 下部 */
+
+.footer {
+  padding: 24px 16px 35px;
+  border-top: 1px solid #22283a;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.footer p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+/* 小さいスマホ */
+
+@media (max-width: 350px) {
+  .game-list {
+    gap: 9px;
+  }
+
+  .card-info {
+    padding: 9px;
+  }
+
+  .card-info h3 {
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo-mark">
+    <span>初</span>
+  </div>
+
+  <h1 class="logo-title">初リドカジ</h1>
+  <div class="logo-subtitle">MY GAME PORTAL</div>
+  <div class="header-line"></div>
+</header>
+
+<section class="hero">
+  <div class="hero-label">WELCOME TO MY WORLD</div>
+  <h2>遊びたいゲームを、<br>ここから始めよう。</h2>
+  <p>
+    自分だけのゲームコレクション。<br>
+    これから生まれる新作も、ここに集まる。
+  </p>
+</section>
+
+<main class="library">
+
+  <div class="section-heading">
+    <div>
+      <h2>GAME LIBRARY</h2>
+      <p>お気に入りのゲームを選ぼう</p>
+    </div>
+
+    <div class="game-count">
+      <span id="gameCount">2</span> TITLES
+    </div>
+  </div>
+
+  <div class="game-list" id="gameList">
+
+    <!-- モンスターバトルスロット -->
+
+    <article class="game-card">
+      <div class="thumbnail monster">
+        <span class="thumbnail-tag">BATTLE</span>
+        <div class="art" aria-label="ドラゴン">🐉</div>
+      </div>
+
+      <div class="card-info">
+        <h3>モンスターバトルスロット</h3>
+        <p>スロットを回して、モンスターを狩れ！</p>
+
+        <a class="play-button"
+           href="games/monbato.html">
+          <span class="plus">＋</span>
+          ゲームを始める
+        </a>
+      </div>
+    </article>
+
+    <!-- 7 RUSH SLOT -->
+
+    <article class="game-card">
+      <div class="thumbnail slot">
+        <span class="thumbnail-tag">SLOT</span>
+        <div class="art">777</div>
+      </div>
+
+      <div class="card-info">
+        <h3>7 RUSH SLOT</h3>
+        <p>目指せ777！熱狂のスロットゲーム。</p>
+
+        <a class="play-button"
+           href="games/7rush.html">
+          <span class="plus">＋</span>
+          ゲームを始める
+        </a>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-logo">初リドカジ</div>
+  <p>
+    MY GAME PORTAL<br>
+    ここから始まる、オリジナルゲームの世界。
+  </p>
+</footer>
+
+</body>
+</html>
