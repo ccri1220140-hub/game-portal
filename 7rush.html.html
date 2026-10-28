@@ -1,3 +1,5 @@
+ヴァルコード11
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -47,7 +49,6 @@ h1{
 }
 
 /* 液晶 */
-
 .lcd-panel{
   position:relative;
   overflow:hidden;
@@ -78,12 +79,7 @@ h1{
   inset:0;
   pointer-events:none;
   opacity:.12;
-  background:repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 4px,
-    #7de7ff 5px
-  )
+  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 4px,#7de7ff 5px)
 }
 
 .lcd-content{position:relative;z-index:1}
@@ -116,8 +112,6 @@ h1{
   text-shadow:0 0 12px #ffb52d
 }
 
-/* 液晶上部の777 */
-
 .seven-indicator{
   display:flex;
   justify-content:center;
@@ -148,16 +142,7 @@ h1{
 
 .seven-mark.rainbow{
   color:transparent;
-  background:linear-gradient(
-    135deg,
-    #ff3434 0%,
-    #ffad33 17%,
-    #fff05a 32%,
-    #52ff86 47%,
-    #4ceaff 62%,
-    #6584ff 77%,
-    #ed68ff 92%
-  );
+  background:linear-gradient(135deg,#ff3434 0%,#ffad33 17%,#fff05a 32%,#52ff86 47%,#4ceaff 62%,#6584ff 77%,#ed68ff 92%);
   background-clip:text;
   -webkit-background-clip:text;
   -webkit-text-stroke:1.5px #fff;
@@ -302,7 +287,6 @@ h1{
 }
 
 /* リール */
-
 .reel-stage{
   position:relative;
   width:100%;
@@ -432,18 +416,8 @@ button{
 }
 
 .info{font-size:12px;color:#b7c2d6;line-height:1.7;text-align:left}
-
 .info summary{cursor:pointer;font-weight:800;color:#fff}
-
-.log{
-  max-height:150px;
-  overflow:auto;
-  text-align:left;
-  font-size:12px;
-  color:#c9d4e7;
-  line-height:1.6
-}
-
+.log{max-height:150px;overflow:auto;text-align:left;font-size:12px;color:#c9d4e7;line-height:1.6}
 .log div{border-bottom:1px solid #ffffff12;padding:4px 0}
 
 .overlay{
@@ -469,17 +443,12 @@ button{
 }
 
 .modal h2{font-size:32px;color:var(--gold);margin:0 0 10px}
-
 .modal p{line-height:1.7;color:#e3e9f4;white-space:pre-line}
-
 .modal button{width:100%;margin-top:8px}
-
 .modal .hidden{display:none}
-
 .small{font-size:11px;color:#8e9bb3}
 
-/* ベルの獲得PTをリールに重ねて表示 */
-
+/* ベルの獲得PT表示 */
 .point-pop{
   position:absolute;
   inset:0;
@@ -510,11 +479,7 @@ button{
   letter-spacing:1px;
   white-space:nowrap;
   -webkit-text-stroke:.6px #fff0bd;
-  text-shadow:
-    3px 3px 0 #6c2700,
-    -2px -2px 0 #6c2700,
-    0 0 10px #ff7a00,
-    0 0 24px #ff9b27;
+  text-shadow:3px 3px 0 #6c2700,-2px -2px 0 #6c2700,0 0 10px #ff7a00,0 0 24px #ff9b27;
   box-shadow:0 0 20px #ff8c2466;
 }
 
@@ -526,13 +491,53 @@ button{
   100%{opacity:0;transform:scale(1.12);visibility:hidden}
 }
 
-/* 777 RUSH */
+/* ★修正：ゲーム数加算の水色ポップアップ */
+.game-pop{
+  position:absolute;
+  inset:0;
+  z-index:22;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+}
 
+.game-pop.show{
+  visibility:visible;
+  animation:gamePop 2.1s ease-out forwards;
+}
+
+.game-pop span{
+  display:inline-block;
+  padding:10px 20px;
+  border-radius:16px;
+  border:3px solid #baf7ff;
+  background:linear-gradient(180deg,#052b48f2,#07152af5);
+  color:#7de7ff;
+  font-size:clamp(48px,14vw,70px);
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:1px;
+  white-space:nowrap;
+  -webkit-text-stroke:1px #fff;
+  text-shadow:0 0 5px #fff,0 0 12px #38dfff,0 0 25px #00aaff,3px 4px 0 #064c87;
+  box-shadow:0 0 25px #20dfff88,inset 0 0 15px #20dfff33;
+}
+
+@keyframes gamePop{
+  0%{opacity:0;transform:scale(.35) translateY(18px)}
+  12%{opacity:1;transform:scale(1.2) translateY(0)}
+  22%{opacity:1;transform:scale(1)}
+  78%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.12) translateY(-8px);visibility:hidden}
+}
+
+/* 777 RUSH */
 .seven-rush-screen{
   border-color:#ffe18a;
-  background:
-    radial-gradient(ellipse at top,#6b3c9e 0%,transparent 65%),
-    linear-gradient(145deg,#25164a,#100d24 65%,#39205d);
+  background:radial-gradient(ellipse at top,#6b3c9e 0%,transparent 65%),linear-gradient(145deg,#25164a,#100d24 65%,#39205d);
   box-shadow:inset 0 0 20px #000b,0 0 18px #c06bff55
 }
 
@@ -543,8 +548,7 @@ button{
 
 .judge-message{color:#ffe18a;text-shadow:0 0 12px #ffb52d}
 
-/* プチュン暗転・巨大な虹色7 */
-
+/* プチュン演出 */
 .puchun{
   position:fixed;
   inset:0;
@@ -560,15 +564,9 @@ button{
   transition:background .25s ease;
 }
 
-.puchun.show{
-  opacity:1;
-  visibility:visible;
-}
+.puchun.show{opacity:1;visibility:visible}
 
-/* 虹色の光線と光の粒 */
-
-.puchun::before,
-.puchun::after{
+.puchun::before,.puchun::after{
   content:"";
   position:absolute;
   inset:-50%;
@@ -577,79 +575,41 @@ button{
 }
 
 .puchun::before{
-  background:repeating-conic-gradient(
-    from 0deg,
-    #ff3131 0deg 8deg,
-    #ffb52d 8deg 16deg,
-    #fff34f 16deg 24deg,
-    #38ff83 24deg 32deg,
-    #35eaff 32deg 40deg,
-    #6574ff 40deg 48deg,
-    #e64cff 48deg 56deg
-  );
+  background:repeating-conic-gradient(from 0deg,#ff3131 0deg 8deg,#ffb52d 8deg 16deg,#fff34f 16deg 24deg,#38ff83 24deg 32deg,#35eaff 32deg 40deg,#6574ff 40deg 48deg,#e64cff 48deg 56deg);
   -webkit-mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
   mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
 }
 
 .puchun::after{
   inset:0;
-  background:
-    radial-gradient(circle at 50% 50%,#ffffffee 0%,transparent 12%),
-    radial-gradient(circle at 20% 25%,#ff42caaa 0%,transparent 30%),
-    radial-gradient(circle at 80% 20%,#42eaffaa 0%,transparent 30%),
-    radial-gradient(circle at 20% 80%,#fff34faa 0%,transparent 30%),
-    radial-gradient(circle at 80% 80%,#9d4dffaa 0%,transparent 30%);
+  background:radial-gradient(circle at 50% 50%,#ffffffee 0%,transparent 12%),radial-gradient(circle at 20% 25%,#ff42caaa 0%,transparent 30%),radial-gradient(circle at 80% 20%,#42eaffaa 0%,transparent 30%),radial-gradient(circle at 20% 80%,#fff34faa 0%,transparent 30%),radial-gradient(circle at 80% 80%,#9d4dffaa 0%,transparent 30%);
 }
 
 .puchun.reveal{
-  background:radial-gradient(
-    circle at center,
-    #fff 0%,
-    #fff2a8 9%,
-    #ff4dc8 27%,
-    #5722a9 58%,
-    #080012 100%
-  );
+  background:radial-gradient(circle at center,#fff 0%,#fff2a8 9%,#ff4dc8 27%,#5722a9 58%,#080012 100%);
   animation:puchunFlash .5s ease-in-out 2;
 }
 
-.puchun.reveal::before{
-  opacity:.42;
-  animation:rainbowRays 2.5s linear infinite;
-}
-
-.puchun.reveal::after{
-  opacity:1;
-  animation:rainbowBurst 1.2s ease-out both;
-}
+.puchun.reveal::before{opacity:.42;animation:rainbowRays 2.5s linear infinite}
+.puchun.reveal::after{opacity:1;animation:rainbowBurst 1.2s ease-out both}
 
 .puchun-number{
   position:relative;
   z-index:2;
   font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(180px,65vw,360px);
+  font-size:clamp(110px,42vw,260px);
   font-weight:1000;
   font-style:italic;
   line-height:1;
+  letter-spacing:-.08em;
+  white-space:nowrap;
   color:transparent;
-  background:linear-gradient(
-    135deg,
-    #ff2222 0%,
-    #ff9e26 15%,
-    #fff34f 30%,
-    #45ff7b 45%,
-    #35eaff 60%,
-    #5871ff 75%,
-    #d947ff 90%,
-    #ff70c9 100%
-  );
+  background:linear-gradient(135deg,#ff2222 0%,#ff9e26 15%,#fff34f 30%,#45ff7b 45%,#35eaff 60%,#5871ff 75%,#d947ff 90%,#ff70c9 100%);
   background-clip:text;
   -webkit-background-clip:text;
   -webkit-text-stroke:3px #fff;
-  filter:
-    drop-shadow(0 0 10px #fff)
-    drop-shadow(0 0 30px #ff49d7)
-    drop-shadow(0 0 55px #43eaff);
+  filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 30px #ff49d7) drop-shadow(0 0 55px #43eaff);
+  text-shadow:0 0 15px #fff,0 0 35px #ffdf00,0 0 65px #ff00ff,0 0 100px #00eaff;
   opacity:0;
   transform:scale(.15) rotate(-12deg);
 }
@@ -682,44 +642,14 @@ button{
   50%{filter:brightness(1.8)}
 }
 
+.puchun.blackout{background:#000 !important}
+.puchun.blackout::before,.puchun.blackout::after{opacity:0;transition:opacity .3s ease}
+.puchun.blackout .puchun-number{opacity:0;transition:opacity .3s ease}
+
 @media(prefers-reduced-motion:reduce){
   .seven-mark.rainbow{animation:none}
-  .puchun.reveal .puchun-number{
-    animation:none;
-    opacity:1;
-    transform:scale(1)
-  }
+  .puchun.reveal .puchun-number{animation:none;opacity:1;transform:scale(1)}
 }
-
-/* 777揃い専用の派手な表示 */
-.puchun-number{
-  font-size:clamp(110px, 42vw, 260px);
-  font-weight:1000;
-  letter-spacing:-0.08em;
-  white-space:nowrap;
-  text-shadow:
-    0 0 15px #fff,
-    0 0 35px #ffdf00,
-    0 0 65px #ff00ff,
-    0 0 100px #00eaff;
-}
-
-/* 777表示後の暗転 */
-.puchun.blackout{
-  background:#000 !important;
-}
-
-.puchun.blackout::before,
-.puchun.blackout::after{
-  opacity:0;
-  transition:opacity .3s ease;
-}
-
-.puchun.blackout .puchun-number{
-  opacity:0;
-  transition:opacity .3s ease;
-}
-
 </style>
 </head>
 
@@ -795,6 +725,11 @@ button{
     <div class="point-pop" id="pointPop" aria-live="polite">
       <span id="pointPopText">+300pt</span>
     </div>
+
+    <!-- 修正：ゲーム数加算専用の水色表示 -->
+    <div class="game-pop" id="gamePop" aria-live="polite">
+      <span id="gamePopText">+2G</span>
+    </div>
   </div>
 
   <div class="line-note">
@@ -814,11 +749,8 @@ button{
 
 <details class="panel info">
   <summary>現在のルール・確率</summary>
-
   <p><b>通常ゲーム：</b>10G以内に777ptを超えるとPT特化ゾーン。777ptちょうどでは突破扱いにならない。777pt突破後も残りG数を消費してポイントを獲得する。全G数消費後に7 RUSHへ突入。ベルと7揃いのみポイント獲得。7揃いは+1000pt。</p>
-
   <p><b>設定選択確率：</b>設定1=10%／設定2=15%／設定3=30%／設定4=20%／設定5=15%／設定6=10%。</p>
-
   <p><b>通常時の設定別小役確率：</b><br>
     設定1：ベル60%／ハズレ25.5%／弱スイカ5%／弱チェリー7%／強スイカ0.5%／強チェリー1.5%／チャンス目0.4%／7揃い0.1%。<br>
     設定2：ベル60%／ハズレ22%／弱スイカ6%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
@@ -827,24 +759,17 @@ button{
     設定5：ベル60%／ハズレ17%／弱スイカ9%／弱チェリー10%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
     設定6：ベル63.5%／ハズレ10%／弱スイカ10%／弱チェリー12%／強スイカ1%／強チェリー1.5%／チャンス目1%／7揃い1%。
   </p>
-
   <p><b>ベル内部振り分け：</b><br>
     通常ベル：70%。左上・中中・右下。30pt・50ptを各50%。<br>
     強ベル：10%。上段。300ptが70%、500ptが20%、600ptが10%。<br>
     中ベル：設定1・2では20%、設定3以上では15%。中段。50ptが50%、100ptが30%、200ptが10%、300ptが10%。<br>
     特殊ベル：設定3以上で5%。下段。設定3=333pt、設定4=444pt、設定5=555pt、設定6=666pt。
   </p>
-
   <p><b>ベル停止順：</b><br>通常ベル：中→左→右<br>強ベル：右→中→左<br>中ベル：中→右→左<br>特殊ベル：右→左→中</p>
-
   <p><b>チェリー告知：</b>左リールにチェリーが止まったらチェリー系レア役確定。チェリー系レア役以外では左リールにチェリーは出ない。</p>
-
   <p><b>レア役：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12Gから抽選。</p>
-
   <p><b>7 RUSH：</b>5G固定。ベルと7揃いのポイントは通常時の2倍。ベル以外のレア役はポイント・G数加算なし。終了後は7 JUDGEへ。</p>
-
   <p><b>7 JUDGE：</b>3G固定。毎G継続抽選。ハズレの継続率は設定別、レア役は継続確定。7揃いは継続確定＋777 RUSH突入。</p>
-
   <p><b>7 JUDGE中の小役確率・ハズレ継続率：</b><br>
     設定1：ハズレ90%（継続15%）／弱スイカ3%／弱チェリー5%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
     設定2：ハズレ85%（継続20%）／弱スイカ5%／弱チェリー8%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
@@ -854,13 +779,9 @@ button{
     設定6：ハズレ65%（継続42%）／弱スイカ12%／弱チェリー12%／強スイカ0%／強チェリー1%／チャンス目0%／7揃い10%。<br>
     レア役は継続確定。7揃いは777 RUSHへ。
   </p>
-
   <p><b>777 RUSH：</b>7G固定で開始。レア役は777pt獲得＋通常時と同じG数加算。ベルと7揃いのポイントは通常時の2倍。0Gになると7 JUDGEへ戻る。</p>
-
   <p><b>通常時のゲーム数加算：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12G。</p>
-
   <p><b>RUSHゲージ：</b><br>777〜1000pt → 1000〜1500pt → 1500〜2500pt → 2500〜5000pt → 5000〜7500pt → 7500〜12500pt → 12500〜18000pt。</p>
-
   <p class="small">※設定は内部抽選です。現在の設定は画面に表示されません。</p>
 </details>
 
@@ -1062,9 +983,11 @@ let judgeContinue = false;
 let rainbowSevens = 0;
 let pointPopTimer = null;
 
+/* ゲーム数ポップアップ用 */
+let gamePopTimer = null;
+
 /* =========================
    効果音（外部音源不要）
-   iPhoneでもWeb Audio APIで再生
 ========================= */
 
 let audioContext = null;
@@ -1150,11 +1073,22 @@ function playSound(name){
       tone(1320,0.35,"triangle",0.08,0.36);
       tone(1760,0.40,"sine",0.07,0.50);
       break;
+
+    case "gameAdd":
+      tone(660,0.12,"sine",0.055);
+      tone(880,0.15,"sine",0.06,0.12);
+      tone(1175,0.20,"triangle",0.07,0.25);
+      break;
   }
 }
 
-function randInt(n){return Math.floor(Math.random()*n)}
-function pick(arr){return arr[randInt(arr.length)]}
+function randInt(n){
+  return Math.floor(Math.random()*n);
+}
+
+function pick(arr){
+  return arr[randInt(arr.length)];
+}
 
 function weighted(items){
   const available=items.filter(item=>item.weight>0);
@@ -1188,6 +1122,8 @@ function showPointPop(amount){
   const pop=$("pointPop");
   const text=$("pointPopText");
 
+  if(!pop||!text)return;
+
   if(pointPopTimer){
     clearTimeout(pointPopTimer);
     pointPopTimer=null;
@@ -1205,6 +1141,30 @@ function showPointPop(amount){
   },1500);
 }
 
+/* ゲーム数加算を大きな水色表示で知らせる */
+function showGamePop(amount){
+  const pop=$("gamePop");
+  const text=$("gamePopText");
+
+  if(!pop||!text)return;
+
+  if(gamePopTimer){
+    clearTimeout(gamePopTimer);
+    gamePopTimer=null;
+  }
+
+  pop.classList.remove("show");
+  void pop.offsetWidth;
+
+  text.textContent=`+${amount}G`;
+  pop.classList.add("show");
+
+  gamePopTimer=setTimeout(()=>{
+    pop.classList.remove("show");
+    gamePopTimer=null;
+  },1800);
+}
+
 /* 液晶上部の777を更新 */
 function updateSevenIndicators(){
   for(let i=0;i<3;i++){
@@ -1217,33 +1177,26 @@ async function playPuchun(){
   const layer = $("puchun");
   const number = layer.querySelector(".puchun-number");
 
-  // 7を表示する
   number.textContent = "7";
 
   layer.classList.remove("show", "reveal", "blackout");
   void layer.offsetWidth;
 
-  // 画面をプチュンと暗転
   layer.classList.add("show");
   playSound("puchun");
 
   await sleep(650);
 
-  // 暗闇から巨大な虹色7が出現！
   layer.classList.add("reveal");
   playSound("rainbow");
 
   await sleep(1550);
 
-  // 7を消して、画面全体を暗転
   layer.classList.add("blackout");
 
   await sleep(350);
 
-  // 次の画面へ
   layer.classList.remove("show", "reveal", "blackout");
-
-  // 次に通常の7を表示する場合に備えて戻す
   number.textContent = "7";
 }
 
@@ -1301,6 +1254,7 @@ function update(){
   }
 
   $("lcdPanel").classList.toggle("seven-rush-screen",mode==="sevenRush");
+
   $("gaugeTitle").textContent=
     mode==="sevenRush"?"777 RUSH POINT GAUGE":"POINT GAUGE";
 
@@ -1478,7 +1432,7 @@ function createBoard(role,target,fixedCells={}){
   }
 }
 
-/* 結果作成。ここではポイントを加算しない */
+/* 結果作成。ここではポイント・G数を加算しない */
 function buildOutcome(role){
   let target=null;
   let targetSymbol=null;
@@ -1665,7 +1619,6 @@ async function spinAnimation(outcome){
     reel.classList.remove("spinning");
     reel.classList.add("stopped");
 
-    /* リール停止音 */
     playSound("stop");
 
     reel.querySelectorAll(".cell").forEach(cell=>{
@@ -1824,10 +1777,11 @@ async function spin(){
   busy=true;
   spinCount++;
 
-  /* 回転開始音 */
   playSound("spin");
 
   const currentMode=mode;
+
+  /* 今回消費する1Gだけ先に減らす */
   games--;
 
   let role;
@@ -1841,15 +1795,13 @@ async function spin(){
     outcome=buildOutcome(role);
   }
 
-  /* 通常時と777 RUSH中だけレア役でゲーム数を加算 */
-  if(
-    outcome.extraGames>0&&
-    (currentMode==="normal"||currentMode==="sevenRush")
-  ){
-    games+=outcome.extraGames;
-  }
+  /*
+    ★重要な修正
+    ここでは追加ゲーム数をまだ加算しない。
+    リール停止後に演出を出してから加算する。
+  */
 
-  /* 7 RUSH中はベル以外のレア役でG数を増やさない */
+  /* 7 RUSH中はベル・7揃い以外のポイントを無効化 */
   if(currentMode==="rush"){
     outcome.extraGames=0;
 
@@ -1859,7 +1811,7 @@ async function spin(){
     }
   }
 
-  /* 777 RUSHではレア役で777pt＋通常時と同じG数加算 */
+  /* 777 RUSH中のレア役は777PT獲得 */
   if(currentMode==="sevenRush"){
     if(role!=="bell"&&role!=="miss"){
       outcome.pointGain=777;
@@ -1867,7 +1819,7 @@ async function spin(){
     }
   }
 
-  /* 7 RUSHと777 RUSHではベル・7揃いのptが2倍 */
+  /* 7 RUSHと777 RUSHではベルのポイント2倍 */
   if(
     (currentMode==="rush"||currentMode==="sevenRush")&&
     role==="bell"
@@ -1876,6 +1828,7 @@ async function spin(){
     outcome.detail=`${outcome.name}！ +${outcome.pointGain}pt（2倍）`;
   }
 
+  /* 7 RUSHの7揃いは2000PT、777 RUSHの7揃いは777PT */
   if(
     (currentMode==="rush"||currentMode==="sevenRush")&&
     role==="seven"
@@ -1897,8 +1850,10 @@ async function spin(){
     :"リール回転中…";
 
   $("detail").textContent="リール回転中…";
+
   update();
 
+  /* リール回転・停止 */
   await spinAnimation(outcome);
 
   /* レア役成立音 */
@@ -1913,12 +1868,52 @@ async function spin(){
     playSound("rare");
   }
 
+  /*
+    ★ゲーム数加算のタイミングを変更
+    777 RUSHでは、リール停止後に大きな水色の+○Gを表示。
+    表示してすぐ数字を変えず、少し待ってから加算する。
+  */
+  if(
+    currentMode==="sevenRush"&&
+    outcome.extraGames>0
+  ){
+    /* 役の結果を先に見せる */
+    $("result").textContent=outcome.name;
+    $("detail").textContent=outcome.detail;
+
+    /* 水色のゲーム数ポップアップ */
+    showGamePop(outcome.extraGames);
+    playSound("gameAdd");
+
+    /* 数字が早く変わらないように待つ */
+    await sleep(1100);
+
+    /* 演出の後にゲーム数を加算 */
+    games+=outcome.extraGames;
+
+    update();
+
+    /* 加算後も少し表示を残す */
+    await sleep(450);
+
+  }else if(
+    currentMode==="normal"&&
+    outcome.extraGames>0
+  ){
+    /*
+      通常時のG数加算は従来どおり。
+      変更対象は777 RUSH中の加算タイミングのみ。
+    */
+    games+=outcome.extraGames;
+    update();
+  }
+
   /* 全リール停止後にポイント加算 */
   if(outcome.pointGain>0){
     awardPoints(outcome.pointGain);
   }
 
-  /* ベルの獲得PTだけリール上にオーバーレイ */
+  /* ベルの獲得PTをリール上に表示 */
   if(role==="bell"&&outcome.pointGain>0){
     showPointPop(outcome.pointGain);
     playSound("points");
@@ -2006,7 +2001,6 @@ async function spin(){
     if(judgeResult==="continue"){
       judgeContinue=true;
 
-      /* 成功するたびに上部の7を左から虹色に */
       rainbowSevens=Math.min(3,rainbowSevens+1);
       updateSevenIndicators();
 
@@ -2068,8 +2062,19 @@ function reset(){
     pointPopTimer=null;
   }
 
+  if(gamePopTimer){
+    clearTimeout(gamePopTimer);
+    gamePopTimer=null;
+  }
+
   $("pointPop").classList.remove("show");
-  $("puchun").classList.remove("show","reveal");
+
+  const gamePop=$("gamePop");
+  if(gamePop){
+    gamePop.classList.remove("show");
+  }
+
+  $("puchun").classList.remove("show","reveal","blackout");
 
   mode="normal";
   games=10;
@@ -2125,6 +2130,7 @@ $("showRules").addEventListener("click",()=>{
 reset();
 
 })();
+
 </script>
 </body>
 </html>
