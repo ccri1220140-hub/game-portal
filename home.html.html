@@ -202,6 +202,22 @@ button:disabled{
   margin:9px 2px 0;
 }
 
+/* TEST FREE COINS BUTTON START */
+.test-coin-button{
+  width:auto;
+  min-height:30px;
+  margin-top:10px;
+  padding:6px 10px;
+  border:1px dashed #b9aaff;
+  border-radius:8px;
+  color:#d9d2ff;
+  background:#292344;
+  font-size:10px;
+  font-weight:800;
+  opacity:.9;
+}
+/* TEST FREE COINS BUTTON END */
+
 /* 紹介 */
 
 .hero{
@@ -609,6 +625,12 @@ button:disabled{
       PT：使用したコインの10分の1を獲得<br>
       RC：ゲーム報酬カードに保存される限定通貨
     </p>
+
+    <!-- TEST FREE COINS BUTTON START -->
+    <button type="button" class="test-coin-button" id="testFreeCoinsButton">
+      🪙 テスト用＋1000コイン
+    </button>
+    <!-- TEST FREE COINS BUTTON END -->
 
     <button class="button secondary" id="showCardsButton" style="margin-top:14px">
       🎴 カード一覧を見る
@@ -1123,6 +1145,16 @@ button:disabled{
     updateWalletDisplay();
     showToast("カードと残高を更新しました。");
   });
+
+  /* TEST FREE COINS BUTTON START */
+  $("testFreeCoinsButton").addEventListener("click", () => {
+    const wallet = getWallet();
+    wallet.coin += 1000;
+    saveWallet(wallet);
+    updateWalletDisplay();
+    showToast("テスト用に1,000コイン追加したよ！ 🪙");
+  });
+  /* TEST FREE COINS BUTTON END */
 
   /*
     ゲーム側から呼び出すための共通API。
