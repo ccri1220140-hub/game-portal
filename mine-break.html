@@ -101,7 +101,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--sky1) linear-gra
 </head>
 <body>
 <div class="app">
-  <div class="top"><a class="home" id="homeLink" href="home.html.html" aria-label="ホームに戻る">🏠</a><button class="home help" id="help" aria-label="あそびかた">?</button><button class="home help" id="snd" aria-label="音">🔊</button><div class="stats"><div class="chip"><small>COIN</small><b id="coins">0</b></div><div class="chip"><small>PT</small><b id="pts">0</b></div><div class="chip"><small>RC</small><b id="rcs">0</b></div></div></div>
+  <div class="top"><a class="home" id="homeLink" href="home_html.html" aria-label="ホームに戻る">🏠</a><button class="home help" id="help" aria-label="あそびかた">?</button><div class="stats"><div class="chip"><small>COIN</small><b id="coins">0</b></div><div class="chip"><small>PT</small><b id="pts">0</b></div><div class="chip"><small>RC</small><b id="rcs">0</b></div></div></div>
   <div class="status" id="status"></div>
   <div class="game" id="game">
     <div class="inv" id="inv"></div>
@@ -134,7 +134,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--sky1) linear-gra
   <div class="rc-date" id="rdate"></div>
   <div class="rc-val"><span id="rval">0</span> <small>RC</small></div>
   <div class="rc-msg" id="rmsg"></div>
-  <div class="rbtns"><a id="toHome" href="home.html.html">🏠 ホームに戻る</a><button id="again">もう一度</button></div>
+  <div class="rbtns"><a id="toHome" href="home_html.html">🏠 ホームに戻る</a><button id="again">もう一度</button></div>
 </div></div>
 <script>
 const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -150,32 +150,10 @@ const getCards=()=>{const c=rj(KEYS.cards,[]);return Array.isArray(c)?c:[]};
 const totalRC=()=>getCards().reduce((s,c)=>s+Math.max(0,Math.floor(+c.rc||0)),0);
 const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function addCard(v){const cards=getCards(),card={id:'card_'+rid(),sessionId:'mine_'+rid(),name:'ピッケルドロップ報酬',rc:v,date:new Date().toLocaleString('ja-JP')};cards.push(card);wj(KEYS.cards,cards);return card}
-const SP=()=>fast?.75:1.5;
-
-/* ===== サウンド（WebAudioで合成。外部ファイル不要） ===== */
-let AC=null,mute=false,NB=null;
-try{mute=localStorage.getItem('pd_mute')==='1'}catch(e){}
-function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
-function tone(f,d,type='square',v=.15,t0=0,f2){const a=ac();if(!a||mute)return;const t=a.currentTime+t0,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.03)}
-function noise(d,v=.3,fc=1000,t0=0,type='lowpass'){const a=ac();if(!a||mute)return;if(!NB){NB=a.createBuffer(1,a.sampleRate,a.sampleRate);const x=NB.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1}const t=a.currentTime+t0,s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=NB;f.type=type;f.frequency.value=fc;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(a.destination);s.start(t);s.stop(t+d+.03)}
-const SFX={
-  cue(){[523,659,784].forEach((f,i)=>tone(f,.18,'triangle',.2,i*.11))},
-  tick(){tone(1000+Math.random()*300,.05,'square',.05)},
-  ready(){[659,784,988,1319].forEach((f,i)=>tone(f,.22,'triangle',.2,i*.1));tone(1319,.5,'sine',.12,.4)},
-  hit(){noise(.07,.3,2200,0,'bandpass');tone(240,.07,'square',.07,0,120)},
-  brk(){noise(.22,.4,1000);tone(200,.2,'sawtooth',.1,0,60)},
-  boom(){noise(.8,.7,600);tone(100,.55,'sine',.45,0,30)},
-  enh(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.16,'triangle',.18,i*.07))},
-  chest(){[392,523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.2,i*.08))},
-  coin(){tone(988,.08,'square',.1);tone(1319,.25,'square',.1,.08)},
-  mult(n){tone(500+n*60,.2,'triangle',.22);tone(750+n*90,.3,'triangle',.18,.09)},
-  win(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.2,'triangle',.2,i*.12))},
-  lose(){[392,330,262].forEach((f,i)=>tone(f,.3,'triangle',.16,i*.18))}
-};
-document.addEventListener('pointerdown',()=>ac());
+const SP=()=>fast?.85:1.7;
 const wait=ms=>sleep(ms*SP());
 const BT={dirt:{hp:1,m:0},stone:{hp:2,m:.001},ore:{hp:4,m:.01},gold:{hp:5,m:.03},dia:{hp:6,m:.05},obs:{hp:7,m:.25},neth:{hp:2,m:.005},hat:{hp:4,m:0}};
-const ROWS=[[['dirt',100]],[['dirt',70],['stone',25],['hat',5]],[['stone',45],['ore',45],['hat',5],['neth',5]],[['ore',45],['gold',43],['hat',7],['neth',5]],[['gold',25],['dia',70],['neth',5]],[['gold',10],['dia',40],['obs',50]]];
+const ROWS=[[['dirt',1]],[['dirt',70],['stone',20],['hat',10]],[['stone',30],['ore',40],['hat',10],['neth',20]],[['ore',40],['gold',30],['hat',20],['neth',10]],[['gold',20],['dia',70],['neth',10]],[['gold',10],['dia',40],['obs',50]]];
 const HAT=[[.2,40],[.5,30],[.85,25],[1,4],[1.8,1]];
 const CHT=[[{m:2,c:'#4fd5e8'},45],[{m:3,c:'#4cc92f'},40],[{m:5,c:'#d83a3a'},7],[{m:8,c:'#9b4de0'},7],[{m:10,c:'rainbow'},1]];
 const PK=[{d:1,c:'#c0713f'},{d:2,c:'#aab0b6'},{d:3,c:'#ffd23a'},{d:5,c:'#47e3ea'},{d:7,c:'#4b3f4d'}];
@@ -201,53 +179,51 @@ function paint(i){const x=cells[i],e=invEl[i];e.innerHTML='';
   else if(x.k==='sbook')e.innerHTML='<span class="it em">📚</span>';
   else if(x.k==='rido')e.innerHTML='<span class="it em">🪙</span>'}
 function clearCells(){cells=Array.from({length:15},()=>({k:'miss'}));for(let i=0;i<15;i++)paint(i)}
-async function draw(){for(let i=0;i<15;i++){const k=W(ITEMS);cells[i]={k,lv:k==='pick'?W(PL):0};paint(i);if(k!=='miss'){SFX.tick();await wait(70)}else await wait(25)}}
+async function draw(){for(let i=0;i<15;i++){const k=W(ITEMS);cells[i]={k,lv:k==='pick'?W(PL):0};paint(i);if(k!=='miss')await wait(70);else await wait(25)}}
 const topR=c=>{for(let r=0;r<6;r++)if(B[r][c])return r;return -1};
 function float(t,el){const[x,y]=rel(el),f=document.createElement('div');f.className='float';f.textContent=t;f.style.left=(x-18)+'px';f.style.top=y+'px';$('#game').appendChild(f);setTimeout(()=>f.remove(),1000)}
 function dmg(c,r,d){const b=B[r][c];if(!b)return null;b.hp-=d;b.el.style.setProperty('--dmg',Math.min(1,1-Math.max(b.hp,0)/b.max+.15));b.el.firstChild.textContent=Math.max(b.hp,0);b.el.classList.remove('hit');void b.el.offsetWidth;b.el.classList.add('hit');
   if(b.hp>0)return null;B[r][c]=null;b.el.classList.add('pop');setTimeout(()=>b.el.remove(),250);
   const m=b.t==='hat'?W(HAT):BT[b.t].m;if(b.t==='hat')float('×'+m,cellEl[r][c]);rc+=bet*m;ui();return b.t}
-function openChest(c){const h=CH[c];SFX.chest();h.open=true;h.el.textContent='×'+h.m;h.el.classList.add('open');float('×'+h.m,h.el)}
-async function settle(){const op=CH.filter(h=>h.open);if(!op.length)return;const base=Math.floor(rc);rc=base;ui();st(`合計 ${base}RC`);await wait(1100);let cum=0;for(const h of op){cum+=h.m;h.el.style.outline='3px solid #ffe35a';float('×'+h.m,h.el);SFX.mult(cum);rc=base*cum;ui();st(`合計${base}RC ×${h.m}！ → ${Math.floor(rc)}RC`);await wait(900);h.el.style.outline=''}}
+function openChest(c){const h=CH[c];h.open=true;h.el.textContent='×'+h.m;h.el.classList.add('open');float('×'+h.m,h.el)}
+async function settle(){const op=CH.filter(h=>h.open);if(!op.length)return;const base=Math.floor(rc);rc=base;ui();st(`合計 ${base}RC`);await wait(1100);let cum=0;for(const h of op){cum+=h.m;h.el.style.outline='3px solid #ffe35a';float('×'+h.m,h.el);rc=base*cum;ui();st(`合計${base}RC ×${h.m}！ → ${Math.floor(rc)}RC`);await wait(900);h.el.style.outline=''}}
 const chk=()=>{for(let c=0;c<5;c++)if(topR(c)<0&&!CH[c].open)openChest(c)};
 function flash(x,y,k){const el=y>5?CH[x].el:cellEl[y][x],a=$('#game').getBoundingClientRect(),r=el.getBoundingClientRect(),s=r.width*(2*k+1),d=document.createElement('div');d.className='boom';d.textContent='💥';d.style.cssText=`left:${r.left-a.left+r.width/2-s/2}px;top:${r.top-a.top+r.height/2-s/2}px;width:${s}px;height:${s}px;font-size:${s*.6}px`;$('#game').appendChild(d);setTimeout(()=>d.remove(),350)}
-async function blast(c,r,rad){SFX.boom();flash(c,r,rad);await wait(140);let any=false;
-  for(let j=r-rad;j<=r+rad;j++)for(let i=c-rad;i<=c+rad;i++){if(i<0||i>4||j<0||j>5)continue;if(dmg(i,j,2))any=true}
-  if(any)SFX.brk();chk();await wait(140)}
+async function blast(c,r,rad){const q=[[c,r,rad]];while(q.length){const[x,y,k]=q.shift();flash(x,y,k);await wait(140);
+  for(let j=y-k;j<=y+k;j++)for(let i=x-k;i<=x+k;i++){if(i<0||i>4||j<0||j>5)continue;if(dmg(i,j,2)==='neth')q.push([i,j,1])}
+  chk();await wait(140)}}
 function mkFly(html,slot){const f=document.createElement('div');f.className='fly';f.innerHTML=html;$('#game').appendChild(f);const[x,y]=rel(slot);f.style.transform=`translate(${x-17}px,${y+6}px)`;return f}
 async function mv(f,x,y,d){const cur=f.style.transform,a=f.animate([{transform:cur},{transform:`translate(${x-17}px,${y}px)`}],{duration:d*SP(),easing:'ease-in'});await a.finished;f.style.transform=`translate(${x-17}px,${y}px)`}
 const tp=(c,r)=>{const[x,y]=rel(r>5?CH[c].el:cellEl[r][c]);return[x,y-22]};
 async function usePick(i){const c=i%5,p=PK[cells[i].lv];let r=topR(c);if(r<0)return;
   const f=mkFly(pkSvg(p.c),invEl[i]);invEl[i].innerHTML='';let[x,y]=tp(c,r);await mv(f,x,y,420);
   for(let n=0;n<p.d;n++){r=topR(c);if(r<0)break;const[nx,ny]=tp(c,r);if(ny!==y){y=ny;await mv(f,nx,ny,90)}
-    SFX.hit();const t=dmg(c,r,1);if(t)SFX.brk();if(t==='neth')await blast(c,r,1);chk();await wait(110)}
+    const t=dmg(c,r,1);if(t==='neth')await blast(c,r,1);chk();await wait(110)}
   f.remove()}
 async function useTnt(i,rad){const c=i%5;let r=topR(c);if(r<0)r=6;const sup=rad>1,f=mkFly(`<div class="it ${sup?'stnt':'tnt'}">${sup?'超TNT':'TNT'}</div>`,invEl[i]);invEl[i].innerHTML='';
   const[x,y]=tp(c,r);await mv(f,x,y,420);f.remove();await blast(c,r,rad)}
 async function execute(){
   const idx=k=>cells.map((x,i)=>x.k===k?i:-1).filter(i=>i>=0);
-  for(const k of['sbook','book'])for(const i of idx(k)){const c=i%5;for(let j=c;j<15;j+=5)if(cells[j].k==='pick'){cells[j].lv=Math.max(cells[j].lv,k==='sbook'?4:3);paint(j)}SFX.enh();float('強化!',invEl[i]);invEl[i].innerHTML='';await wait(450)}
+  for(const k of['sbook','book'])for(const i of idx(k)){const c=i%5;for(let j=c;j<15;j+=5)if(cells[j].k==='pick'){cells[j].lv=Math.max(cells[j].lv,k==='sbook'?4:3);paint(j)}float('強化!',invEl[i]);invEl[i].innerHTML='';await wait(450)}
   for(const i of idx('pick'))await usePick(i);
   for(const i of idx('tnt'))await useTnt(i,1);
   for(const i of idx('stnt'))await useTnt(i,2);
-  for(const i of idx('rido')){total++;SFX.coin();float('+1g',invEl[i]);invEl[i].innerHTML='';ui();await wait(400)}
+  for(const i of idx('rido')){total++;float('+1g',invEl[i]);invEl[i].innerHTML='';ui();await wait(400)}
 }
 async function prep(){phase='prep';{const w=getW();w.coin-=bet;w.pt+=Math.floor(bet/10);setW(w)}total=5;g=1;rc=0;$('#bets').classList.add('off');setBtn('準備中…',true);st('準備中…ブロックとツルハシを抽選');
-  genBlocks();buildStage();clearCells();ui();SFX.cue();await wait(900);await draw();await wait(400);
-  phase='ready';SFX.ready();st('準備完了！');setBtn(`合計${total}Gスタート！`,false);ui()}
+  genBlocks();buildStage();clearCells();ui();await wait(900);await draw();await wait(400);
+  phase='ready';st('準備完了！');setBtn(`合計${total}Gスタート！`,false);ui()}
 async function play(){phase='run';setBtn('実行中…',true);
   for(g=1;g<=total;g++){ui();if(g>1){st(`G${g}：抽選中`);await draw();await wait(300)}
     st(`G${g}：実行中`);await execute();await wait(250);clearCells();if(CH.every(h=>h.open))break}
   await settle();await wait(500);const pay=Math.floor(rc);phase='done';g=Math.min(g,total);const card=pay>0?addCard(pay):null;st(pay>0?`終了！ ${pay}RC獲得`:'終了！ RCなし');setBtn('もう一度',false);ui();await sleep(700);showResult(pay,card)}
-function showResult(pay,card){pay>0?SFX.win():SFX.lose();$('#rval').textContent=pay.toLocaleString('ja-JP');$('#rdate').textContent=card?card.date:new Date().toLocaleString('ja-JP');$('#rmsg').textContent=pay>0?`${pay.toLocaleString('ja-JP')}RC獲得！\nカードをホームに追加したよ`:'今回はRCを獲得できなかった…';$('#rmsg').style.whiteSpace='pre-line';$('#rcard').classList.toggle('zero',pay<=0);$('#result').hidden=false}
+function showResult(pay,card){$('#rval').textContent=pay.toLocaleString('ja-JP');$('#rdate').textContent=card?card.date:new Date().toLocaleString('ja-JP');$('#rmsg').textContent=pay>0?`${pay.toLocaleString('ja-JP')}RC獲得！\nカードをホームに追加したよ`:'今回はRCを獲得できなかった…';$('#rmsg').style.whiteSpace='pre-line';$('#rcard').classList.toggle('zero',pay<=0);$('#result').hidden=false}
 $('#go').onclick=()=>{if(phase==='idle'){if(coinNow()<bet)return;$('#mt').textContent=`${bet}コインでスタートします（PT+${Math.floor(bet/10)}）。よろしいですか？`;$('#modal').hidden=false}else if(phase==='ready')play();else if(phase==='done')idleUI()};
 $('#cancel').onclick=()=>$('#modal').hidden=true;
 $('#ok').onclick=()=>{$('#modal').hidden=true;prep()};
 $('#fast').onclick=e=>{fast=!fast;e.currentTarget.classList.toggle('on',fast);e.currentTarget.textContent=fast?'倍速 ON':'倍速 OFF'};
 $('#again').onclick=()=>{$('#result').hidden=true;idleUI()};
 $('#introOk').onclick=()=>$('#intro').hidden=true;
-$('#snd').textContent=mute?'🔇':'🔊';
-$('#snd').onclick=()=>{mute=!mute;try{localStorage.setItem('pd_mute',mute?'1':'0')}catch(e){}$('#snd').textContent=mute?'🔇':'🔊';if(!mute)SFX.coin()};
 $('#help').onclick=()=>$('#intro').hidden=false;
 $('#homeLink').onclick=e=>{if(['prep','ready','run'].includes(phase)&&!confirm('ゲーム中です。今戻ると今回のRCは受け取れません。戻りますか？'))e.preventDefault()};
 addEventListener('pageshow',()=>{if(phase==='idle')idleUI();else ui()});
