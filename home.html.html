@@ -202,22 +202,6 @@ button:disabled{
   margin:9px 2px 0;
 }
 
-/* TEST FREE COINS BUTTON START */
-.test-coin-button{
-  width:auto;
-  min-height:30px;
-  margin-top:10px;
-  padding:6px 10px;
-  border:1px dashed #b9aaff;
-  border-radius:8px;
-  color:#d9d2ff;
-  background:#292344;
-  font-size:10px;
-  font-weight:800;
-  opacity:.9;
-}
-/* TEST FREE COINS BUTTON END */
-
 /* 紹介 */
 
 .hero{
@@ -443,6 +427,30 @@ button:disabled{
   min-height:42px;
 }
 
+.game-card.wide{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.4fr);
+}
+
+.game-card.wide .thumbnail{
+  aspect-ratio:auto;
+  min-height:150px;
+}
+
+.thumbnail.merge{
+  background:linear-gradient(145deg,#173a2a,#121523);
+}
+
+.thumbnail.merge::before{
+  background:#5fe39a;
+}
+
+a.button.merge-start{
+  font-size:11px;
+  min-height:42px;
+}
+
 /* カード一覧 */
 
 .card-list{
@@ -626,12 +634,6 @@ button:disabled{
       RC：ゲーム報酬カードに保存される限定通貨
     </p>
 
-    <!-- TEST FREE COINS BUTTON START -->
-    <button type="button" class="test-coin-button" id="testFreeCoinsButton">
-      🪙 テスト用＋1000コイン
-    </button>
-    <!-- TEST FREE COINS BUTTON END -->
-
     <button class="button secondary" id="showCardsButton" style="margin-top:14px">
       🎴 カード一覧を見る
     </button>
@@ -656,7 +658,7 @@ button:disabled{
         <h2>GAME LIBRARY</h2>
         <p>料金を選んでゲームを始めよう</p>
       </div>
-      <div class="game-count">2 TITLES</div>
+      <div class="game-count">3 TITLES</div>
     </div>
 
     <div class="game-list">
@@ -712,6 +714,28 @@ button:disabled{
           <button class="button game-start" data-game="rush">
             🎰 ゲームを始める
           </button>
+        </div>
+      </article>
+
+
+      <!-- マージガーデン（入場料なし。報酬コインが財布に入る） -->
+
+      <article class="game-card wide">
+        <div class="thumbnail merge">
+          <span class="thumbnail-tag">PUZZLE</span>
+          <div class="art" aria-label="花">🌸</div>
+        </div>
+
+        <div class="card-info">
+          <h3>マージガーデン</h3>
+          <p>育てて合成してオーダーを届けよう。報酬のコインはここに反映！</p>
+
+          <span class="price-label">入場料金</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
+
+          <a class="button merge-start" href="merge_garden.html">
+            🌱 あそぶ
+          </a>
         </div>
       </article>
 
@@ -1146,16 +1170,6 @@ button:disabled{
     showToast("カードと残高を更新しました。");
   });
 
-  /* TEST FREE COINS BUTTON START */
-  $("testFreeCoinsButton").addEventListener("click", () => {
-    const wallet = getWallet();
-    wallet.coin += 1000;
-    saveWallet(wallet);
-    updateWalletDisplay();
-    showToast("テスト用に1,000コイン追加したよ！ 🪙");
-  });
-  /* TEST FREE COINS BUTTON END */
-
   /*
     ゲーム側から呼び出すための共通API。
 
@@ -1240,6 +1254,19 @@ button:disabled{
       renderCards();
     }
   };
+
+  // ゲームから戻ってきた時・他タブで更新された時に残高を自動反映
+  function syncFromStorage() {
+    updateWalletDisplay();
+    renderCards();
+  }
+
+  window.addEventListener("pageshow", syncFromStorage);
+  window.addEventListener("focus", syncFromStorage);
+  window.addEventListener("storage", syncFromStorage);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) syncFromStorage();
+  });
 
   // 起動時
   updateWalletDisplay();
