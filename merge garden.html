@@ -2,39 +2,41 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>マージガーデン</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#eef3e2;--panel:#fbfdf5;--cell:#dfe8cb;--ink:#26331f;--sub:#6b7a5c;--acc:#e0637f;--acc2:#3f8f5b;--line:#c9d6b0;--sel:#f2b632;
+--bw:max(220px,min(416px,calc(100vw - 24px),calc(100dvh - 272px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))));
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17201a;--panel:#212d25;--cell:#2d3d32;--ink:#e8f0dc;--sub:#9fb08f;--acc:#f0839b;--acc2:#6fc48b;--line:#3a4d40;--sel:#f2b632;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#17201a;--panel:#212d25;--cell:#2d3d32;--ink:#e8f0dc;--sub:#9fb08f;--acc:#f0839b;--acc2:#6fc48b;--line:#3a4d40;--sel:#f2b632;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;display:flex;justify-content:center;min-height:100vh;user-select:none;-webkit-user-select:none}
-#app{width:100%;max-width:440px;padding:12px 12px 24px}
-.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.lv{width:48px;height:48px;border-radius:50%;background:var(--acc2);color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;flex:none}
-.xpw{flex:1}
-.xpt{font-size:12px;color:var(--sub);display:flex;justify-content:space-between;margin-bottom:3px}
-.xpb{height:10px;border-radius:6px;background:var(--cell);overflow:hidden}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;touch-action:manipulation}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-touch-callout:none}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;display:flex;justify-content:center;user-select:none;-webkit-user-select:none;overflow-x:hidden}
+button{touch-action:manipulation}
+#app{width:100%;max-width:440px;padding:8px 12px 10px;display:flex;flex-direction:column;gap:6px}
+.bar{display:flex;align-items:center;gap:5px}
+.homebtn,.mailbtn,.bookbtn{font:inherit;font-weight:900;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;width:38px;height:34px;padding:0;text-decoration:none;position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.bdg{position:absolute;top:-6px;right:-5px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--acc);color:#fff;font-size:10px;line-height:17px;text-align:center}
+.wal{flex:1;min-width:0;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.wal div{background:var(--panel);border:1px solid var(--line);border-radius:12px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;min-width:0;white-space:nowrap;overflow:hidden}
+.wal small{color:var(--sub);font-weight:700;font-size:9px;margin-left:2px}
+.top{display:flex;align-items:center;gap:8px}
+.lv{width:38px;height:38px;border-radius:50%;background:var(--acc2);color:#fff;display:grid;place-items:center;font-weight:900;font-size:17px;flex:none}
+.xpw{flex:1;min-width:0}
+.xpt{font-size:11px;color:var(--sub);display:flex;justify-content:space-between;margin-bottom:2px}
+.xpb{height:8px;border-radius:5px;background:var(--cell);overflow:hidden}
 .xpb i{display:block;height:100%;background:var(--acc2);transition:width .3s}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.homebtn,.mailbtn{font:inherit;font-weight:900;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:7px 12px;text-decoration:none;position:relative;display:inline-flex;align-items:center;gap:4px}
-.bdg{position:absolute;top:-6px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--acc);color:#fff;font-size:11px;line-height:18px;text-align:center}
-.wal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
-.wal div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 4px;text-align:center;font-weight:900;font-size:15px;min-width:0;overflow-wrap:anywhere}
-.wal small{color:var(--sub);font-weight:700;font-size:10px;margin-left:3px}
+.en{flex:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:2px 9px;text-align:center;font-weight:900;font-size:13px;line-height:1.2}
+.en small{display:block;color:var(--sub);font-weight:500;font-size:9px}
 .ord.gift{border-color:var(--sel);background:linear-gradient(180deg,rgba(242,182,50,.18),var(--panel))}
-.ord.gift .nm{color:var(--ink);font-weight:700}
 .ord.gift.ok{box-shadow:0 0 0 2px var(--sel) inset}
 .ord.gift button{background:var(--cell)}
 .ord.gift.ok button{background:var(--sel);color:#26331f}
-.xpn{font-size:10px;color:var(--sub);margin-top:3px}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:20}
 .ov.on{display:flex}
-.sheet{width:100%;max-width:440px;max-height:75vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))}
+.sheet{width:100%;max-width:440px;max-height:80vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))}
 .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:16px}
 .sh button{border:0;background:var(--cell);color:var(--ink);width:32px;height:32px;border-radius:50%;font:inherit;font-weight:900}
 .mi{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
@@ -43,37 +45,36 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic
 .mall{width:100%;margin-top:4px;padding:11px;font-size:13px}
 .mall:disabled{opacity:.45}
 .mempty{text-align:center;color:var(--sub);font-size:13px;padding:24px 0}
-.orders{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.ord{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 4px;text-align:center}
-.ord .it{font-size:34px;line-height:1.1}
-.ord .nm{font-size:11px;color:var(--sub);margin-bottom:4px}
-.ord button{width:100%;border:0;border-radius:10px;padding:6px 0;font:inherit;font-weight:700;font-size:12px;background:var(--cell);color:var(--sub)}
+.orders{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ord{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px 4px 4px;text-align:center}
+.ord .it{font-size:26px;line-height:1.15}
+.ord .nm{display:none}
+.ord button{width:100%;border:0;border-radius:9px;padding:4px 0;margin-top:2px;font:inherit;font-weight:700;font-size:12px;background:var(--cell);color:var(--sub)}
 .ord.ok{border-color:var(--acc2);box-shadow:0 0 0 2px var(--acc2) inset}
 .ord.ok button{background:var(--acc2);color:#fff}
-.ord.m .it{font-size:24px}.ord.m .nm{font-size:10px}
-.board{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;background:var(--panel);padding:8px;border-radius:18px;border:1px solid var(--line);touch-action:none}
-.c{aspect-ratio:1;background:var(--cell);border-radius:10px;display:grid;place-items:center;font-size:clamp(22px,7.5vw,34px);position:relative}
+.ord.m .it{font-size:20px}
+.xpn{font-size:9px;color:var(--sub);margin-top:2px;line-height:1}
+.board{width:var(--bw);margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;background:var(--panel);padding:5px;border-radius:14px;border:1px solid var(--line);touch-action:none}
+.c{aspect-ratio:1;background:var(--cell);border-radius:8px;display:grid;place-items:center;font-size:calc(var(--bw)*.085);position:relative}
 .c.sel{outline:3px solid var(--sel);outline-offset:-2px}
 .c.hint{outline:2px dashed var(--acc2);outline-offset:-2px}
-.c b{position:absolute;right:3px;bottom:1px;font-size:10px;color:var(--sub);font-weight:700}
+.c b{position:absolute;right:3px;bottom:0;font-size:9px;color:var(--sub);font-weight:700}
 .c span{pointer-events:none}
 .c.pop span{animation:pop .35s}
 @keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
 .c.drag span{opacity:.3}
 .ghost{position:fixed;pointer-events:none;font-size:42px;transform:translate(-50%,-60%);z-index:9}
-.c.lock{background:transparent;border:2px dashed var(--line);opacity:.6;font-size:clamp(16px,5vw,22px)}
-.nx{margin-top:8px;text-align:center;font-size:12px;color:var(--sub)}
-.en{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:900}
-.en small{color:var(--sub);font-weight:500;font-size:11px}
-.mach{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.gen{border:0;border-radius:16px;padding:10px 4px;font:inherit;font-weight:900;font-size:13px;background:var(--acc);color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px}
-.gen i{font-style:normal;font-size:28px;line-height:1.1}
+.c.lock{background:transparent;border:2px dashed var(--line);opacity:.6;font-size:calc(var(--bw)*.05)}
+.mach{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gen{border:0;border-radius:14px;height:42px;padding:0 4px;font:inherit;font-weight:900;font-size:12px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.gen i{font-style:normal;font-size:22px;line-height:1}
 .gen small{font-weight:500;font-size:10px;opacity:.85}
 .gen.f{background:#e08a2e}.gen.v{background:var(--acc2)}
 .gen:disabled{opacity:.45}
-.gen.locked{background:var(--cell);color:var(--sub);opacity:1}
-.rare{margin-top:6px;text-align:center;font-size:11px;color:var(--sub)}
-.chain{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 10px}
+.gen.locked{background:var(--cell);color:var(--sub);opacity:1;font-size:11px}
+.gen.locked i{font-size:16px}
+.bkt{font-size:12px;color:var(--sub);text-align:center;margin:6px 0}
+.chain{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 10px}
 .chn{display:flex;justify-content:space-between;align-items:center;font-size:18px;padding:3px 0}
 .chn em{font-style:normal;font-size:10px;color:var(--sub);width:56px;flex:none}
 .msg{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:30;white-space:normal;text-align:center;max-width:calc(100vw - 24px)}
@@ -86,31 +87,35 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic
 <body>
 <div id="app">
   <div class="bar">
-    <a class="homebtn" id="home" href="ホーム2.html">🏠 ホーム</a>
-    <button class="mailbtn" id="mailbtn" type="button">📬 メッセージ<span class="bdg" id="bdg" style="display:none">0</span></button>
-  </div>
-  <div class="wal">
-    <div>🪙 <span id="coin">0</span></div>
-    <div>💎 <span id="pt">0</span><small>PT</small></div>
-    <div>🔥 <span id="rc">0</span><small>RC</small></div>
+    <a class="homebtn" id="home" href="ホーム2.html" aria-label="ホーム">🏠</a>
+    <div class="wal">
+      <div>🪙 <span id="coin">0</span></div>
+      <div>💎 <span id="pt">0</span><small>PT</small></div>
+      <div>🔥 <span id="rc">0</span><small>RC</small></div>
+    </div>
+    <button class="bookbtn" id="bookbtn" type="button" aria-label="ずかん・設定">📖</button>
+    <button class="mailbtn" id="mailbtn" type="button" aria-label="メッセージ">📬<span class="bdg" id="bdg" style="display:none">0</span></button>
   </div>
   <div class="top">
     <div class="lv" id="lv">1</div>
     <div class="xpw"><div class="xpt"><span>経験値</span><span id="xpt"></span></div><div class="xpb"><i id="xpi"></i></div></div>
+    <div class="en">⚡<span id="en"></span><small id="ent"></small></div>
   </div>
   <div class="orders" id="orders"></div>
   <div class="board" id="board"></div>
-  <div class="nx" id="nx"></div>
-  <div class="en">⚡ <span id="en"></span><small id="ent"></small></div>
   <div class="mach" id="mach"></div>
-  <div class="rare">マシンを押すと 20% で ✨レアが出る！レア同士も合成できる</div>
-  <div class="chain" id="chain"></div>
-  <div class="rs"><button id="rs">最初からやり直す</button></div>
 </div>
 <div class="ov" id="ov"><div class="sheet" role="dialog" aria-label="メッセージ">
   <div class="sh"><b>📬 メッセージ</b><button id="mclose" type="button" aria-label="閉じる">✕</button></div>
   <div id="mlist"></div>
   <button class="mall" id="mall" type="button">すべて受け取る</button>
+</div></div>
+<div class="ov" id="ov2"><div class="sheet" role="dialog" aria-label="ずかん">
+  <div class="sh"><b>📖 ずかん</b><button id="bclose" type="button" aria-label="閉じる">✕</button></div>
+  <div class="chain" id="chain"></div>
+  <div class="bkt" id="nx"></div>
+  <div class="bkt">マシンを押すと 5% で ✨レアが出る！レア同士も合成できる</div>
+  <div class="rs"><button id="rs" type="button">最初からやり直す</button></div>
 </div></div>
 <div class="msg" id="msg"></div>
 <script>
@@ -120,13 +125,13 @@ const CH=[
  {n:"やさい",items:[["たまねぎ","🧅"],["にんじん","🥕"],["じゃがいも","🥔"],["とうもろこし","🌽"],["トマト","🍅"],["なす","🍆"],["かぼちゃ","🎃"],["シチュー","🍲"]]},
  {n:"✨レア",items:[["四つ葉","🍀"],["きらきら","✨"],["宝石","💎"],["王冠","👑"],["トロフィー","🏆"]]}
 ];
-const RARE=3, RARE_RATE=0.2;
+const RARE=3, RARE_RATE=0.05;
 const MACH=[{c:0,label:"たねを出す",icon:"🌰",cls:"",lv:1},{c:1,label:"くだもの",icon:"🍒",cls:"f",lv:5},{c:2,label:"やさい",icon:"🥕",cls:"v",lv:15}];
 const UNLOCK_LV=[5,15,30,50,70], UNLOCK_N=[5,5,5,5,4], START_OPEN=24; // 下2行(24〜35)から開始
 const N=36, EMAX=100, REGEN=120000, KEY="mergeGarden2"; // エネルギー回復：2分で1
 const GIFT_EVERY=5, GIFT_COIN=1000, GIFT_REQ={c:0,lv:8}; // 5レベルごと：花の最終形(🎁)を確定オーダー
 const MULTI_XP=1.5; // 複数オーダーのXP倍率
-const HOME_URL="home.html.html";
+const HOME_URL="ホーム2.html";
 // ホームと共通の保存キー
 const WK="ridokaji_wallet_v1", CK="ridokaji_cards_v1";
 function rawWallet(){try{const w=JSON.parse(localStorage.getItem(WK));if(w&&typeof w==="object")return w}catch(e){}return {coin:1000,pt:0}}
@@ -154,6 +159,7 @@ function newReq(){const cs=avail();const hi=Math.min(7,2+Math.floor(S.lvl/2));
   return {c:cs[Math.floor(Math.random()*cs.length)],lv:2+Math.floor(Math.random()*(hi-1))}}
 function newOrder(){let k=1;if(S.lvl>=5&&Math.random()<.45)k=Math.random()<.65?2:3;
   const need=[];let t=0;while(need.length<k&&t++<60){const r=newReq();if(!need.some(x=>x.c===r.c&&x.lv===r.lv))need.push(r)}return {need}}
+function maxIdx(){const ok=[...avail(),RARE];return S.b.findIndex(v=>v&&ok.includes(cOf(v))&&lOf(v)===maxLv(v))}
 const mult=r=>r.c===RARE?2:1;
 const rewardCoin=o=>o.gift?GIFT_COIN:o.need.reduce((a,r)=>a+r.lv*r.lv*4*mult(r),0);
 const rewardXp=o=>{const base=o.need.reduce((a,r)=>a+r.lv*10*mult(r),0);return o.need.length>=2?Math.floor(base*MULTI_XP):base};
@@ -189,8 +195,8 @@ function claimMail(id){regen();const list=id==null?S.mail.slice():S.mail.filter(
 function render(pop){
   $("lv").textContent=S.lvl;const w=getWallet();$("coin").textContent=w.coin.toLocaleString("ja-JP");$("pt").textContent=w.pt.toLocaleString("ja-JP");$("rc").textContent=totalRC().toLocaleString("ja-JP");renderMail();
   $("xpt").textContent=S.xp+" / "+xpNeed();$("xpi").style.width=(S.xp/xpNeed()*100)+"%";
-  $("en").textContent=S.e+" / "+EMAX;
-  $("ent").textContent=S.e>=EMAX?(S.e>EMAX?"満タン超え！":"満タン"):"次の+1まで "+fmtT(Math.max(0,Math.ceil((REGEN-(Date.now()-S.et))/1000)));
+  $("en").textContent=" "+S.e+"/"+EMAX;
+  $("ent").textContent=S.e>=EMAX?(S.e>EMAX?"満タン超え！":"満タン"):"+1まで "+fmtT(Math.max(0,Math.ceil((REGEN-(Date.now()-S.et))/1000)));
   const nt=UNLOCK_LV.find(t=>S.lvl<t);
   $("nx").textContent=nt?"次のマス解放：レベル"+nt+"（あと"+(nt-S.lvl)+"）":"すべてのマスを解放済み 🎉";
   // マシン
@@ -206,10 +212,10 @@ function render(pop){
     if(v){d.innerHTML="<span>"+itm(v)[1]+"</span><b>"+lOf(v)+"</b>"}bd.appendChild(d)});
   // 注文
   const od=$("orders");od.innerHTML="";
-  S.orders.forEach((o,k)=>{const its=o.need.map(r=>CH[r.c].items[r.lv-1]);const ok=o.need.every(r=>S.b.includes(mk(r.c,r.lv)));
+  S.orders.forEach((o,k)=>{const its=o.need.map(r=>CH[r.c].items[r.lv-1]);const ok=o.gift?maxIdx()>=0:o.need.every(r=>S.b.includes(mk(r.c,r.lv)));
     const d=document.createElement("div");d.className="ord"+(ok?" ok":"")+(o.need.length>1?" m":"")+(o.gift?" gift":"");
-    const xn=o.gift?"記念ギフト ⭐"+rewardXp(o):"⭐"+rewardXp(o)+" XP"+(o.need.length>1?"(×"+MULTI_XP+")":"");
-    d.innerHTML='<div class="nm">'+(o.gift?"🎁 ":"")+its.map(x=>x[0]).join("＋")+'</div><div class="it">'+its.map(x=>x[1]).join("")+'</div><button data-k="'+k+'">'+(ok?"届ける":"🪙 "+rewardCoin(o).toLocaleString("ja-JP"))+'</button><div class="xpn">'+xn+'</div>';od.appendChild(d)});
+    const xn=(o.gift?"MAXなら何でも ":"")+"⭐"+rewardXp(o)+" XP"+(o.need.length>1?"(×"+MULTI_XP+")":"");
+    d.innerHTML='<div class="nm">'+(o.gift?"🎁 ":"")+its.map(x=>x[0]).join("＋")+'</div><div class="it">'+(o.gift?"🎁":its.map(x=>x[1]).join(""))+'</div><button data-k="'+k+'">'+(ok?"届ける":"🪙 "+rewardCoin(o).toLocaleString("ja-JP"))+'</button><div class="xpn">'+xn+'</div>';od.appendChild(d)});
   // チェーン一覧
   $("chain").innerHTML=CH.map((c,k)=>{if(k<RARE&&!avail().includes(k))return"";
     return '<div class="chn"><em>'+c.n+'</em>'+c.items.map(x=>x[1]).join("<span style='color:var(--sub);font-size:12px'>›</span>")+'</div>'}).join("");
@@ -241,7 +247,8 @@ $("mach").onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled||b.da
   else S.b[i]=mk(c,(S.lvl>=3&&Math.random()<.15)?2:1);
   if(S.e>=EMAX)S.et=Date.now();S.e--;render(i)};
 $("orders").onclick=e=>{const b=e.target.closest("button");if(!b)return;const k=+b.dataset.k,o=S.orders[k];
-  const idx=o.need.map(r=>S.b.indexOf(mk(r.c,r.lv)));
+  const idx=o.gift?[maxIdx()]:o.need.map(r=>S.b.indexOf(mk(r.c,r.lv)));
+  if(o.gift&&idx[0]<0)return toast("開放済みのMAXアイテムがありません");
   if(idx.some(i=>i<0)){const r=o.need[idx.findIndex(i=>i<0)];return toast("まだ"+CH[r.c].items[r.lv-1][0]+"がありません")}
   idx.forEach(i=>S.b[i]=0);sel=-1;S.orders.splice(k,1);const c=rewardCoin(o),x=rewardXp(o);gain(x,c);fillOrders();toast("+🪙"+c.toLocaleString("ja-JP")+"  +"+x+"XP");render()};
 $("rs").onclick=()=>{if(confirm("ゲームの進行を最初からやり直しますか？\n（コイン・PT・RCはホームに残ります）")){S=fresh();fillOrders();sel=-1;machSig="";mailSig=null;render()}};
@@ -250,6 +257,11 @@ $("mclose").onclick=()=>$("ov").classList.remove("on");
 $("ov").onclick=e=>{if(e.target===$("ov"))$("ov").classList.remove("on")};
 $("mlist").onclick=e=>{const b=e.target.closest("button");if(b&&b.dataset.id)claimMail(b.dataset.id)};
 $("mall").onclick=()=>claimMail(null);
+$("bookbtn").onclick=()=>$("ov2").classList.add("on");
+$("bclose").onclick=()=>$("ov2").classList.remove("on");
+$("ov2").onclick=e=>{if(e.target===$("ov2"))$("ov2").classList.remove("on")};
+// ピンチ／ダブルタップ拡大を防止
+["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 $("home").href=HOME_URL;
 window.addEventListener("pageshow",()=>{if(S)render()});
 load();if(!S.orders||!S.orders.length)S.orders=[];fillOrders();regen();render();
