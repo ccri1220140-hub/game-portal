@@ -202,6 +202,35 @@ button:disabled{
   margin:9px 2px 0;
 }
 
+.wallet-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.wallet-row .wallet-note{
+  margin:9px 2px 0;
+  text-align:right;
+}
+
+.free-coin{
+  flex:none;
+  border:0;
+  border-radius:12px;
+  padding:11px 13px;
+  background:linear-gradient(135deg,#ffd75e,#ff9f2e);
+  color:#3a2500;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.free-coin:active{
+  transform:scale(.97);
+}
+
 /* 紹介 */
 
 .hero{
@@ -636,11 +665,17 @@ a.button.merge-start{
       </div>
     </div>
 
-    <p class="wallet-note">
-      コイン：ゲームプレイに使用<br>
-      PT：使用したコインの10分の1を獲得<br>
-      RC：ゲーム報酬カードに保存される限定通貨
-    </p>
+    <div class="wallet-row">
+      <button class="free-coin" id="freeCoinButton" type="button">
+        🪙 +1000コイン
+      </button>
+
+      <p class="wallet-note">
+        コイン：ゲームプレイに使用<br>
+        PT：使用したコインの10分の1を獲得<br>
+        RC：ゲーム報酬カードに保存される限定通貨
+      </p>
+    </div>
 
     <button class="button secondary" id="showCardsButton" style="margin-top:14px">
       🎴 カード一覧を見る
@@ -741,7 +776,7 @@ a.button.merge-start{
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
-          <a class="button merge-start" href="merge%20garden.html">
+          <a class="button merge-start" href="merge_garden.html">
             🌱 あそぶ
           </a>
         </div>
@@ -1190,6 +1225,14 @@ a.button.merge-start{
 
   $("monbatoPrice").addEventListener("change", updateWalletDisplay);
   $("rushPrice").addEventListener("change", updateWalletDisplay);
+
+  $("freeCoinButton").addEventListener("click", () => {
+    const wallet = getWallet();
+    wallet.coin += 1000;
+    saveWallet(wallet);
+    updateWalletDisplay();
+    showToast("+1000コインを受け取ったよ！");
+  });
 
   $("showCardsButton").addEventListener("click", openCards);
   $("backToGamesButton").addEventListener("click", closeCards);
