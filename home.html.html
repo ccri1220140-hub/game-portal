@@ -446,6 +446,14 @@ button:disabled{
   background:#5fe39a;
 }
 
+.thumbnail.mine{
+  background:linear-gradient(145deg,#1d3550,#121523);
+}
+
+.thumbnail.mine::before{
+  background:#4fc3f7;
+}
+
 a.button.merge-start{
   font-size:11px;
   min-height:42px;
@@ -658,7 +666,7 @@ a.button.merge-start{
         <h2>GAME LIBRARY</h2>
         <p>料金を選んでゲームを始めよう</p>
       </div>
-      <div class="game-count">3 TITLES</div>
+      <div class="game-count">4 TITLES</div>
     </div>
 
     <div class="game-list">
@@ -733,11 +741,33 @@ a.button.merge-start{
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
-          <a class="button merge-start" href="merge%20garden.html">
+          <a class="button merge-start" href="merge_garden.html">
             🌱 あそぶ
           </a>
         </div>
       </article>
+
+      <!-- ピッケルドロップ（mine-break）：移動は無料。コインはゲーム内のベット分だけ減る -->
+
+      <article class="game-card wide">
+        <div class="thumbnail mine">
+          <span class="thumbnail-tag">MINING</span>
+          <div class="art" aria-label="ツルハシ">⛏️</div>
+        </div>
+
+        <div class="card-info">
+          <h3>ピッケルドロップ</h3>
+          <p>ツルハシで掘り進めてRCを狙え！獲得したRCはカードでここに保存。</p>
+
+          <span class="price-label">入場料金</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">移動は無料（ゲーム内でベットした分だけコイン消費）</div>
+
+          <a class="button merge-start" href="mine-break.html">
+            ⛏️ あそぶ
+          </a>
+        </div>
+      </article>
+
 
     </div>
   </section>
