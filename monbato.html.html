@@ -12,13 +12,112 @@
 html,body{min-height:100%;}body{padding:4px 6px 6px;overflow-x:hidden}.app{max-width:520px;width:100%}.top{margin-bottom:4px}.panel{padding:7px 9px;margin:5px 0;border-radius:13px}.brand{font-size:16px}.sub{font-size:9px}.enemy-art{height:clamp(68px,11vh,94px);margin:5px 0}.dragon{font-size:clamp(52px,9vh,72px)}.monstername{font-size:18px}.stars{font-size:11px}.hpwrap{height:9px}.enemy-meta{font-size:10px;margin-top:3px}.hearts{font-size:16px;letter-spacing:0}.heartnote{font-size:10px}.slot{gap:5px;margin:6px 0}.reel{height:clamp(42px,6.5vh,52px);font-size:25px;border-radius:9px}.linehint{font-size:10px}.status{min-height:20px;font-size:12px;padding:2px}.btn{padding:9px 8px;font-size:13px;min-width:0}.smallbtn{padding:7px 8px;font-size:11px}.tiny{font-size:10px}.log{max-height:38px;font-size:10px}.scenario-list{max-height:150px}.modal{max-height:88dvh;padding:14px}.modal h1{font-size:27px}.panel:last-child{margin-bottom:3px}
 @media(max-height:700px){.enemy-art{height:64px}.dragon{font-size:48px}.reel{height:40px}.panel{padding:6px 8px;margin:4px 0}.slot{margin:4px 0}.tiny{margin-top:4px!important}.log{max-height:28px}}
 
+
+/* ===== 背景シーン・ドラゴン画・反撃モーション（追加分）===== */
+@property --sk1{syntax:'<color>';inherits:true;initial-value:#172a52}
+@property --sk2{syntax:'<color>';inherits:true;initial-value:#2d5a8e}
+@property --sk3{syntax:'<color>';inherits:true;initial-value:#5f93c4}
+@property --orb{syntax:'<color>';inherits:true;initial-value:#e8f6ff}
+@property --glow{syntax:'<color>';inherits:true;initial-value:#bfe4ff}
+@property --m1{syntax:'<color>';inherits:true;initial-value:#1e3556}
+@property --m2{syntax:'<color>';inherits:true;initial-value:#162a47}
+@property --m3{syntax:'<color>';inherits:true;initial-value:#0c1a30}
+body{--sk1:#172a52;--sk2:#2d5a8e;--sk3:#5f93c4;--orb:#e8f6ff;--glow:#bfe4ff;--m1:#1e3556;--m2:#162a47;--m3:#0c1a30;transition:--sk1 1.4s,--sk2 1.4s,--sk3 1.4s,--orb 1.4s,--glow 1.4s,--m1 1.4s,--m2 1.4s,--m3 1.4s;background:#05070d}
+body[data-biome=green]{--sk1:#06261e;--sk2:#0f5a45;--sk3:#2f9a6a;--orb:#d7ffb0;--glow:#77f0a0;--m1:#0d4030;--m2:#082f24;--m3:#041a14}
+body[data-biome=red]{--sk1:#1a0508;--sk2:#6b1410;--sk3:#c4501c;--orb:#ffb15a;--glow:#ff6a3a;--m1:#3a0c0c;--m2:#260808;--m3:#120405}
+body[data-biome=gold]{--sk1:#2a1a05;--sk2:#7a4e10;--sk3:#c9892a;--orb:#fff0b0;--glow:#ffd76a;--m1:#4d3410;--m2:#34230a;--m3:#1c1204}
+body[data-biome=black]{--sk1:#05030c;--sk2:#1a1038;--sk3:#3e1a5e;--orb:#8a4bd6;--glow:#9b5cff;--m1:#150c2a;--m2:#0d0719;--m3:#06030d}
+body[data-biome=rainbow]{--sk1:#1c1050;--sk2:#4a2a9a;--sk3:#b0509a;--orb:#ffffff;--glow:#9de4ff;--m1:#2b1a66;--m2:#1d1048;--m3:#0e0826}
+
+#scene{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:#05070d}
+#scene>*{position:absolute}
+.sc-sky{inset:0;background:linear-gradient(180deg,var(--sk1) 0%,var(--sk2) 52%,var(--sk3) 100%)}
+body[data-biome=rainbow] .sc-sky{animation:hue 14s linear infinite}
+.sc-stars{inset:0 0 40% 0;opacity:.75;background-image:radial-gradient(1.3px 1.3px at 8% 14%,#fff,transparent),radial-gradient(1px 1px at 19% 32%,#fff,transparent),radial-gradient(1.5px 1.5px at 31% 9%,#fff,transparent),radial-gradient(1px 1px at 44% 24%,#fff,transparent),radial-gradient(1.3px 1.3px at 58% 12%,#fff,transparent),radial-gradient(1px 1px at 69% 30%,#fff,transparent),radial-gradient(1.5px 1.5px at 81% 10%,#fff,transparent),radial-gradient(1px 1px at 91% 26%,#fff,transparent),radial-gradient(1px 1px at 25% 52%,#fff,transparent),radial-gradient(1px 1px at 74% 55%,#fff,transparent);animation:twinkle 5s ease-in-out infinite alternate}
+.sc-orb{left:50%;top:5%;width:min(86vw,420px);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,var(--orb) 0,color-mix(in srgb,var(--orb) 45%,transparent) 20%,transparent 66%);opacity:.8;animation:orbpulse 6s ease-in-out infinite alternate}
+.sc-far,.sc-mid,.sc-near{left:0;width:100%;bottom:0}
+.sc-far{height:52%;fill:var(--m1)}.sc-mid{height:40%;fill:var(--m2)}.sc-near{height:24%;fill:var(--m3)}
+.sc-far path{stroke:var(--glow);stroke-opacity:.35;stroke-width:1.2;vector-effect:non-scaling-stroke}
+.sc-ground{left:0;right:0;bottom:0;height:38%;background:radial-gradient(ellipse 85% 95% at 50% 100%,color-mix(in srgb,var(--glow) 62%,transparent),transparent 70%);opacity:.75;animation:groundpulse 4s ease-in-out infinite alternate}
+.sc-fog{left:-50%;width:200%;height:34%;bottom:6%;background:radial-gradient(ellipse 22% 50% at 25% 55%,rgba(255,255,255,.13),transparent),radial-gradient(ellipse 26% 55% at 62% 45%,rgba(255,255,255,.1),transparent),radial-gradient(ellipse 20% 50% at 88% 60%,rgba(255,255,255,.12),transparent);animation:fogdrift 34s linear infinite alternate}
+#embers{inset:0;width:100%;height:100%}
+.sc-vig{inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(0,0,0,.62) 100%)}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+@keyframes twinkle{from{opacity:.4}to{opacity:.85}}
+@keyframes orbpulse{from{opacity:.62;transform:translateX(-50%) scale(.96)}to{opacity:.9;transform:translateX(-50%) scale(1.04)}}
+@keyframes groundpulse{from{opacity:.55}to{opacity:.85}}
+@keyframes fogdrift{to{transform:translateX(25%)}}
+
+/* パネルを半透明にして背景をドラゴン・リールの裏まで通す */
+.panel{background:linear-gradient(150deg,rgba(24,32,52,.55),rgba(10,14,26,.68));border-color:rgba(255,255,255,.14)}
+.battle{background:linear-gradient(160deg,rgba(18,26,44,.10),rgba(8,12,22,.24));position:relative;z-index:3;border-color:rgba(255,255,255,.2)}
+.slotpanel{background:linear-gradient(160deg,rgba(14,20,36,.22),rgba(6,9,18,.42))}
+.battle,.slotpanel{text-shadow:0 1px 3px rgba(0,0,0,.75)}
+.reel,.btn{text-shadow:none}
+.reel{border-color:color-mix(in srgb,var(--glow) 55%,#52617d);box-shadow:inset 0 2px 5px #fff8,inset 0 -4px 7px #26324b3b,0 0 12px color-mix(in srgb,var(--glow) 45%,transparent)}
+.overlay{background:rgba(5,8,18,.8)}
+.enemyhead{position:relative;z-index:2}
+
+/* ドラゴン */
+.enemy-art{height:clamp(112px,16vh,140px);margin:4px 0 6px;overflow:visible;background:none}
+.enemy-art:before{content:"";position:absolute;left:50%;top:50%;width:min(380px,96%);height:150%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,color-mix(in srgb,var(--dg,var(--glow)) 55%,transparent),transparent);opacity:.55;pointer-events:none;animation:aura 3.2s ease-in-out infinite alternate}
+.enemy-art:after{content:"";position:absolute;left:50%;bottom:-3px;width:48%;height:14px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);pointer-events:none}
+@keyframes aura{from{opacity:.38;transform:translate(-50%,-50%) scale(.94)}to{opacity:.7;transform:translate(-50%,-50%) scale(1.06)}}
+.dragon{font-size:0;height:100%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transform-origin:50% 80%}
+.dragon svg,.dragon img{height:112%;width:auto;max-width:100%;overflow:visible;transform:scale(var(--s,1));object-fit:contain}
+.dragon.rainbow svg,.dragon.rainbow img{animation:hue 7s linear infinite}
+.fx{z-index:2}
+.fx.hurt{color:#ffb0b0;text-shadow:0 0 10px #f00,0 2px 6px #000}
+.fx.warn{color:#ffd9a8;font-size:20px;text-shadow:0 0 10px #ff6a2a,0 2px 6px #000}
+.wing{transform-origin:142px 108px;animation:flap 2.6s ease-in-out infinite}
+@keyframes flap{50%{transform:rotate(5deg)}}
+@keyframes flapfast{50%{transform:rotate(-13deg)}}
+.eye{animation:eyepulse 2.2s ease-in-out infinite;filter:drop-shadow(0 0 3px currentColor)}
+@keyframes eyepulse{50%{opacity:.72}}
+
+/* ハズレ：相手モンスターの反撃モーション */
+.dragon.lunge{animation:lunge .72s cubic-bezier(.25,.8,.3,1) both;filter:drop-shadow(0 0 16px #ff3b3b) drop-shadow(0 9px 8px #0009)}
+.dragon.lunge .eye{opacity:1;animation:none}.dragon.lunge .eye path{fill:#ff2a2a}
+.dragon.lunge .wing{animation:flapfast .36s ease-in-out 2}
+@keyframes lunge{
+0%{transform:translateY(0) scale(1)}
+28%{transform:translateY(-6px) scale(.9) rotate(-2deg)}
+48%{transform:translateY(36px) scale(1.55) rotate(1deg)}
+58%{transform:translateY(30px) scale(1.5) rotate(0)}
+100%{transform:translateY(0) scale(1)}}
+#hitfx{position:fixed;inset:0;z-index:15;pointer-events:none;opacity:0}
+#hitfx:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,40,50,0) 32%,rgba(255,30,40,.6) 100%)}
+#hitfx svg{position:absolute;left:18%;top:30%;width:64%;height:48%;overflow:visible}
+#hitfx path{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 4px #ff2a3a) drop-shadow(0 0 12px #ff2a3a)}
+#hitfx.on{animation:hitflash .75s ease-out}
+#hitfx.on path{animation:claw .36s ease-out forwards}
+#hitfx.on path:nth-child(2){animation-delay:.07s}
+#hitfx.on path:nth-child(3){animation-delay:.14s}
+@keyframes hitflash{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
+@keyframes claw{to{stroke-dashoffset:0}}
+.app.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:none}10%{transform:translate(-9px,3px) rotate(-.6deg)}25%{transform:translate(8px,-4px) rotate(.5deg)}40%{transform:translate(-6px,3px)}55%{transform:translate(5px,-2px)}70%{transform:translate(-3px,1px)}85%{transform:translate(2px,0)}}
+#hearts.hurt{animation:heartsb .5s;filter:drop-shadow(0 0 8px #f33)}
+@keyframes heartsb{0%,100%{transform:none}20%{transform:translateX(-5px) scale(1.15)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}}
+
+@media(max-height:700px){.enemy-art{height:96px}}
+@media(prefers-reduced-motion:reduce){.sc-stars,.sc-orb,.sc-ground,.sc-fog,.wing,.eye,.enemy-art:before,body[data-biome=rainbow] .sc-sky,.dragon.rainbow svg{animation:none}.app.shake{animation-duration:.2s}}
 </style>
 </head>
-<body><main class="app">
+<body data-biome="white">
+<div id="scene" aria-hidden="true"><div class="sc-sky"></div><div class="sc-stars"></div><div class="sc-orb"></div>
+<svg class="sc-far" viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 110 L30 82 L55 98 L95 46 L130 88 L160 70 L200 30 L240 78 L275 60 L310 92 L345 52 L375 80 L400 64 L400 200 L0 200Z"/></svg>
+<div class="sc-ground"></div>
+<svg class="sc-mid" viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 130 L40 104 L80 122 L125 84 L170 118 L215 92 L260 124 L305 96 L350 120 L400 100 L400 200 L0 200Z"/></svg>
+<div class="sc-fog"></div>
+<svg class="sc-near" viewBox="0 0 400 200" preserveAspectRatio="none"><path d="M0 168 L50 150 L90 164 L140 140 L190 166 L235 150 L290 170 L340 148 L400 164 L400 200 L0 200Z"/></svg>
+<canvas id="embers"></canvas><div class="sc-vig"></div></div>
+<div id="hitfx" aria-hidden="true"><svg viewBox="0 0 200 260" preserveAspectRatio="none"><path pathLength="100" d="M170 10 Q130 120 80 250"/><path pathLength="100" d="M130 0 Q92 120 42 240"/><path pathLength="100" d="M200 40 Q165 140 118 258"/></svg></div>
+<main class="app">
 <header class="top"><div><div class="brand">🐉 モンスターバトルスロット</div><div class="sub">SLOT & HUNT · GAME PORTAL</div></div><span class="pill" id="stagePill">狩猟準備中</span></header>
-<section class="panel"><div class="enemyhead"><div><div class="rarity" id="rarity">白 RARITY</div><div class="monstername" id="monsterName">モケモケ</div><div class="stars" id="stars">★★★★★</div></div><span class="tag" id="weakness">弱点：罠</span></div><div class="enemy-art"><div class="dragon" id="dragon">🐲</div><div class="fx" id="fx"></div></div><div class="effectrow"><span id="enemyHpText">HP 50 / 50</span><span id="enemyStatus">状態：なし</span></div><div class="hpwrap"><div class="hpbar" id="enemyHpBar"></div></div><div class="enemy-meta"><span id="enemyDefense">防御 0</span><span id="enemySpeed">回避率 20%</span><span id="enemyAttack">攻撃 1.5♥</span></div></section>
+<section class="panel battle"><div class="enemyhead"><div><div class="rarity" id="rarity">白 RARITY</div><div class="monstername" id="monsterName">モケモケ</div><div class="stars" id="stars">★★★★★</div></div><span class="tag" id="weakness">弱点：罠</span></div><div class="enemy-art"><div class="dragon" id="dragon">🐲</div><div class="fx" id="fx"></div></div><div class="effectrow"><span id="enemyHpText">HP 50 / 50</span><span id="enemyStatus">状態：なし</span></div><div class="hpwrap"><div class="hpbar" id="enemyHpBar"></div></div><div class="enemy-meta"><span id="enemyDefense">防御 0</span><span id="enemySpeed">回避率 20%</span><span id="enemyAttack">攻撃 1.5♥</span></div></section>
 <section class="panel"><div class="playerline"><div><strong>ハンター</strong><div class="heartnote">残り体力（最大5♥）</div></div><div class="hearts" id="hearts">❤️❤️❤️❤️❤️</div></div><div class="effectrow"><span id="playerEffect">効果：なし</span><button class="btn dark smallbtn" id="effectsBtn">役の効果</button></div></section>
-<section class="panel"><div class="effectrow"><strong>🎰 3×3 スロット</strong><span class="tag" id="turnText">第1戦</span></div><div class="slot" id="slot"><div class="reel">🗡️</div><div class="reel">☠️</div><div class="reel">💪</div><div class="reel">⚔️</div><div class="reel">🪤</div><div class="reel">🗡️</div><div class="reel">🌈</div><div class="reel">💪</div><div class="reel">☠️</div></div><div class="linehint">有効ライン：横3ライン＋斜め2ライン</div><div class="status" id="status">スロットを回して役をそろえよう！</div><div class="btnrow"><button class="btn" id="spinButton">🎰 スロットを回す</button></div><div class="tiny" style="margin-top:9px">リールは左 → 中 → 右の順に自動停止します。ハズレは絵柄がそろわない結果です。</div></section>
+<section class="panel slotpanel"><div class="effectrow"><strong>🎰 3×3 スロット</strong><span class="tag" id="turnText">第1戦</span></div><div class="slot" id="slot"><div class="reel">🗡️</div><div class="reel">☠️</div><div class="reel">💪</div><div class="reel">⚔️</div><div class="reel">🪤</div><div class="reel">🗡️</div><div class="reel">🌈</div><div class="reel">💪</div><div class="reel">☠️</div></div><div class="linehint">有効ライン：横3ライン＋斜め2ライン</div><div class="status" id="status">スロットを回して役をそろえよう！</div><div class="btnrow"><button class="btn" id="spinButton">🎰 スロットを回す</button></div><div class="tiny" style="margin-top:9px">リールは左 → 中 → 右の順に自動停止します。ハズレは絵柄がそろわない結果です。</div></section>
 <section class="panel"><div class="effectrow"><strong>今回の狩猟記録</strong><span id="rewardText">獲得RC：0</span></div><div class="tiny" id="scenarioProgress">シナリオ進行：1 / 8</div><div class="log" id="battleLog"></div></section>
 </main>
 <div class="overlay" id="homeOverlay"><div class="modal"><h1>HUNT START</h1><p>スロットの役を使ってモンスターを討伐しよう！<br>1回の狩猟は最大8戦。途中で終了しても、討伐済みの報酬RCは保持されます。</p><div class="btnrow"><button class="btn" id="startButton">狩りに出発！</button><button class="btn dark" id="homeReturnButton">ホームに戻る</button></div><p class="tiny" id="entryInfo"></p></div></div>
@@ -65,6 +164,59 @@ let launch=null,portalMode=false,returnUrl='',entryMultiplier=1,currentRole='MIS
 function readJSON(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
 function safeReturn(){const portalHome='https://ccri1220140-hub.github.io/game-portal/home.html.html';if(returnUrl){try{const u=new URL(returnUrl,location.href);if(u.origin===location.origin)return u.href}catch(e){}}if(document.referrer){try{const u=new URL(document.referrer);if(u.origin===location.origin&&u.href.includes('home.html.html'))return u.href}catch(e){}}return portalHome}
 function consumeLaunch(){const p=new URLSearchParams(location.search);const id=p.get('launchId');const entryParam=Number(p.get('entry')||0);returnUrl=p.get('returnUrl')||'';const pending=readJSON(ST.pending,null);if(!id||entryParam<=0)return false;let accepted=false;if(pending&&typeof pending==='object'){const pendingIds=[pending.launchId,pending.id,pending.launch_id,pending.sessionId].filter(Boolean).map(String);const idMatches=pendingIds.includes(String(id));const pendingEntry=Number(pending.entry??pending.price??pending.entryCoins??pending.coins??pending.entryPrice??pending.entryFee??0);const entryMatches=pendingEntry>0&&pendingEntry===entryParam;const gameText=String(pending.game||pending.gameKey||pending.target||'').toLowerCase();const gameMatches=!gameText||gameText.includes('monbato')||gameText.includes('monster')||gameText.includes('モンバト');const notConsumed=pending.status!=='consumed'&&pending.consumed!==true;if(notConsumed&&gameMatches&&(idMatches||entryMatches)){pending.launchId=pending.launchId||id;pending.status='consumed';pending.consumed=true;pending.consumedAt=new Date().toISOString();localStorage.setItem(ST.pending,JSON.stringify(pending));launch=pending;accepted=true}}/* ポータルがentryとlaunchIdを付けて遷移してきた場合、ゲーム側の確認画面を挟まない。入場料はポータル側で既に処理済み。 */if(!accepted){launch={launchId:id,entry:entryParam,game:'monbato',status:'consumed'};accepted=true}if(accepted){portalMode=true;sessionId=String(id);entryMultiplier=Math.max(1,entryParam/50);return true}return false}
+
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const BIOME={'白':'white','緑':'green','赤':'red','金':'gold','黒':'black','虹':'rainbow'};
+// 画像を使いたい場合：MONSTER_IMG に {'モケモケ':'img/mokemoke.png'} のように追加すると、ドラゴンSVGの代わりに表示されます。
+const MONSTER_IMG={};
+// [体上,体下,腹,翼上,翼下,角,オーラ,瞳]
+const PAL={
+'モケモケ':['#ffffff','#aab8e0','#ffffff','#e6ecff','#9fb2e6','#fff4cf','#bfe4ff','#6fe3ff'],
+'カチコチ':['#a9bdd6','#4a5e7a','#dbe6f2','#8da3c2','#42587a','#e8f4ff','#9fd0ff','#b8f2ff'],
+'ラプトル':['#6fdc72','#1d7a3a','#e1f7a4','#3aa857','#145a2c','#f6edc2','#77f0a0','#ffe45e'],
+'グナプス':['#44c7a8','#145e58','#c4f5d2','#26897f','#0e4a52','#f0f7d0','#5dffcf','#f4ff5e'],
+'イサベリ':['#b4e84e','#4c8a1a','#f6f7a8','#79c42c','#3b7314','#fff2c0','#d3ff6a','#ff9d3c'],
+'ブリトラ':['#ff6c5c','#8c1b22','#ffd3a0','#d8333a','#7a141c','#f5e6c8','#ff7a4a','#ffe24a'],
+'イグニス':['#ffa63f','#9c2a08','#ffe49a','#e8561c','#8a2208','#ffe9b0','#ffb347','#ffffff'],
+'カルデラ':['#d02a40','#44091a','#ff9a80','#97163a','#3a0a22','#e8d8c0','#ff4d6d','#ffd24a'],
+'アルミス':['#ffe784','#c28a1a','#fff6cc','#f6cb50','#b87d10','#fffbe0','#ffd76a','#ff7a3c'],
+'セリオン':['#f7c744','#7e500d','#ffeaa8','#dc9d22','#6e440a','#fff0c0','#ffcf5a','#ff4a3a'],
+'ユニコン':['#ffeaff','#b9a0ff','#ffffff','#9ae8ff','#e08aff','#ffe27a','#d9b8ff','#ff6ad5'],
+'ノワール':['#4a4e78','#0a0b16','#6a6f9a','#2a2c46','#0c0d1a','#9b7bff','#9b5cff','#ff2d55']};
+const SCALE={'アルミス':.8,'ノワール':1.08,'セリオン':1.04};
+function dragonSVG(name){
+ const [b1,b2,bl,w1,w2,hn,gl,ey]=PAL[name]||PAL['モケモケ'];
+ const id='g'+Math.random().toString(36).slice(2,7);
+ const L='stroke="#080a14" stroke-opacity=".8" stroke-width="2" stroke-linejoin="round"';
+ const mir=h=>h+'<g transform="translate(240 0) scale(-1 1)">'+h+'</g>';
+ const uni=name==='ユニコン';
+ const body='M94 112 Q120 100 146 112 Q162 152 144 188 Q120 198 96 188 Q78 152 94 112Z';
+ const wings=mir(`<g class="wing"><path d="M142 108 L214 20 Q230 50 238 84 Q222 84 208 100 Q196 96 184 114 Q172 110 160 132 Q152 128 146 138Z" fill="url(#${id}w)" ${L}/><path d="M142 108 L214 20 Q230 50 238 84 Q222 84 208 100 Q196 96 184 114 Q172 110 160 132 Q152 128 146 138Z" fill="url(#${id}s)"/><path d="M214 20 L238 84 M214 20 L208 100 M214 20 L184 114 M214 20 L160 132" fill="none" stroke="#080a14" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/><path d="M142 108 L214 20" stroke="${w2}" stroke-width="6" stroke-linecap="round"/><path d="M142 108 L214 20" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/><path d="M214 20 l9 -9 l-1 14z" fill="${hn}" ${L}/></g>`);
+ const legs=mir(`<path d="M98 140 Q74 150 72 176 L70 190 L98 190 L100 178 Q112 162 112 150Z" fill="url(#${id}b)" ${L}/><path d="M68 192 L70 203 L76 192Z M77 193 L80 204 L85 193Z M86 192 L90 202 L94 190Z" fill="${hn}" ${L}/>`);
+ const crest=uni
+  ?`<path d="M113 42 L120 -14 L127 42Z" fill="${hn}" ${L}/><path d="M115 32 L125 29 M116 22 L124 19 M117 12 L123 9" stroke="#a8741a" stroke-width="1.6" stroke-linecap="round"/>`
+  :`<path d="M120 14 L129 42 L111 42Z" fill="${hn}" ${L}/>`+mir(`<path d="M104 24 L116 42 L98 40Z" fill="${hn}" ${L}/>`);
+ const horns=mir(`<path d="M92 52 Q70 44 60 8 Q90 22 110 44Z" fill="${hn}" ${L}/><path d="M92 52 Q70 44 60 8" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="3"/><path d="M90 76 Q70 80 58 100 Q80 94 98 90Z" fill="${hn}" ${L}/>`);
+ const face=mir(`<ellipse cx="112" cy="84" rx="2.4" ry="3.4" transform="rotate(-18 112 84)" fill="#080a14"/><path d="M109 99 L111 110 L116 101Z" fill="#fff" stroke="#080a14" stroke-width=".8" stroke-linejoin="round"/><g class="eye" style="color:${ey}"><path d="M95 66 Q108 54 120 68 Q108 73 95 66Z" fill="${ey}"/></g><ellipse cx="108" cy="64.5" rx="1.8" ry="5" transform="rotate(-24 108 64.5)" fill="#0a0408"/><path d="M90 52 Q106 56 121 69" fill="none" stroke="#080a14" stroke-width="4" stroke-linecap="round"/>`);
+ return `<svg viewBox="0 -14 240 216" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${b1}"/><stop offset="1" stop-color="${b2}"/></linearGradient>
+<linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${w1}"/><stop offset="1" stop-color="${w2}"/></linearGradient>
+<pattern id="${id}s" width="9" height="8" patternUnits="userSpaceOnUse"><path d="M0 8 Q4.5 0 9 8" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1"/></pattern></defs>
+${wings}${legs}
+<path d="${body}" fill="url(#${id}b)" ${L}/><path d="${body}" fill="url(#${id}s)"/>
+<path d="M107 118 Q120 113 133 118 L137 186 Q120 193 103 186Z" fill="${bl}" fill-opacity=".92"/>
+<path d="M107 132 Q120 138 133 132 M106 146 Q120 152 134 146 M105 160 Q120 166 135 160 M105 174 Q120 180 135 174" fill="none" stroke="#080a14" stroke-opacity=".4" stroke-width="1.4"/>
+${crest}${horns}
+<path d="M100 84 L94 118 Q120 108 146 118 L140 84Z" fill="url(#${id}b)" ${L}/>
+<path d="M120 34 Q150 34 154 62 Q156 86 141 98 Q131 108 120 108 Q109 108 99 98 Q84 86 86 62 Q90 34 120 34Z" fill="url(#${id}b)" ${L}/>
+<path d="M120 34 Q150 34 154 62 Q156 86 141 98 Q131 108 120 108 Q109 108 99 98 Q84 86 86 62 Q90 34 120 34Z" fill="url(#${id}s)"/>
+<path d="M104 45 Q120 37 136 45 Q120 51 104 45Z" fill="#fff" fill-opacity=".24"/>
+<path d="M103 76 Q120 68 137 76 Q145 94 131 105 Q120 110 109 105 Q95 94 103 76Z" fill="${b1}" fill-opacity=".55" stroke="#080a14" stroke-opacity=".35" stroke-width="1.5"/>
+<path d="M106 97 Q120 107 134 97" fill="none" stroke="#080a14" stroke-width="2.2" stroke-linecap="round"/>
+${face}</svg>`;
+}
+function renderArt(m){const d=$('dragon');const q=PAL[m.name]||PAL['モケモケ'];d.style.setProperty('--dg',q[6]);d.style.setProperty('--s',SCALE[m.name]||1);d.classList.toggle('rainbow',m.name==='ユニコン');d.innerHTML=MONSTER_IMG[m.name]?'<img src="'+MONSTER_IMG[m.name]+'" alt="'+m.name+'">':dragonSVG(m.name);document.body.dataset.biome=BIOME[m.color]||'white'}
+function hitEffect(){const h=$('hitfx'),a=document.querySelector('.app'),hh=$('hearts');h.classList.remove('on');a.classList.remove('shake');hh.classList.remove('hurt');void h.offsetWidth;h.classList.add('on');a.classList.add('shake');hh.classList.add('hurt');setTimeout(()=>{h.classList.remove('on');a.classList.remove('shake');hh.classList.remove('hurt')},760);sound(70,.28,'square',.06)}
 function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 function weighted(entries){let r=Math.random()*entries.reduce((s,x)=>s+x[1],0);for(const e of entries){r-=e[1];if(r<0)return e[0]}return entries[entries.length-1][0]}
 function addLog(s){logLines.unshift(s);logLines=logLines.slice(0,18);$('battleLog').innerHTML=logLines.map(x=>'・'+x).join('<br>')}
@@ -73,7 +225,7 @@ function showFx(text,cls=''){const d=$('fx'),dragon=$('dragon');if(fxTimer)clear
 function pickScenario(firstColor){scenarioCandidates=SCENARIOS.filter(s=>s.route[0]===firstColor);if(!scenarioCandidates.length)scenarioCandidates=SCENARIOS;scenario=scenarioCandidates[rand(0,scenarioCandidates.length-1)];}
 function pickMonster(color){const list=MONSTERS.filter(m=>m.color===color);return list[rand(0,list.length-1)]||MONSTERS[0]}
 function newHunt(){spinRunId++;if(spinTimer){clearInterval(spinTimer);spinTimer=null}spinStopTimers.forEach(clearTimeout);spinStopTimers=[];spinning=false;spinResolving=false;started=true;finished=false;playerHp=5;monsterIndex=0;turn=1;earnedRC=0;defeated=[];buff=false;trapTurns=0;poisonTurns=0;poisonDamage=0;logLines=[];scenario=null;scenarioCandidates=[];const firstColor=weighted(COLORS);pickScenario(firstColor);loadMonster(pickMonster(firstColor));$('homeOverlay').classList.add('hidden');$('modalOverlay').classList.add('hidden');$('stagePill').textContent='狩猟中';$('spinButton').disabled=false;$('status').textContent='スロットを回して役をそろえよう！';$('battleLog').innerHTML='';addLog('狩猟開始。最初のモンスターは'+firstColor+'色！');renderStatus();renderBoard();}
-function loadMonster(m){monster=m;monster.hpNow=m.hp;poisonTurns=0;poisonDamage=0;trapTurns=0;$('monsterName').textContent=m.name;$('rarity').textContent=m.color+' RARITY';$('stars').textContent='★'.repeat(m.stars)+'☆'.repeat(5-m.stars);$('weakness').textContent='弱点：'+m.weak;$('dragon').textContent=m.art;$('dragon').style.filter='';renderStatus();}
+function loadMonster(m){monster=m;monster.hpNow=m.hp;poisonTurns=0;poisonDamage=0;trapTurns=0;$('monsterName').textContent=m.name;$('rarity').textContent=m.color+' RARITY';$('stars').textContent='★'.repeat(m.stars)+'☆'.repeat(5-m.stars);$('weakness').textContent='弱点：'+m.weak;renderArt(m);$('dragon').style.filter='';renderStatus();}
 function renderStatus(){const hp=Math.max(0,Math.min(5,playerHp));$('hearts').textContent=Array.from({length:5},(_,i)=>hp>=i+1?'❤️':hp>i?'💔':'🖤').join('');$('enemyHpText').textContent='HP '+Math.max(0,monster.hpNow)+' / '+monster.hp;$('enemyHpBar').style.width=(Math.max(0,monster.hpNow)/monster.hp*100)+'%';$('enemyDefense').textContent='防御 '+monster.def;$('enemySpeed').textContent='回避率 '+(trapTurns>0?0:monster.speed)+'%';$('enemyAttack').textContent='攻撃 '+monster.atk+'♥';$('enemyStatus').textContent=poisonTurns>0?'状態：毒 '+poisonTurns+'T':trapTurns>0?'状態：罠 '+trapTurns+'T':'状態：なし';$('playerEffect').textContent='効果：'+(buff?'攻撃力UP ×1.5 ':'')+(trapTurns?'罠 '+trapTurns+'T ':'')+(poisonTurns?'毒継続 ':'')||'効果：なし';$('rewardText').textContent='獲得RC：'+earnedRC;$('turnText').textContent='第'+(monsterIndex+1)+'戦 / 8';$('scenarioProgress').textContent='シナリオ進行：'+(monsterIndex+1)+' / 8';$('scenarioProgress').classList.add('hidden');}
 function renderBoard(){const els=[...$('slot').children];els.forEach((el,i)=>{el.textContent=board[i]||SYMBOLS[rand(0,SYMBOLS.length-1)];el.classList.remove('spinning')})}
 function makeBoard(role){let b=Array.from({length:9},()=>SYMBOLS[rand(0,SYMBOLS.length-1)]);if(role==='MISS'){for(let tries=0;tries<500;tries++){b=Array.from({length:9},()=>SYMBOLS[rand(0,SYMBOLS.length-1)]);if(!LINES.some(line=>b[line[0]]===b[line[1]]&&b[line[1]]===b[line[2]]))return b}return ['🗡️','⚔️','☠️','🪤','💪','🗡️','🌈','🪤','⚔️']}
@@ -170,7 +322,7 @@ function applyPoison(){let amount=Math.floor(monster.hp/8);if(monster.weak==='�
 function applyTrap(){trapTurns=3;showFx('🪤 TRAP');addLog('罠設置！次の2ターン、攻撃役が剣/双剣/ごく稀に必殺技。回避率0%');renderStatus()}
 function applyBuff(){buff=true;showFx('💪 ×1.5','blast');addLog('攻撃力1.5倍！次の双剣攻撃まで継続');renderStatus()}
 function attackSpecial(){let raw=rand(100,140);if(monster.weak==='必殺技')raw*=2;damageMonster(raw,'🌈',false);showFx('🌈 SPECIAL','blast')}
-async function enemyAttack(){if(monster.hpNow<=0||finished)return;showFx('🐉 攻撃！','hit');await new Promise(resolve=>setTimeout(resolve,260));if(finished)return;playerHp=Math.max(0,playerHp-monster.atk);showFx('💥 -'+monster.atk+'♥','hit');sound(110,.2,'sawtooth');addLog(monster.name+'の反撃！ '+monster.atk+'♥ダメージ');renderStatus();await new Promise(resolve=>setTimeout(resolve,300));if(playerHp<=0)finishRun(false,true)}
+async function enemyAttack(){if(monster.hpNow<=0||finished)return;const dr=$('dragon');showFx('⚠ 攻撃！','warn');dr.classList.remove('lunge');void dr.offsetWidth;dr.classList.add('lunge');setTimeout(()=>dr.classList.remove('lunge'),760);sound(150,.3,'sawtooth');await sleep(340);if(finished)return;playerHp=Math.max(0,playerHp-monster.atk);showFx('💥 -'+monster.atk+'♥','hurt');hitEffect();addLog(monster.name+'の反撃！ '+monster.atk+'♥ダメージ');renderStatus();await sleep(430);if(playerHp<=0)finishRun(false,true)}
 function defeatMonster(){if(finished)return;spinning=false;monster.hpNow=0;const scaledRC=Math.floor(monster.rc*entryMultiplier);earnedRC+=scaledRC;defeated.push({name:monster.name,rc:scaledRC});addLog(monster.name+'討伐！ +'+scaledRC+' RC'+(entryMultiplier>1?'（入場倍率×'+entryMultiplier+'）':''));sound(760,.22,'sine');showFx('討伐成功！','blast');renderStatus();$('spinButton').disabled=true;setTimeout(()=>{if(monsterIndex>=7){finishRun(true);return}showNextMonster()},750)}
 function showNextMonster(){const nextColor=scenario.route[monsterIndex+1];const choices=MONSTERS.filter(m=>m.color===nextColor);const next=choices[rand(0,choices.length-1)];const matchedScenarios=SCENARIOS.filter(s=>s.route.slice(0,monsterIndex+1).every((color,i)=>color===scenario.route[i]));const routeSoFar=scenario.route.slice(0,monsterIndex+1).join(' → ');showModal(`<h1>WIN!</h1><p><b>${monster.name}</b> を討伐！<br>獲得報酬：${monster.rc} RC</p><button class="btn dark smallbtn" id="toggleScenarioList">シナリオ一覧を表示</button><div class="scenario-list hidden" id="scenarioListBox"><b>ここまでのルート：${routeSoFar}</b><br>${matchedScenarios.length?matchedScenarios.map(s=>s.name+'：'+s.route.join(' → ')).join('<br>'):'一致するシナリオはありません。'}</div><p>次のモンスターは、次へ進んだあとに表示されます。</p><div class="btnrow"><button class="btn" id="nextMonsterBtn">次のモンスターへ</button><button class="btn dark" id="endHuntBtn">ここで狩りを終了</button></div>`,()=>{const toggle=$('toggleScenarioList');if(toggle)toggle.onclick=()=>{const box=$('scenarioListBox');box.classList.toggle('hidden');toggle.textContent=box.classList.contains('hidden')?'シナリオ一覧を表示':'シナリオ一覧を隠す'};$('nextMonsterBtn').onclick=()=>{spinRunId++;if(spinTimer){clearInterval(spinTimer);spinTimer=null}spinStopTimers.forEach(clearTimeout);spinStopTimers=[];spinning=false;spinResolving=false;monsterIndex++;playerHp=5;loadMonster(next);$('modalOverlay').classList.add('hidden');$('spinButton').disabled=false;$('status').textContent='スロットを回して役をそろえよう！';renderStatus();renderBoard();addLog('第'+(monsterIndex+1)+'戦開始：'+next.name+'（体力全回復）')};$('endHuntBtn').onclick=()=>finishRun(false)});}
 function finishRun(complete,lost=false){if(finished)return;if(lost)earnedRC=1;finished=true;spinning=false;spinResolving=false;spinRunId++;if(spinTimer){clearInterval(spinTimer);spinTimer=null}spinStopTimers.forEach(clearTimeout);spinStopTimers=[];$('spinButton').disabled=true;$('stagePill').textContent=complete?'シナリオ完走':'狩猟終了';if(complete){const completionBonus=Math.floor(888*entryMultiplier);earnedRC+=completionBonus;showModal(`<h1>COMPLETE!</h1><p>8戦シナリオ完走！<br>完走ボーナス <b>+${completionBonus} RC</b>${entryMultiplier>1?'（入場倍率×'+entryMultiplier+'）':''}</p><p>宝箱を1つ選んでね！</p><div class="chests">${[0,1,2,3,4].map(i=>`<button class="chest" data-chest="${i}">🎁</button>`).join('')}</div><p class="tiny">宝箱の倍率：1.1倍×3個／1.5倍×1個／2倍×1個</p>`,()=>{document.querySelectorAll('[data-chest]').forEach(b=>b.onclick=()=>{const ix=Number(b.dataset.chest);const multipliers=[1.1,1.1,1.1,1.5,2];const mult=multipliers[ix];earnedRC=Math.floor(earnedRC*mult);document.querySelectorAll('[data-chest]').forEach(x=>x.disabled=true);setTimeout(()=>showResult(true,mult),350);sound(850,.2,'sine')})});}else showResult(false,1)}
@@ -182,5 +334,16 @@ function tryLeave(){if(started&&!finished){showModal('<h1>狩りを終了？</h1
 consumeLaunch();$('entryInfo').textContent=portalMode?'ポータル入場確認済み：入場料は支払い済みです。':'ポータルから入場してください。入場料なしでは狩猟を開始できません。';$('startButton').onclick=()=>{if(started&&!finished)return;if(!portalMode){showModal('<h1>ポータルから入場してね！</h1><p>入場料の支払い確認ができませんでした。ホームに戻って、コインで入場してから出発してください。</p><div class="btnrow"><button class="btn" id="goPortalNow">ホームに戻る</button></div>',()=>{$('goPortalNow').onclick=()=>location.href=safeReturn()});return}newHunt()};$('homeReturnButton').onclick=()=>location.href=safeReturn();$('spinButton').onclick=spin;$('effectsBtn').onclick=showEffects;$('stagePill').onclick=tryLeave;
 // 画面初期化：開始前はランダム絵柄を表示。ポータルで入場料を支払った起動は確認画面を挟まず即スタート。
 board=Array.from({length:9},()=>SYMBOLS[rand(0,SYMBOLS.length-1)]);renderBoard();loadMonster(MONSTERS[0]);$('scenarioProgress').classList.add('hidden');if(portalMode){$('homeOverlay').classList.add('hidden');newHunt()}else{$('homeOverlay').classList.remove('hidden')}
+
+(function(){const cv=$('embers');if(!cv)return;const cx=cv.getContext('2d');if(!cx||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+let W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,1.5),ps=[],col='#ffcf8a',fr=0;
+function size(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+function mk(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.6,v:Math.random()*.5+.25,s:Math.random()*6.28,a:Math.random()*.5+.35}}
+size();ps=Array.from({length:42},mk);addEventListener('resize',size);
+(function tick(){requestAnimationFrame(tick);if(document.hidden)return;if(fr++%45===0){const c=getComputedStyle(document.body).getPropertyValue('--glow').trim();if(c)col=c}
+const dir=document.body.dataset.biome==='white'?1:-1;cx.clearRect(0,0,W,H);cx.globalCompositeOperation='lighter';cx.fillStyle=col;
+for(const p of ps){p.y+=dir*p.v;p.s+=.02;p.x+=Math.sin(p.s)*.35;if(p.y<-6||p.y>H+6||p.x<-6||p.x>W+6){p.x=Math.random()*W;p.y=dir>0?-5:H+5}
+const tw=.65+.35*Math.sin(p.s*3);cx.globalAlpha=p.a*tw*.18;cx.beginPath();cx.arc(p.x,p.y,p.r*3,0,6.283);cx.fill();cx.globalAlpha=p.a*tw;cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fill()}
+cx.globalAlpha=1})()})();
 })();
 </script></body></html>
