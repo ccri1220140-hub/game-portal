@@ -176,7 +176,7 @@ document.addEventListener('pointerdown',()=>ac());
 /* ホームのファイル名が違っても繋がるように、候補を順に確認して移動 */
 async function goHome(){const c=['home.html.html','home.html','home_html.html','index.html'];for(const u of c){try{const r=await fetch(u,{method:'HEAD',cache:'no-store'});if(r.ok){location.href=u;return}}catch(e){}}location.href=c[0]}
 const wait=ms=>sleep(ms*SP());
-const BT={dirt:{hp:1,m:0},stone:{hp:2,m:.001},ore:{hp:4,m:.01},gold:{hp:5,m:.03},dia:{hp:6,m:.05},obs:{hp:7,m:.25},neth:{hp:2,m:.005},hat:{hp:4,m:0}};
+const BT={dirt:{hp:1,m:0},stone:{hp:2,m:.01},ore:{hp:4,m:.1},gold:{hp:5,m:.3},dia:{hp:6,m:.5},obs:{hp:7,m:2.5},neth:{hp:2,m:.05},hat:{hp:4,m:0}};
 const ROWS=[[['dirt',100]],[['dirt',70],['stone',25],['hat',5]],[['stone',45],['ore',45],['hat',5],['neth',5]],[['ore',45],['gold',43],['hat',7],['neth',5]],[['gold',25],['dia',70],['neth',5]],[['gold',10],['dia',40],['obs',50]]];
 const HAT=[[.2,40],[.5,30],[.85,25],[1,4],[1.8,1]];
 const CHT=[[{m:2,c:'#4fd5e8'},45],[{m:3,c:'#4cc92f'},40],[{m:5,c:'#d83a3a'},7],[{m:8,c:'#9b4de0'},7],[{m:10,c:'rainbow'},1]];
