@@ -178,7 +178,7 @@ async function goHome(){const c=['home.html.html','home.html','home_html.html','
 const wait=ms=>sleep(ms*SP());
 const BT={dirt:{hp:1,m:0},stone:{hp:2,m:.01},ore:{hp:4,m:.1},gold:{hp:5,m:.3},dia:{hp:6,m:.5},obs:{hp:7,m:2.5},neth:{hp:2,m:.05},hat:{hp:4,m:0}};
 const ROWS=[[['dirt',100]],[['dirt',70],['stone',25],['hat',5]],[['stone',45],['ore',45],['hat',5],['neth',5]],[['ore',45],['gold',43],['hat',7],['neth',5]],[['gold',25],['dia',70],['neth',5]],[['gold',10],['dia',40],['obs',50]]];
-const HAT=[[.2,40],[.5,30],[.85,25],[1,4],[1.8,1]];
+const HAT=[[2,40],[5,30],[8.5,25],[10,4],[18,1]];
 const CHT=[[{m:2,c:'#4fd5e8'},45],[{m:3,c:'#4cc92f'},40],[{m:5,c:'#d83a3a'},7],[{m:8,c:'#9b4de0'},7],[{m:10,c:'rainbow'},1]];
 const PK=[{d:1,c:'#c0713f'},{d:2,c:'#aab0b6'},{d:3,c:'#ffd23a'},{d:5,c:'#47e3ea'},{d:7,c:'#4b3f4d'}];
 const PL=[[0,30],[1,33],[2,30],[3,5],[4,2]];
@@ -229,7 +229,7 @@ async function useTnt(i,rad){const c=i%5;let r=topR(c);if(r<0)r=6;const sup=rad>
 async function execute(){
   const idx=k=>cells.map((x,i)=>x.k===k?i:-1).filter(i=>i>=0);
   for(const k of['sbook','book'])for(const i of idx(k)){const c=i%5;for(let j=c;j<15;j+=5)if(cells[j].k==='pick'){cells[j].lv=Math.max(cells[j].lv,k==='sbook'?4:3);paint(j)}SFX.enh();float('強化!',invEl[i]);invEl[i].innerHTML='';await wait(450)}
-  for(const i of idx('pick'))await usePick(i);
+  for(const i of idx('pick').sort((a,b)=>(a%5)-(b%5)||a-b))await usePick(i);
   for(const i of idx('tnt'))await useTnt(i,1);
   for(const i of idx('stnt'))await useTnt(i,2);
   for(const i of idx('rido')){total++;SFX.coin();float('+1g',invEl[i]);invEl[i].innerHTML='';ui();await wait(400)}
