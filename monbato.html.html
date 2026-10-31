@@ -100,8 +100,23 @@ body[data-biome=rainbow] .sc-sky{animation:hue 14s linear infinite}
 #hearts.hurt{animation:heartsb .5s;filter:drop-shadow(0 0 8px #f33)}
 @keyframes heartsb{0%,100%{transform:none}20%{transform:translateX(-5px) scale(1.15)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}}
 
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .45s ease-in-out infinite alternate}
+@keyframes flick{to{transform:scale(1.08,1.16);opacity:.8}}
+.halo{transform-origin:120px 68px;animation:haloSpin 14s linear infinite}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+.tw{animation:tw 1.5s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.15}to{opacity:1}}
+.crack{filter:drop-shadow(0 0 3px currentColor)}
+.dragon.lunge .eye circle,.dragon.lunge .eye ellipse{fill:#ff2a2a}
 @media(max-height:700px){.enemy-art{height:96px}}
-@media(prefers-reduced-motion:reduce){.sc-stars,.sc-orb,.sc-ground,.sc-fog,.wing,.eye,.enemy-art:before,body[data-biome=rainbow] .sc-sky,.dragon.rainbow svg{animation:none}.app.shake{animation-duration:.2s}}
+@media(prefers-reduced-motion:reduce){.flame,.halo,.tw,.sc-stars,.sc-orb,.sc-ground,.sc-fog,.wing,.eye,.enemy-art:before,body[data-biome=rainbow] .sc-sky,.dragon.rainbow svg{animation:none}.app.shake{animation-duration:.2s}}
+
+.spk{animation:twk 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes twk{to{opacity:.3;transform:scale(.6)}}
+.halo{transform-origin:120px 70px;animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dragon.lunge .eye circle{fill:#ff2a2a}
+.dragon svg,.dragon img{transform-origin:50% 92%}
 </style>
 </head>
 <body data-biome="white">
@@ -171,49 +186,100 @@ const BIOME={'白':'white','緑':'green','赤':'red','金':'gold','黒':'black',
 const MONSTER_IMG={};
 // [体上,体下,腹,翼上,翼下,角,オーラ,瞳]
 const PAL={
-'モケモケ':['#ffffff','#aab8e0','#ffffff','#e6ecff','#9fb2e6','#fff4cf','#bfe4ff','#6fe3ff'],
-'カチコチ':['#a9bdd6','#4a5e7a','#dbe6f2','#8da3c2','#42587a','#e8f4ff','#9fd0ff','#b8f2ff'],
-'ラプトル':['#6fdc72','#1d7a3a','#e1f7a4','#3aa857','#145a2c','#f6edc2','#77f0a0','#ffe45e'],
-'グナプス':['#44c7a8','#145e58','#c4f5d2','#26897f','#0e4a52','#f0f7d0','#5dffcf','#f4ff5e'],
-'イサベリ':['#b4e84e','#4c8a1a','#f6f7a8','#79c42c','#3b7314','#fff2c0','#d3ff6a','#ff9d3c'],
-'ブリトラ':['#ff6c5c','#8c1b22','#ffd3a0','#d8333a','#7a141c','#f5e6c8','#ff7a4a','#ffe24a'],
-'イグニス':['#ffa63f','#9c2a08','#ffe49a','#e8561c','#8a2208','#ffe9b0','#ffb347','#ffffff'],
-'カルデラ':['#d02a40','#44091a','#ff9a80','#97163a','#3a0a22','#e8d8c0','#ff4d6d','#ffd24a'],
-'アルミス':['#ffe784','#c28a1a','#fff6cc','#f6cb50','#b87d10','#fffbe0','#ffd76a','#ff7a3c'],
-'セリオン':['#f7c744','#7e500d','#ffeaa8','#dc9d22','#6e440a','#fff0c0','#ffcf5a','#ff4a3a'],
-'ユニコン':['#ffeaff','#b9a0ff','#ffffff','#9ae8ff','#e08aff','#ffe27a','#d9b8ff','#ff6ad5'],
-'ノワール':['#4a4e78','#0a0b16','#6a6f9a','#2a2c46','#0c0d1a','#9b7bff','#9b5cff','#ff2d55']};
-const SCALE={'アルミス':.8,'ノワール':1.08,'セリオン':1.04};
+'モケモケ':['#ffffff','#aab8e0','#ffffff','#e6ecff','#9fb2e6','#fff4cf','#bfe4ff','#6fb8ff'],
+'カチコチ':['#a9b4c4','#4a5568','#d4dbe6','#7d8aa0','#3c475c','#e4e8ee','#9fd0ff','#b8f2ff'],
+'ラプトル':['#8fe06a','#2f8a3a','#eef7a8','#4fb04f','#1f6a30','#f6edc2','#77f0a0','#ffe45e'],
+'グナプス':['#3fbf9f','#12524e','#bff0c8','#1f7f78','#0c3e46','#e8f2c8','#5dffcf','#f4ff5e'],
+'イサベリ':['#b4e84e','#4c8a1a','#f6f7a8','#79c42c','#3b7314','#fff2c0','#d3ff6a','#ff7a2c'],
+'ブリトラ':['#ff5a4a','#8c1220','#ffd3a0','#e0303a','#7a0f1c','#f5e6c8','#ff7a4a','#ffe24a'],
+'イグニス':['#ffa63f','#a02a08','#ffe49a','#ee5a1c','#8a2208','#ffe9b0','#ffc060','#ffffff'],
+'カルデラ':['#c42a40','#3a0716','#ff9a80','#7e1230','#2e0818','#e8d8c0','#ff4d6d','#ffd24a'],
+'アルミス':['#ffe784','#d09a20','#fff6cc','#f6cb50','#b87d10','#fffbe0','#ffd76a','#ff7a3c'],
+'セリオン':['#ffd24a','#8a5a10','#fff0b8','#f0b42a','#7a4a08','#fff6d0','#ffe27a','#ff3a2a'],
+'ユニコン':['#fff0ff','#c4a8ff','#ffffff','#9ae8ff','#e08aff','#ffe27a','#d9b8ff','#ff6ad5'],
+'ノワール':['#4a4e78','#0a0b16','#6a6f9a','#2a2c46','#0c0d1a','#9b7bff','#a060ff','#ff2d55']};
+const FL=['#ff2a1a','#ff7a1a','#ffc23a','#fff2a8'],GD=['#e89a00','#ffd04a','#fff0a0','#ffffff'],RB=['#ff5a8a','#ffb347','#7dffb0','#7ad7ff'],SH=['#2a0e55','#5a24b8','#9b5cff','#d9b8ff'];
+// w=翼 h=角 b=体型 a=鎧の色 e=目 x=飾り mn=たてがみ色
+const SP={
+'モケモケ':{w:'tiny',h:'nub',b:'round',e:'cute',x:['fluff']},
+'カチコチ':{w:'bat',h:'short',b:'bulky',a:'#7d8794',x:['crack']},
+'ラプトル':{w:'bat',h:'short',b:'slim',x:['frill']},
+'グナプス':{w:'big',h:'long',b:'bulky',a:'#244a52',x:['frill','drip']},
+'イサベリ':{w:'big',h:'ram',b:'std',x:['frill','scar']},
+'ブリトラ':{w:'big',h:'long',b:'slim',x:['ghost','frill','mane'],mn:FL},
+'イグニス':{w:'flame',h:'long',b:'slim',x:['mane','lava','sparkle'],mn:FL},
+'カルデラ':{w:'bat',h:'ram',b:'bulky',a:'#2a1018',x:['lava','frill']},
+'アルミス':{w:'tiny',h:'nub',b:'round',e:'cute',x:['gem','sparkle','coin']},
+'セリオン':{w:'big',h:'crown',b:'std',a:'#e9b53a',x:['halo','mane','gem','sparkle','frill'],mn:GD},
+'ユニコン':{w:'feather',h:'ears',b:'std',e:'noble',x:['mane','sparkle','unihorn'],mn:RB},
+'ノワール':{w:'shadow',h:'crown',b:'bulky',a:'#15121f',x:['halo','mane','frill','scar','eyes4','crack'],mn:SH,cr:'#a060ff'}};
+const SCALE={'モケモケ':.84,'アルミス':.8,'ラプトル':.94,'グナプス':1.05,'イサベリ':1.05,'カルデラ':1.12,'セリオン':1.12,'ユニコン':1.06,'ノワール':1.2};
+const WG={
+tiny:{m:'M142 114 L170 82 Q182 94 184 112 Q170 108 160 124 Q152 124 146 132Z',f:'M170 82 L184 112 M170 82 L160 124',a:[142,114,170,82],t:[]},
+bat:{m:'M142 108 L214 20 Q230 50 238 84 Q222 84 208 100 Q196 96 184 114 Q172 110 160 132 Q152 128 146 138Z',f:'M214 20 L238 84 M214 20 L208 100 M214 20 L184 114 M214 20 L160 132',a:[142,108,214,20],t:[[238,84],[208,100],[184,114],[160,132]]},
+big:{m:'M142 106 L220 4 Q236 36 248 76 Q232 74 220 94 Q208 86 196 108 Q184 102 174 124 Q162 118 152 142 Q146 140 144 140Z',f:'M220 4 L248 76 M220 4 L220 94 M220 4 L196 108 M220 4 L174 124 M220 4 L152 142',a:[142,106,220,4],t:[]},
+shadow:{m:'M142 106 L224 0 Q232 34 250 66 L228 70 L240 98 L210 88 L214 118 L186 104 L182 134 L160 120 L162 146 L146 138Z',f:'M224 0 L250 66 M224 0 L240 98 M224 0 L214 118 M224 0 L182 134 M224 0 L162 146',a:[142,106,224,0],t:[]}};
+WG.flame=WG.bat;
+const HR={nub:'M96 46 Q88 40 86 30 Q98 34 104 44Z',short:'M94 50 Q78 46 72 26 Q92 32 106 46Z',long:'M92 52 Q70 44 60 8 Q90 22 110 44Z',ram:'M92 54 Q62 54 60 78 Q60 94 78 92 Q68 82 76 72 Q88 66 104 58Z',crown:'M92 52 Q70 44 60 6 Q90 22 110 44Z M100 44 Q84 26 88 -4 Q104 20 112 38Z M88 62 Q64 58 50 40 Q76 44 98 54Z',ears:'M96 46 L86 20 L110 40Z'};
+function star(x,y,r,c){return `<path class="spk" d="M${x} ${y-r} Q${x} ${y} ${x+r} ${y} Q${x} ${y} ${x} ${y+r} Q${x} ${y} ${x-r} ${y} Q${x} ${y} ${x} ${y-r}Z" fill="${c}"/>`}
 function dragonSVG(name){
- const [b1,b2,bl,w1,w2,hn,gl,ey]=PAL[name]||PAL['モケモケ'];
+ const P=PAL[name]||PAL['モケモケ'],S=SP[name]||{},[b1,b2,bl,w1,w2,hn,gl,ey]=P;
  const id='g'+Math.random().toString(36).slice(2,7);
  const L='stroke="#080a14" stroke-opacity=".8" stroke-width="2" stroke-linejoin="round"';
  const mir=h=>h+'<g transform="translate(240 0) scale(-1 1)">'+h+'</g>';
- const uni=name==='ユニコン';
+ const X=S.x||[],has=k=>X.includes(k),A=S.a,cute=S.e==='cute',noble=S.e==='noble';
+ // 翼
+ let wing;
+ if(S.w==='feather'){const cols=['#ff7aa8','#ffb36a','#ffe27a','#8affb0','#7ad7ff','#c49bff','#ff7aa8'],rxs=[40,48,56,58,56,50,42];
+  wing='<g class="wing">'+[-82,-66,-50,-34,-18,-2,14].map((a,i)=>{const t=`transform="rotate(${a} 142 108) translate(${rxs[i]*.9} 0)"`;return `<ellipse cx="142" cy="108" rx="${rxs[i]}" ry="9.5" ${t} fill="${cols[i]}" ${L}/><ellipse cx="142" cy="108" rx="${rxs[i]*.78}" ry="2.8" ${t} fill="#fff" fill-opacity=".5"/>`}).join('')+'</g>';
+ }else{const W=WG[S.w||'bat'];
+  wing=`<g class="wing"><path d="${W.m}" fill="url(#${id}w)" ${L}/><path d="${W.m}" fill="url(#${id}s)"/><path d="${W.f}" fill="none" stroke="#080a14" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/>`
+  +(S.w==='shadow'?`<path d="${W.f}" fill="none" stroke="${ey}" stroke-width="1.8" stroke-linecap="round" style="filter:drop-shadow(0 0 3px ${ey})"/>`:'')
+  +(S.w==='flame'?W.t.map(([x,y])=>`<path d="M${x} ${y} Q${x-7} ${y-14} ${x+3} ${y-28} Q${x+4} ${y-12} ${x+12} ${y-8} Q${x+6} ${y-3} ${x} ${y}Z" fill="${gl}" fill-opacity=".92"/>`).join(''):'')
+  +`<path d="M${W.a[0]} ${W.a[1]} L${W.a[2]} ${W.a[3]}" stroke="${w2}" stroke-width="6" stroke-linecap="round"/><path d="M${W.a[0]} ${W.a[1]} L${W.a[2]} ${W.a[3]}" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/><path d="M${W.a[2]} ${W.a[3]} l9 -9 l-1 14z" fill="${hn}" ${L}/></g>`;}
+ const wings=mir(wing);
+ // 後ろ飾り
+ let halo='';
+ if(has('halo'))halo=name==='ノワール'?`<g class="halo"><circle cx="120" cy="70" r="84" fill="none" stroke="${gl}" stroke-width="3" stroke-dasharray="14 9" stroke-opacity=".85" style="filter:drop-shadow(0 0 5px ${gl})"/></g>`:`<g class="halo">${Array.from({length:14},(_,k)=>`<path transform="rotate(${k*360/14} 120 70)" d="M120 -28 L126 -4 L114 -4Z" fill="${gl}" fill-opacity=".85"/>`).join('')}<circle cx="120" cy="70" r="68" fill="none" stroke="${gl}" stroke-width="4" stroke-opacity=".9"/></g>`;
+ const ghost=has('ghost')?`<g opacity=".2" transform="translate(-16 6)">${wings}</g><g opacity=".1" transform="translate(-32 12)">${wings}</g><path d="M-6 96 H44 M-14 128 H38 M4 158 H56 M196 112 H236" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>`:'';
+ // 体
+ const BT={slim:[.86,1],std:[1,1],bulky:[1.16,1.02],round:[1.12,.93]}[S.b||'std'];
  const body='M94 112 Q120 100 146 112 Q162 152 144 188 Q120 198 96 188 Q78 152 94 112Z';
- const wings=mir(`<g class="wing"><path d="M142 108 L214 20 Q230 50 238 84 Q222 84 208 100 Q196 96 184 114 Q172 110 160 132 Q152 128 146 138Z" fill="url(#${id}w)" ${L}/><path d="M142 108 L214 20 Q230 50 238 84 Q222 84 208 100 Q196 96 184 114 Q172 110 160 132 Q152 128 146 138Z" fill="url(#${id}s)"/><path d="M214 20 L238 84 M214 20 L208 100 M214 20 L184 114 M214 20 L160 132" fill="none" stroke="#080a14" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/><path d="M142 108 L214 20" stroke="${w2}" stroke-width="6" stroke-linecap="round"/><path d="M142 108 L214 20" stroke="#fff" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/><path d="M214 20 l9 -9 l-1 14z" fill="${hn}" ${L}/></g>`);
+ const cc=has('lava')?gl:has('crack')?(S.cr||'#1b2230'):null,lv=has('lava');
+ const crk=d=>cc?`<path d="${d}" fill="none" stroke="${cc}" stroke-width="${lv?2.2:1.6}" stroke-linecap="round" stroke-linejoin="round"${lv?` style="filter:drop-shadow(0 0 3px ${cc})"`:''}/>`:'';
  const legs=mir(`<path d="M98 140 Q74 150 72 176 L70 190 L98 190 L100 178 Q112 162 112 150Z" fill="url(#${id}b)" ${L}/><path d="M68 192 L70 203 L76 192Z M77 193 L80 204 L85 193Z M86 192 L90 202 L94 190Z" fill="${hn}" ${L}/>`);
- const crest=uni
-  ?`<path d="M113 42 L120 -14 L127 42Z" fill="${hn}" ${L}/><path d="M115 32 L125 29 M116 22 L124 19 M117 12 L123 9" stroke="#a8741a" stroke-width="1.6" stroke-linecap="round"/>`
-  :`<path d="M120 14 L129 42 L111 42Z" fill="${hn}" ${L}/>`+mir(`<path d="M104 24 L116 42 L98 40Z" fill="${hn}" ${L}/>`);
- const horns=mir(`<path d="M92 52 Q70 44 60 8 Q90 22 110 44Z" fill="${hn}" ${L}/><path d="M92 52 Q70 44 60 8" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="3"/><path d="M90 76 Q70 80 58 100 Q80 94 98 90Z" fill="${hn}" ${L}/>`);
- const face=mir(`<ellipse cx="112" cy="84" rx="2.4" ry="3.4" transform="rotate(-18 112 84)" fill="#080a14"/><path d="M109 99 L111 110 L116 101Z" fill="#fff" stroke="#080a14" stroke-width=".8" stroke-linejoin="round"/><g class="eye" style="color:${ey}"><path d="M95 66 Q108 54 120 68 Q108 73 95 66Z" fill="${ey}"/></g><ellipse cx="108" cy="64.5" rx="1.8" ry="5" transform="rotate(-24 108 64.5)" fill="#0a0408"/><path d="M90 52 Q106 56 121 69" fill="none" stroke="#080a14" stroke-width="4" stroke-linecap="round"/>`);
+ const armB=A?mir(`<path d="M94 112 Q68 106 62 132 Q82 138 102 130Z" fill="${A}" ${L}/><path d="M88 114 Q74 114 70 126" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2"/><path d="M104 122 L120 128 L120 158 L108 150Z" fill="${A}" ${L}/>`):'';
+ const bodyG=`<g transform="translate(120 190) scale(${BT[0]} ${BT[1]}) translate(-120 -190)">${legs}<path d="${body}" fill="url(#${id}b)" ${L}/><path d="${body}" fill="url(#${id}s)"/><path d="M107 118 Q120 113 133 118 L137 186 Q120 193 103 186Z" fill="${bl}" fill-opacity=".92"/><path d="M107 132 Q120 138 133 132 M106 146 Q120 152 134 146 M105 160 Q120 166 135 160 M105 174 Q120 180 135 174" fill="none" stroke="#080a14" stroke-opacity=".4" stroke-width="1.4"/>${armB}${crk('M110 128 L116 142 L110 156 L118 170 M132 128 L126 144 L134 160')}${has('fluff')?'<circle cx="120" cy="122" r="10" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/><circle cx="108" cy="128" r="7" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/><circle cx="132" cy="128" r="7" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/>':''}</g>`;
+ const mane=has('mane')?mir(S.mn.map((c,i)=>`<path d="M104 ${56+i*10} Q${72-i*6} ${34+i*14} ${44-i*2} ${8+i*26} Q${74-i*4} ${50+i*13} 100 ${76+i*10}Z" fill="${c}" fill-opacity=".93"/>`).join('')):'';
+ // 頭
+ const hp=HR[S.h||'long'];
+ const horns=mir(`<path d="${hp}" fill="${hn}" ${L}/><path d="${hp}" fill="url(#${id}h)"/>`+(has('frill')?`<path d="M90 76 Q70 80 58 100 Q80 94 98 90Z" fill="${hn}" ${L}/>`:''));
+ const crest=has('unihorn')?`<path d="M112 44 L120 -22 L128 44Z" fill="${hn}" ${L}/><path d="M114 34 L126 30 M115 22 L125 18 M116 10 L124 6 M117 -2 L123 -5" stroke="#b07a1a" stroke-width="1.8" stroke-linecap="round"/>`:cute?`<path d="M120 26 L126 42 L114 42Z" fill="${hn}" ${L}/>`:`<path d="M120 14 L129 42 L111 42Z" fill="${hn}" ${L}/>`+mir(`<path d="M104 24 L116 42 L98 40Z" fill="${hn}" ${L}/>`);
+ const head='M120 34 Q150 34 154 62 Q156 86 141 98 Q131 108 120 108 Q109 108 99 98 Q84 86 86 62 Q90 34 120 34Z';
+ const snout=noble?'M104 72 Q120 64 136 72 Q148 96 134 114 Q120 120 106 114 Q92 96 104 72Z':'M103 76 Q120 68 137 76 Q145 94 131 105 Q120 110 109 105 Q95 94 103 76Z';
+ const eyes=cute
+  ?mir(`<circle cx="108" cy="68" r="8.5" fill="#fff" stroke="#080a14" stroke-width="1.4"/><g class="eye" style="color:${ey}"><circle cx="109" cy="69" r="5.6" fill="${ey}"/></g><circle cx="109.5" cy="69.5" r="3" fill="#10141f"/><circle cx="111.4" cy="66.6" r="1.7" fill="#fff"/><ellipse cx="94" cy="86" rx="5" ry="3" fill="#ff7a9a" fill-opacity=".5"/>`)
+  :mir(`<g class="eye" style="color:${ey}"><path d="M95 66 Q108 54 120 68 Q108 73 95 66Z" fill="${ey}"/></g><ellipse cx="108" cy="64.5" rx="1.8" ry="5" transform="rotate(-24 108 64.5)" fill="#0a0408"/><path d="${noble?'M92 57 Q106 55 120 64':'M90 52 Q106 56 121 69'}" fill="none" stroke="#080a14" stroke-width="${noble?2.4:4}" stroke-linecap="round"/>`);
+ const fangs=(cute||noble)?'':mir(`<path d="M109 99 L111 110 L116 101Z" fill="#fff" stroke="#080a14" stroke-width=".8" stroke-linejoin="round"/>`+(has('drip')?`<path d="M110.5 111 q-3 6 0 9 q3 -3 0 -9z" fill="#8bff3a" stroke="#2c6a10" stroke-width=".8"/>`:''));
+ const mouth=cute?'<path d="M112 101 Q120 108 128 101" fill="none" stroke="#080a14" stroke-width="2" stroke-linecap="round"/>':'<path d="M106 97 Q120 107 134 97" fill="none" stroke="#080a14" stroke-width="2.2" stroke-linecap="round"/>';
+ const headArm=A?`<path d="M104 40 Q120 33 136 40 L131 54 Q120 47 109 54Z" fill="${A}" ${L}/>`:'';
+ const gem=has('gem')?`<path d="M120 44 L127 53 L120 64 L113 53Z" fill="${gl}" ${L}/><path d="M120 44 L120 64 M113 53 L127 53" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>`:'';
+ const fluff=has('fluff')?mir('<circle cx="90" cy="84" r="9" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/><circle cx="84" cy="95" r="6.5" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/><circle cx="104" cy="40" r="6" fill="#fff" stroke="#c9d3f0" stroke-width="1.2"/>'):'';
+ const scar=has('scar')?`<path d="M97 46 L112 84" stroke="#f0d8c0" stroke-opacity=".9" stroke-width="2.4" stroke-linecap="round"/><path d="M95 62 l9 3 M100 74 l9 3" stroke="#f0d8c0" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round"/>`:'';
+ const eyes4=has('eyes4')?mir(`<g class="eye" style="color:${ey}"><path d="M96 44 Q102 38 109 44 Q102 48 96 44Z" fill="${ey}"/></g>`):'';
+ const spk=has('sparkle')?[[30,36,7,gl],[214,52,6,hn],[38,152,5,hn],[208,150,7,gl],[120,-14,5,'#fff']].map(a=>star(...a)).join(''):'';
+ const coin=has('coin')?[[34,96],[208,104],[196,28]].map(([x,y])=>`<g class="spk"><circle cx="${x}" cy="${y}" r="9" fill="#ffd24a" stroke="#9a6a10" stroke-width="2"/><circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#9a6a10" stroke-width="1.4"/></g>`).join(''):'';
  return `<svg viewBox="0 -14 240 216" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
 <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${b1}"/><stop offset="1" stop-color="${b2}"/></linearGradient>
 <linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${w1}"/><stop offset="1" stop-color="${w2}"/></linearGradient>
+<linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
 <pattern id="${id}s" width="9" height="8" patternUnits="userSpaceOnUse"><path d="M0 8 Q4.5 0 9 8" fill="none" stroke="#000" stroke-opacity=".2" stroke-width="1"/></pattern></defs>
-${wings}${legs}
-<path d="${body}" fill="url(#${id}b)" ${L}/><path d="${body}" fill="url(#${id}s)"/>
-<path d="M107 118 Q120 113 133 118 L137 186 Q120 193 103 186Z" fill="${bl}" fill-opacity=".92"/>
-<path d="M107 132 Q120 138 133 132 M106 146 Q120 152 134 146 M105 160 Q120 166 135 160 M105 174 Q120 180 135 174" fill="none" stroke="#080a14" stroke-opacity=".4" stroke-width="1.4"/>
-${crest}${horns}
+${halo}${ghost}${wings}${bodyG}${mane}${crest}${horns}
 <path d="M100 84 L94 118 Q120 108 146 118 L140 84Z" fill="url(#${id}b)" ${L}/>
-<path d="M120 34 Q150 34 154 62 Q156 86 141 98 Q131 108 120 108 Q109 108 99 98 Q84 86 86 62 Q90 34 120 34Z" fill="url(#${id}b)" ${L}/>
-<path d="M120 34 Q150 34 154 62 Q156 86 141 98 Q131 108 120 108 Q109 108 99 98 Q84 86 86 62 Q90 34 120 34Z" fill="url(#${id}s)"/>
+<path d="${head}" fill="url(#${id}b)" ${L}/><path d="${head}" fill="url(#${id}s)"/>
 <path d="M104 45 Q120 37 136 45 Q120 51 104 45Z" fill="#fff" fill-opacity=".24"/>
-<path d="M103 76 Q120 68 137 76 Q145 94 131 105 Q120 110 109 105 Q95 94 103 76Z" fill="${b1}" fill-opacity=".55" stroke="#080a14" stroke-opacity=".35" stroke-width="1.5"/>
-<path d="M106 97 Q120 107 134 97" fill="none" stroke="#080a14" stroke-width="2.2" stroke-linecap="round"/>
-${face}</svg>`;
+<path d="${snout}" fill="${noble?bl:b1}" fill-opacity="${noble?.7:.55}" stroke="#080a14" stroke-opacity=".35" stroke-width="1.5"/>
+${mouth}${headArm}${fluff}${crk('M102 50 L108 62 L104 72 M138 50 L132 60 L136 70')}${gem}${mir('<ellipse cx="112" cy="84" rx="2.4" ry="3.4" transform="rotate(-18 112 84)" fill="#080a14"/>')}${fangs}${eyes}${eyes4}${scar}${spk}${coin}</svg>`;
 }
 function renderArt(m){const d=$('dragon');const q=PAL[m.name]||PAL['モケモケ'];d.style.setProperty('--dg',q[6]);d.style.setProperty('--s',SCALE[m.name]||1);d.classList.toggle('rainbow',m.name==='ユニコン');d.innerHTML=MONSTER_IMG[m.name]?'<img src="'+MONSTER_IMG[m.name]+'" alt="'+m.name+'">':dragonSVG(m.name);document.body.dataset.biome=BIOME[m.color]||'white'}
 function hitEffect(){const h=$('hitfx'),a=document.querySelector('.app'),hh=$('hearts');h.classList.remove('on');a.classList.remove('shake');hh.classList.remove('hurt');void h.offsetWidth;h.classList.add('on');a.classList.add('shake');hh.classList.add('hurt');setTimeout(()=>{h.classList.remove('on');a.classList.remove('shake');hh.classList.remove('hurt')},760);sound(70,.28,'square',.06)}
