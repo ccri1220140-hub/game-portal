@@ -1,5 +1,3 @@
-ヴァルコード11
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -49,6 +47,7 @@ h1{
 }
 
 /* 液晶 */
+
 .lcd-panel{
   position:relative;
   overflow:hidden;
@@ -79,7 +78,12 @@ h1{
   inset:0;
   pointer-events:none;
   opacity:.12;
-  background:repeating-linear-gradient(to bottom,transparent 0px,transparent 4px,#7de7ff 5px)
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 4px,
+    #7de7ff 5px
+  )
 }
 
 .lcd-content{position:relative;z-index:1}
@@ -112,6 +116,8 @@ h1{
   text-shadow:0 0 12px #ffb52d
 }
 
+/* 液晶上部の777 */
+
 .seven-indicator{
   display:flex;
   justify-content:center;
@@ -142,7 +148,16 @@ h1{
 
 .seven-mark.rainbow{
   color:transparent;
-  background:linear-gradient(135deg,#ff3434 0%,#ffad33 17%,#fff05a 32%,#52ff86 47%,#4ceaff 62%,#6584ff 77%,#ed68ff 92%);
+  background:linear-gradient(
+    135deg,
+    #ff3434 0%,
+    #ffad33 17%,
+    #fff05a 32%,
+    #52ff86 47%,
+    #4ceaff 62%,
+    #6584ff 77%,
+    #ed68ff 92%
+  );
   background-clip:text;
   -webkit-background-clip:text;
   -webkit-text-stroke:1.5px #fff;
@@ -287,6 +302,7 @@ h1{
 }
 
 /* リール */
+
 .reel-stage{
   position:relative;
   width:100%;
@@ -416,8 +432,18 @@ button{
 }
 
 .info{font-size:12px;color:#b7c2d6;line-height:1.7;text-align:left}
+
 .info summary{cursor:pointer;font-weight:800;color:#fff}
-.log{max-height:150px;overflow:auto;text-align:left;font-size:12px;color:#c9d4e7;line-height:1.6}
+
+.log{
+  max-height:150px;
+  overflow:auto;
+  text-align:left;
+  font-size:12px;
+  color:#c9d4e7;
+  line-height:1.6
+}
+
 .log div{border-bottom:1px solid #ffffff12;padding:4px 0}
 
 .overlay{
@@ -443,12 +469,17 @@ button{
 }
 
 .modal h2{font-size:32px;color:var(--gold);margin:0 0 10px}
+
 .modal p{line-height:1.7;color:#e3e9f4;white-space:pre-line}
+
 .modal button{width:100%;margin-top:8px}
+
 .modal .hidden{display:none}
+
 .small{font-size:11px;color:#8e9bb3}
 
-/* ベルの獲得PT表示 */
+/* ベルの獲得PTをリールに重ねて表示 */
+
 .point-pop{
   position:absolute;
   inset:0;
@@ -479,7 +510,11 @@ button{
   letter-spacing:1px;
   white-space:nowrap;
   -webkit-text-stroke:.6px #fff0bd;
-  text-shadow:3px 3px 0 #6c2700,-2px -2px 0 #6c2700,0 0 10px #ff7a00,0 0 24px #ff9b27;
+  text-shadow:
+    3px 3px 0 #6c2700,
+    -2px -2px 0 #6c2700,
+    0 0 10px #ff7a00,
+    0 0 24px #ff9b27;
   box-shadow:0 0 20px #ff8c2466;
 }
 
@@ -491,53 +526,13 @@ button{
   100%{opacity:0;transform:scale(1.12);visibility:hidden}
 }
 
-/* ★修正：ゲーム数加算の水色ポップアップ */
-.game-pop{
-  position:absolute;
-  inset:0;
-  z-index:22;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  pointer-events:none;
-  opacity:0;
-  visibility:hidden;
-}
-
-.game-pop.show{
-  visibility:visible;
-  animation:gamePop 2.1s ease-out forwards;
-}
-
-.game-pop span{
-  display:inline-block;
-  padding:10px 20px;
-  border-radius:16px;
-  border:3px solid #baf7ff;
-  background:linear-gradient(180deg,#052b48f2,#07152af5);
-  color:#7de7ff;
-  font-size:clamp(48px,14vw,70px);
-  font-weight:1000;
-  font-style:italic;
-  letter-spacing:1px;
-  white-space:nowrap;
-  -webkit-text-stroke:1px #fff;
-  text-shadow:0 0 5px #fff,0 0 12px #38dfff,0 0 25px #00aaff,3px 4px 0 #064c87;
-  box-shadow:0 0 25px #20dfff88,inset 0 0 15px #20dfff33;
-}
-
-@keyframes gamePop{
-  0%{opacity:0;transform:scale(.35) translateY(18px)}
-  12%{opacity:1;transform:scale(1.2) translateY(0)}
-  22%{opacity:1;transform:scale(1)}
-  78%{opacity:1;transform:scale(1)}
-  100%{opacity:0;transform:scale(1.12) translateY(-8px);visibility:hidden}
-}
-
 /* 777 RUSH */
+
 .seven-rush-screen{
   border-color:#ffe18a;
-  background:radial-gradient(ellipse at top,#6b3c9e 0%,transparent 65%),linear-gradient(145deg,#25164a,#100d24 65%,#39205d);
+  background:
+    radial-gradient(ellipse at top,#6b3c9e 0%,transparent 65%),
+    linear-gradient(145deg,#25164a,#100d24 65%,#39205d);
   box-shadow:inset 0 0 20px #000b,0 0 18px #c06bff55
 }
 
@@ -548,7 +543,8 @@ button{
 
 .judge-message{color:#ffe18a;text-shadow:0 0 12px #ffb52d}
 
-/* プチュン演出 */
+/* プチュン暗転・巨大な虹色7 */
+
 .puchun{
   position:fixed;
   inset:0;
@@ -564,9 +560,15 @@ button{
   transition:background .25s ease;
 }
 
-.puchun.show{opacity:1;visibility:visible}
+.puchun.show{
+  opacity:1;
+  visibility:visible;
+}
 
-.puchun::before,.puchun::after{
+/* 虹色の光線と光の粒 */
+
+.puchun::before,
+.puchun::after{
   content:"";
   position:absolute;
   inset:-50%;
@@ -575,41 +577,79 @@ button{
 }
 
 .puchun::before{
-  background:repeating-conic-gradient(from 0deg,#ff3131 0deg 8deg,#ffb52d 8deg 16deg,#fff34f 16deg 24deg,#38ff83 24deg 32deg,#35eaff 32deg 40deg,#6574ff 40deg 48deg,#e64cff 48deg 56deg);
+  background:repeating-conic-gradient(
+    from 0deg,
+    #ff3131 0deg 8deg,
+    #ffb52d 8deg 16deg,
+    #fff34f 16deg 24deg,
+    #38ff83 24deg 32deg,
+    #35eaff 32deg 40deg,
+    #6574ff 40deg 48deg,
+    #e64cff 48deg 56deg
+  );
   -webkit-mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
   mask-image:radial-gradient(circle,transparent 0%,#000 30%,transparent 72%);
 }
 
 .puchun::after{
   inset:0;
-  background:radial-gradient(circle at 50% 50%,#ffffffee 0%,transparent 12%),radial-gradient(circle at 20% 25%,#ff42caaa 0%,transparent 30%),radial-gradient(circle at 80% 20%,#42eaffaa 0%,transparent 30%),radial-gradient(circle at 20% 80%,#fff34faa 0%,transparent 30%),radial-gradient(circle at 80% 80%,#9d4dffaa 0%,transparent 30%);
+  background:
+    radial-gradient(circle at 50% 50%,#ffffffee 0%,transparent 12%),
+    radial-gradient(circle at 20% 25%,#ff42caaa 0%,transparent 30%),
+    radial-gradient(circle at 80% 20%,#42eaffaa 0%,transparent 30%),
+    radial-gradient(circle at 20% 80%,#fff34faa 0%,transparent 30%),
+    radial-gradient(circle at 80% 80%,#9d4dffaa 0%,transparent 30%);
 }
 
 .puchun.reveal{
-  background:radial-gradient(circle at center,#fff 0%,#fff2a8 9%,#ff4dc8 27%,#5722a9 58%,#080012 100%);
+  background:radial-gradient(
+    circle at center,
+    #fff 0%,
+    #fff2a8 9%,
+    #ff4dc8 27%,
+    #5722a9 58%,
+    #080012 100%
+  );
   animation:puchunFlash .5s ease-in-out 2;
 }
 
-.puchun.reveal::before{opacity:.42;animation:rainbowRays 2.5s linear infinite}
-.puchun.reveal::after{opacity:1;animation:rainbowBurst 1.2s ease-out both}
+.puchun.reveal::before{
+  opacity:.42;
+  animation:rainbowRays 2.5s linear infinite;
+}
+
+.puchun.reveal::after{
+  opacity:1;
+  animation:rainbowBurst 1.2s ease-out both;
+}
 
 .puchun-number{
   position:relative;
   z-index:2;
   font-family:Impact,Haettenschweiler,"Arial Black",sans-serif;
-  font-size:clamp(110px,42vw,260px);
+  font-size:clamp(180px,65vw,360px);
   font-weight:1000;
   font-style:italic;
   line-height:1;
-  letter-spacing:-.08em;
-  white-space:nowrap;
   color:transparent;
-  background:linear-gradient(135deg,#ff2222 0%,#ff9e26 15%,#fff34f 30%,#45ff7b 45%,#35eaff 60%,#5871ff 75%,#d947ff 90%,#ff70c9 100%);
+  background:linear-gradient(
+    135deg,
+    #ff2222 0%,
+    #ff9e26 15%,
+    #fff34f 30%,
+    #45ff7b 45%,
+    #35eaff 60%,
+    #5871ff 75%,
+    #d947ff 90%,
+    #ff70c9 100%
+  );
   background-clip:text;
   -webkit-background-clip:text;
   -webkit-text-stroke:3px #fff;
-  filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 30px #ff49d7) drop-shadow(0 0 55px #43eaff);
-  text-shadow:0 0 15px #fff,0 0 35px #ffdf00,0 0 65px #ff00ff,0 0 100px #00eaff;
+  filter:
+    drop-shadow(0 0 10px #fff)
+    drop-shadow(0 0 30px #ff49d7)
+    drop-shadow(0 0 55px #43eaff);
   opacity:0;
   transform:scale(.15) rotate(-12deg);
 }
@@ -642,22 +682,216 @@ button{
   50%{filter:brightness(1.8)}
 }
 
-.puchun.blackout{background:#000 !important}
-.puchun.blackout::before,.puchun.blackout::after{opacity:0;transition:opacity .3s ease}
-.puchun.blackout .puchun-number{opacity:0;transition:opacity .3s ease}
-
 @media(prefers-reduced-motion:reduce){
   .seven-mark.rainbow{animation:none}
-  .puchun.reveal .puchun-number{animation:none;opacity:1;transform:scale(1)}
+  .puchun.reveal .puchun-number{
+    animation:none;
+    opacity:1;
+    transform:scale(1)
+  }
 }
+
+/* 777揃い専用の派手な表示 */
+.puchun-number{
+  font-size:clamp(110px, 42vw, 260px);
+  font-weight:1000;
+  letter-spacing:-0.08em;
+  white-space:nowrap;
+  text-shadow:
+    0 0 15px #fff,
+    0 0 35px #ffdf00,
+    0 0 65px #ff00ff,
+    0 0 100px #00eaff;
+}
+
+/* 777表示後の暗転 */
+.puchun.blackout{
+  background:#000 !important;
+}
+
+.puchun.blackout::before,
+.puchun.blackout::after{
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+.puchun.blackout .puchun-number{
+  opacity:0;
+  transition:opacity .3s ease;
+}
+
+
+/* ===== 筐体リメイク ===== */
+body{background:#0b0508;overflow-x:hidden}
+main{width:min(100%,470px);padding:6px 8px 24px}
+h1,.subtitle{display:none}
+.cab{container-type:inline-size;position:relative;background:linear-gradient(90deg,#4a0309,#b3101c 8%,#8a0812 50%,#b3101c 92%,#4a0309);border-radius:3cqw;padding:2cqw 0 0;box-shadow:0 0 0 2px #1a0306,0 10px 40px #000a;--c1:#fff;--c2:#cfd8e6}
+.cab[data-mode=rush]{--c1:#9fe0ff;--c2:#1c8cff}.cab[data-mode=judge]{--c1:#ff9a9a;--c2:#ff1f2d}.cab[data-mode=sevenRush]{--c1:#fff;--c2:#ff4de0}
+.cab.shake{animation:shake .45s}@keyframes shake{20%{transform:translate(-5px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(3px,2px)}}
+.status{display:flex;gap:2cqw;margin:0 6cqw 2cqw;padding:1.4cqw;background:#0a0a0a;border:1px solid #2a7a2a;border-radius:1cqw}
+#modeLabel{flex:1;text-align:center;font-weight:800;font-size:4cqw;color:#fff;background:linear-gradient(#2d6bff,#0a38c8);border:1px solid #8ab4ff;padding:1.2cqw}
+#snd{padding:1.2cqw 4cqw;border-radius:0;background:linear-gradient(#2d6bff,#0a38c8);border:1px solid #8ab4ff;color:#fff;font-size:4cqw;margin:0}
+.lamps{display:flex;gap:1.2cqw;margin:0 8cqw 2cqw;justify-content:center}.lamps i{flex:1;height:4.2cqw;background:linear-gradient(#fff,#bbb);border-radius:1cqw;box-shadow:0 0 6px #fff8;transition:.15s}
+.cab[data-mode=rush] .lamps i{background:linear-gradient(#bff,#18f);box-shadow:0 0 8px #3af}.cab[data-mode=judge] .lamps i{background:linear-gradient(#fcc,#e11);box-shadow:0 0 8px #f33}.cab[data-mode=sevenRush] .lamps i{animation:rb 1s linear infinite}
+.cab.spinning .lamps i:nth-child(odd){animation:blink .16s steps(2) infinite}.cab.spinning .lamps i:nth-child(even){animation:blink .16s steps(2) infinite reverse}
+.cab.fx .lamps i,.cab.fx .tube{animation:blink .09s steps(2) 8}
+@keyframes blink{50%{filter:brightness(.25)}}@keyframes rb{to{filter:hue-rotate(360deg) brightness(1.2)}}
+.body{display:grid;grid-template-columns:7.5cqw 1fr 7.5cqw;gap:0}
+.tube{margin:2cqw 1.2cqw;border-radius:1cqw;background:repeating-linear-gradient(#fff 0 8cqw,#555 8cqw 9cqw);box-shadow:0 0 8px #fff6;transition:.2s}
+.cab[data-mode=rush] .tube{background:repeating-linear-gradient(#8df 0 8cqw,#025 8cqw 9cqw);box-shadow:0 0 12px #2af}
+.cab[data-mode=judge] .tube{background:repeating-linear-gradient(#f77 0 8cqw,#400 8cqw 9cqw);box-shadow:0 0 12px #f22}
+.cab[data-mode=sevenRush] .tube{background:repeating-linear-gradient(#f4f 0 8cqw,#26f 8cqw 9cqw);animation:rb 1s linear infinite}
+.cab.spinning .tube{background-size:100% 18cqw;animation:flow .5s linear infinite}@keyframes flow{to{background-position:0 18cqw}}
+.mid{min-width:0;background:#150205;border:2px solid #000;border-radius:2cqw 2cqw 0 0;overflow:hidden}
+.roof{background:linear-gradient(#a50c18,#5a0309);text-align:center;font:900 3cqw Impact,sans-serif;letter-spacing:1.2cqw;color:#ff9aa4;padding:.8cqw}
+.seven-indicator{margin:0;padding:2cqw 0;border:0;gap:3cqw;background:linear-gradient(#444,#1c1c1c);transition:.3s}
+.seven-mark{width:21cqw;height:20cqw;background:none;transform:none!important;animation:none!important;filter:none!important}
+.seven-mark svg{width:100%;height:100%;overflow:visible}.seven-mark path{fill:url(#gGray);stroke:#ddd;stroke-width:3;stroke-linejoin:round;transition:.3s}
+.cab[data-mode=rush] .seven-mark path{fill:url(#gBlue);stroke:#bfe9ff}.cab[data-mode=judge] .seven-mark path{fill:url(#gRed);stroke:#ffb0b0}.cab[data-mode=sevenRush] .seven-mark path,.seven-mark.rainbow path{fill:url(#gRb);stroke:#fff}
+.seven-mark.rainbow svg{filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #f4f);animation:rb 1.2s linear infinite}
+.lcd-panel{margin:0;border:0;border-radius:0;padding:0;background:#06091a}.lcd-panel::before,.lcd-panel::after{display:none}.lcd-content{display:block}
+.lcd-status{position:absolute;z-index:3;right:2cqw;top:9cqw;margin:0}.lcd-status-label{display:none}.lcd-rush{display:none}
+.lcd-grid{display:flex;margin:0;padding:1.6cqw 8cqw;background:linear-gradient(#222,#050505);align-items:center;justify-content:center;gap:2cqw}
+.lcd-box{background:none;border:0;box-shadow:none;padding:0;display:flex;align-items:baseline;gap:1cqw}.lcd-label{font-size:2.8cqw;color:#bbb;margin:0}
+.lcd-value{font:900 6.4cqw Arial,sans-serif;color:#fff;text-shadow:none}.lcd-unit{font-size:3cqw}
+.stage{position:relative;height:25cqw;overflow:hidden;background:linear-gradient(#2a6fd6,#8cc4ff 60%,#fff);transition:.4s}
+.stage::before{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(#ffffff40 0 6deg,transparent 6deg 14deg);animation:spin 14s linear infinite}
+.stage::after{content:"7";position:absolute;inset:0;display:grid;place-items:center;font:italic 900 24cqw Impact,sans-serif;color:#fff3;text-shadow:0 0 20px #fff8}
+.cab[data-mode=rush] .stage{background:linear-gradient(#0a2a8a,#18f 70%,#aef)}.cab[data-mode=judge] .stage{background:linear-gradient(#300,#e22 55%,#fa3);animation:flick .3s steps(3) infinite}.cab[data-mode=sevenRush] .stage{background:linear-gradient(#a0f,#f4d,#fd2);animation:rb 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes flick{50%{filter:brightness(1.25)}}
+.gauge-box{margin:0;border:0;border-radius:0;background:#0a0a14;padding:1.5cqw 3cqw}.gauge-track{height:5cqw;border-radius:0;clip-path:polygon(0 60%,100% 0,100% 100%,0 100%);padding:0;background:#555}
+.gauge-fill{border-radius:0;background:linear-gradient(90deg,#1fe0d0,#8040f0,#ff2060)}.gauge-top{margin:0}.gauge-title,.gauge-range{font-size:2.6cqw}.gauge-bottom{font-size:2.8cqw;margin:.5cqw 0 0}
+.lcd-message{margin:0;padding:1.2cqw;background:#050522;border-top:1px solid #335;font-size:3.4cqw;color:#fff;min-height:6cqw}
+.lcd-panel.seven-rush-screen{box-shadow:none}
+.panel.deck{margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.reel-stage{background:#000;padding:1.5cqw 3cqw;border-top:3px solid #222}
+.reels{margin:0;gap:1cqw;max-width:none}
+.reel{height:48cqw;display:block;padding:0;border:0;border-radius:0;background:#fff;position:relative;overflow:hidden}
+.reel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(#0009,transparent 22%,transparent 78%,#0009);z-index:4}
+.reel.spinning,.reel.stopped,.reel.cherry-stop{border:0;box-shadow:none}
+.reel.bump{animation:bump .12s}@keyframes bump{50%{transform:translateY(2.5cqw)}}
+.cell{height:16cqw;max-height:none;border:0;border-radius:0;background:repeating-linear-gradient(60deg,#e8f3ff 0 3cqw,#cfe2f7 3cqw 6cqw);padding:1.2cqw;box-shadow:none;font-size:0}
+.cell svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 1px #0006)}
+.cell.seven{font-size:0;letter-spacing:0;text-shadow:none;-webkit-text-stroke:0}
+.cell.hit{background:#fff3a8;box-shadow:inset 0 0 0 .8cqw #ffb800}.cell.cherry-hit{background:#ffd0dc;box-shadow:inset 0 0 0 .8cqw #ff2a5a}
+.strip{position:absolute;left:0;right:0;top:0;z-index:2;animation:run .26s linear infinite;filter:blur(1.6px) brightness(.95)}
+@keyframes run{from{transform:translateY(-96cqw)}to{transform:translateY(0)}}
+.reel.spinning .cell{visibility:hidden;animation:none}
+.line-note{display:none}
+.point-pop{z-index:20}.point-pop span{background:none;border:0;box-shadow:none;padding:0;font:italic 900 clamp(60px,24cqw,120px) Impact,sans-serif;color:#ffb12a;-webkit-text-stroke:2px #8a1a00;text-shadow:0 0 10px #f50,0 0 28px #f80,4px 4px 0 #a00;transform:skewX(-6deg)}
+.point-pop small{font-size:.5em}
+.sub{display:flex;gap:2cqw;align-items:center;padding:2cqw 8cqw;background:linear-gradient(#bbb,#666)}
+.sub .dots{display:flex;gap:4cqw;flex:1}.sub .dots b{width:5cqw;height:5cqw;border-radius:50%;background:radial-gradient(#f66,#900)}.sub .dots b:first-child{background:#222}
+.cab.spinning .sub .dots b{animation:blink .2s steps(2) infinite}
+#spin{margin:0;width:100%;padding:2.4cqw;border-radius:3cqw;font:900 9cqw Arial,sans-serif;letter-spacing:.5cqw;color:#fff;background:linear-gradient(#2d8cff,#0a3fd0);border:2px solid #cfe;box-shadow:0 1.4cqw 0 #062a8a}
+#spin:disabled{background:linear-gradient(#aaa,#666);color:#ddd;opacity:1;box-shadow:0 1.4cqw 0 #333}
+.deck .result,.deck .detail{background:#000;margin:0;padding:1cqw;font-size:3.6cqw;min-height:0;color:#8fe}.deck .detail{color:#cbd5e1;font-size:3cqw;padding-bottom:1.5cqw}
+.below{display:flex;margin:0;padding:1.5cqw 0 3cqw;justify-content:center;background:linear-gradient(#26324f,#0d1530);border-radius:0 0 3cqw 3cqw}
+/* ===== 演出 ===== */
+.puchun{background:#000;transition:opacity .35s}.puchun:not(.show){opacity:0;visibility:hidden}.puchun::before,.puchun::after{display:none}
+.puchun>*{position:absolute;pointer-events:none}.puchun canvas{inset:0;width:100%;height:100%;z-index:6}
+.shutL,.shutR{top:-10%;bottom:-10%;width:62%;z-index:8;background:repeating-linear-gradient(100deg,#1a1d22 0 14px,#3b4350 14px 18px,#0c0e11 18px 30px);box-shadow:0 0 30px #000;transition:transform .42s cubic-bezier(.7,0,.3,1)}
+.shutL{left:-12%;transform:translateX(-120%) skewX(-12deg)}.shutR{right:-12%;transform:translateX(120%) skewX(-12deg)}
+.p-shut .shutL,.p-shut .shutR{transform:skewX(-12deg)}
+.flare{inset:0;z-index:4;opacity:0;background:radial-gradient(ellipse 60% 4% at 50% 50%,#fff,transparent),radial-gradient(circle,#fff 0,#7cf 18%,#14f 45%,#001 80%)}
+.p-flash .flare{opacity:1;animation:fl .45s ease-out}@keyframes fl{from{filter:brightness(2.5);transform:scale(1.5)}to{transform:scale(1)}}
+.dot{left:50%;top:50%;width:3cqw;width:14px;height:14px;margin:-7px;border-radius:50%;background:#9cf;box-shadow:0 0 18px 8px #4af;z-index:5;opacity:0}
+.p-dot .flare{opacity:1;animation:sh .3s ease-in forwards}@keyframes sh{to{transform:scale(.01,.004);opacity:0}}
+.p-dot .dot{opacity:1;animation:dt .3s ease-in forwards}@keyframes dt{80%{opacity:1}to{opacity:0;transform:scale(.2)}}
+.p-black .flare,.p-black .dot{opacity:0;animation:none}
+.beam{inset:-20%;z-index:5;opacity:0;background:linear-gradient(115deg,transparent 42%,#f80 46%,#fff 50%,#fa3 54%,transparent 58%)}
+.p-beam .beam{animation:bm .45s ease-in forwards}@keyframes bm{from{opacity:1;transform:translate(-60%,50%)}to{opacity:1;transform:translate(60%,-50%)}}
+.boom{inset:0;z-index:5;opacity:0;background:radial-gradient(circle,#fff 0,#ffe 25%,#f8d 55%,transparent 80%)}
+.p-boom .boom{animation:bo .3s ease-out forwards}@keyframes bo{from{opacity:1;transform:scale(.3)}to{opacity:1;transform:scale(2.2)}}
+.rays{inset:-60%;z-index:2;opacity:0;background:repeating-conic-gradient(#f22 0 7deg,#fa0 7deg 14deg,#ff3 14deg 21deg,#3f6 21deg 28deg,#2df 28deg 35deg,#46f 35deg 42deg,#d3f 42deg 49deg)}
+.p-seven .rays{opacity:1;animation:spin 3s linear infinite,rb 1s linear infinite}
+.big7{left:50%;top:50%;width:84vmin;height:92vmin;margin:-46vmin 0 0 -42vmin;z-index:7;opacity:0;overflow:visible}
+.big7 path{stroke:#300;stroke-width:3;stroke-linejoin:round}
+.p-seven .big7{animation:b7 2.6s cubic-bezier(.1,.9,.2,1) forwards}
+@keyframes b7{0%{opacity:1;transform:scale(5) rotate(-8deg);filter:brightness(3)}18%{transform:scale(.88) rotate(2deg);filter:brightness(1.6)}30%{transform:scale(1.12)}42%,100%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 20px #fff)}}
+.p-seven .big7 path:last-child{animation:shine 1s linear infinite}@keyframes shine{50%{opacity:.2}}
+.puchun-number{display:none}
+#snd.off{filter:grayscale(1)}
+
+/* ===== v2: 静かな枠・1画面・黒→虹7 ===== */
+html,body{height:100%;overflow:hidden;margin:0}
+main{height:100dvh;padding:6px 0;display:flex;align-items:center;justify-content:center;width:100%}
+.cab{width:min(calc(100vw - 12px),calc((100dvh - 14px)/1.85),470px);flex:none}
+.cab *,.cab{animation:none!important}
+.cab .seven-mark.rainbow svg{animation:none!important}
+.cab .stage::before{animation:spin 30s linear infinite!important}
+.cab .strip{animation:run .26s linear infinite!important}
+.cab .reel.bump{animation:bump .12s!important}
+.cab .cell.strong-stage{animation:cherryStage .28s ease-in-out!important}
+.cab[data-mode=sevenRush] .lamps i,.cab[data-mode=sevenRush] .tube{background:linear-gradient(#ff5,#f4f,#4cf)}
+.cab[data-mode=sevenRush] .lamps i{background:linear-gradient(90deg,#f66,#ff5,#5f8,#4cf,#d4f)}
+.cab .point-pop.show span{animation:none}
+.cab .point-pop.show{animation:pointPop 1.45s ease-out forwards!important}
+.cab .point-pop.show *{animation:none!important}
+.stage{height:17cqw}.stage::after{font-size:17cqw}
+.seven-indicator{padding:1cqw 0}.seven-mark{height:15cqw;width:19cqw}
+.lcd-grid{padding:1cqw 8cqw}.status{margin-bottom:1.2cqw}.lamps{margin-bottom:1.2cqw}.lamps i{height:3cqw}
+.reel{height:45cqw}.cell{height:15cqw}.strip{--x:0}
+@keyframes run{from{transform:translateY(-90cqw)}to{transform:translateY(0)}}
+.deck .detail{display:none}
+.sub{padding:1cqw 8cqw}
+#spin{font-size:7.5cqw;padding:1.6cqw}
+.below .secondary{margin:0 1cqw;padding:1.6cqw 3cqw;font-size:3.2cqw}.below{padding:1cqw 0 1.6cqw}
+.info.panel{display:none}.info.panel[open]{display:block;position:fixed;left:8px;right:8px;bottom:8px;top:8px;overflow:auto;z-index:60;background:#10131df5;margin:0}
+main>section.panel:last-of-type{display:none}
+/* TVオフ → 黒 → 虹7 */
+.flare{background:#fff!important;transform-origin:center}
+.p-off .flare{opacity:1;animation:tvoff .42s cubic-bezier(.6,0,.9,.4) forwards!important}
+@keyframes tvoff{0%{transform:scale(1,1)}55%{transform:scale(1,.006)}100%{transform:scale(.004,.006);opacity:1}}
+.p-off .dot{opacity:1}
+.p-black .flare,.p-black .dot,.p-seven .flare{opacity:0;animation:none!important}
+.p-seven .boom{animation:bo2 .5s ease-out forwards!important}
+@keyframes bo2{from{opacity:1;transform:scale(.2)}to{opacity:0;transform:scale(2.4)}}
+.p-seven .rays{animation:spin 3s linear infinite!important}
+.p-seven .big7{animation:b7 2.6s cubic-bezier(.1,.9,.2,1) forwards!important}
+.puchun.door{background:transparent}.doortxt{inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;font:900 13vw Impact,sans-serif;color:#ddd;text-shadow:0 0 12px #000;opacity:0;transition:opacity .4s .6s}
+.doortxt small{font-size:15vw;color:#ffd76a}.door .doortxt{opacity:1}
+
+/* v4 */
+#games.gb{animation:gb .7s ease-out!important}@keyframes gb{0%{transform:scale(2.2);color:#ffd84a;text-shadow:0 0 14px #fa0}100%{transform:scale(1)}}
+.cab[data-mode] .seven-mark.rainbow path{fill:url(#gRb);stroke:#fff;stroke-width:4}
+.cab .seven-mark.rainbow svg{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 9px #f5f) drop-shadow(0 0 18px #4df);animation:rb 2.4s linear infinite!important}
+.cab .seven-mark.pop svg{animation:pop7 .9s ease-out!important}@keyframes pop7{0%{transform:scale(2.4);filter:brightness(3)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+.puchun{transition:opacity .35s,background .5s}.puchun.fly{background:transparent}.puchun.fly .rays{opacity:0;transition:opacity .4s}
+
+.modal.notice{background:none;border:0;box-shadow:none;padding:0}
+.modal.notice h2{margin:0;font:italic 900 24vw Impact,sans-serif;letter-spacing:.5vw;background:linear-gradient(90deg,#f33,#fd3,#3f7,#3cf,#d4f,#f33);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 3vw #fff8) drop-shadow(0 0 6vw #f4f);animation:nt 2.2s cubic-bezier(.1,.9,.2,1)!important}
+@keyframes nt{0%{transform:scale(3);opacity:0}25%{transform:scale(.9);opacity:1}40%{transform:scale(1.08)}55%,100%{transform:scale(1)}}
+#overlay:has(.notice){background:radial-gradient(#0008,#000d)}
+.doortxt em{font:700 5.5vw sans-serif;font-style:normal;color:#9fd;margin-top:2vw}
+
+.modal.super h2{font-size:19vw;background:linear-gradient(180deg,#fff7b0,#ffc400 45%,#ff5a00);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 3vw #ff0) drop-shadow(0 0 8vw #f0f)}
+.modal.super h2.roll{font-size:34vw;background:linear-gradient(90deg,#f33,#fd3,#3f7,#3cf,#d4f);-webkit-background-clip:text;background-clip:text;animation:none!important}
+.modal.super h2.hit{font-size:22vw;animation:nt 1.6s cubic-bezier(.1,.9,.2,1)!important}
+.modal.notice.super{text-align:center}
+
+.doortxt b{font:800 7vw sans-serif;color:#ffd76a;margin-top:3vw;text-shadow:0 0 10px #000}
+.p-perfect .big7{display:none}.perfecttxt{inset:0;z-index:9;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center}.p-perfect .perfecttxt{display:flex}
+.perfecttxt small{font:800 5.6vw sans-serif;color:#fff;text-shadow:0 0 10px #f0f,0 0 20px #0ff;margin-bottom:2vw}
+.perfecttxt b{font:italic 900 24vw Impact,sans-serif;background:linear-gradient(90deg,#f33,#fd3,#3f7,#3cf,#d4f,#f33);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 3vw #fff) drop-shadow(0 0 8vw #f4f);animation:pf .35s ease-in-out infinite alternate}
+@keyframes pf{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.14) rotate(3deg)}}
+.puchun.p-perfect::after{display:block;content:"";position:absolute;inset:0;background:#fff;z-index:10;pointer-events:none;opacity:0;animation:pfl .5s steps(2) 10}
+@keyframes pfl{50%{opacity:.7}}
 </style>
 </head>
 
 <body>
 <main>
-<h1>7 RUSH SLOT</h1>
-<div class="subtitle">BUILD POINTS · ENTER THE RUSH</div>
+<div style="display:none"><h1>7 RUSH SLOT</h1>
+<div class="subtitle">BUILD POINTS · ENTER THE RUSH</div></div>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="gGray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bbb"/><stop offset="1" stop-color="#555"/></linearGradient><linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bff"/><stop offset=".5" stop-color="#28f"/><stop offset="1" stop-color="#025"/></linearGradient><linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f88"/><stop offset=".5" stop-color="#e11"/><stop offset="1" stop-color="#500"/></linearGradient><linearGradient id="gRb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f33"/><stop offset=".25" stop-color="#fd3"/><stop offset=".5" stop-color="#3f7"/><stop offset=".75" stop-color="#3cf"/><stop offset="1" stop-color="#d4f"/></linearGradient><linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2a0"/><stop offset=".5" stop-color="#f5b800"/><stop offset="1" stop-color="#9a5a00"/></linearGradient></defs></svg>
+<div class="cab" id="cab" data-mode="normal"><div class="status"><div id="modeLabel">通常</div><button id="snd">🔊</button></div><div class="lamps"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="body"><div class="tube"></div><div class="mid"><div class="roof">7 RUSH</div>
 
+    <div class="seven-indicator" aria-label="7ジャッジ成功表示">
+      <span class="seven-mark" id="sevenMark0"><svg viewBox="0 0 100 110"><path d="M10 12H95L91 31L51 98H24L62 33H5Z"/></svg></span>
+      <span class="seven-mark" id="sevenMark1"><svg viewBox="0 0 100 110"><path d="M10 12H95L91 31L51 98H24L62 33H5Z"/></svg></span>
+      <span class="seven-mark" id="sevenMark2"><svg viewBox="0 0 100 110"><path d="M10 12H95L91 31L51 98H24L62 33H5Z"/></svg></span>
+    </div>
 <section class="lcd-panel" id="lcdPanel">
   <div class="lcd-content">
     <div class="lcd-status">
@@ -665,12 +899,7 @@ button{
       <div id="rushBadge" class="lcd-rush"></div>
     </div>
 
-    <div class="seven-indicator" aria-label="7ジャッジ成功表示">
-      <span class="seven-mark" id="sevenMark0">7</span>
-      <span class="seven-mark" id="sevenMark1">7</span>
-      <span class="seven-mark" id="sevenMark2">7</span>
-    </div>
-
+    <div class="stage"></div>
     <div class="lcd-grid">
       <div class="lcd-box">
         <div class="lcd-label" id="gamesLabel">残りG数</div>
@@ -693,7 +922,7 @@ button{
       </div>
       <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
       <div class="gauge-bottom">
-        <span id="gaugeCurrent">0 PT</span>
+        <span id="gaugeStart" style="color:#f44"></span><span id="gaugeCurrent">0 PT</span>
         <span id="gaugeMax">MAX 777 PT</span>
       </div>
     </div>
@@ -702,7 +931,7 @@ button{
   </div>
 </section>
 
-<section class="panel">
+<section class="panel deck">
   <div class="reel-stage" id="reelStage">
     <div class="reels" id="reels">
       <div class="reel">
@@ -725,11 +954,6 @@ button{
     <div class="point-pop" id="pointPop" aria-live="polite">
       <span id="pointPopText">+300pt</span>
     </div>
-
-    <!-- 修正：ゲーム数加算専用の水色表示 -->
-    <div class="game-pop" id="gamePop" aria-live="polite">
-      <span id="gamePopText">+2G</span>
-    </div>
   </div>
 
   <div class="line-note">
@@ -739,49 +963,34 @@ button{
 
   <div id="result" class="result">SPIN READY</div>
   <div id="detail" class="detail">10G以内に777ptを超えよう！</div>
-  <button id="spin">SPIN</button>
-
-  <div>
-    <button class="secondary" id="reset">最初から</button>
+  <div class="sub"><div class="dots"><b></b><b></b><b></b></div></div><div style="background:#777;padding:0 8cqw 2cqw"><button id="spin">START</button></div>
+</section></div><div class="tube"></div></div><div class="below"><div>
     <button class="secondary" id="showRules">ルール確認</button>
-  </div>
+  </div></div></div>
+<section class="panel" style="display:none">
 </section>
 
 <details class="panel info">
   <summary>現在のルール・確率</summary>
+
   <p><b>通常ゲーム：</b>10G以内に777ptを超えるとPT特化ゾーン。777ptちょうどでは突破扱いにならない。777pt突破後も残りG数を消費してポイントを獲得する。全G数消費後に7 RUSHへ突入。ベルと7揃いのみポイント獲得。7揃いは+1000pt。</p>
+
   <p><b>設定選択確率：</b>設定1=10%／設定2=15%／設定3=30%／設定4=20%／設定5=15%／設定6=10%。</p>
-  <p><b>通常時の設定別小役確率：</b><br>
-    設定1：ベル60%／ハズレ25.5%／弱スイカ5%／弱チェリー7%／強スイカ0.5%／強チェリー1.5%／チャンス目0.4%／7揃い0.1%。<br>
-    設定2：ベル60%／ハズレ22%／弱スイカ6%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
-    設定3：ベル62%／ハズレ20%／弱スイカ6%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
-    設定4：ベル62%／ハズレ18%／弱スイカ8%／弱チェリー8%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
-    設定5：ベル60%／ハズレ17%／弱スイカ9%／弱チェリー10%／強スイカ1%／強チェリー1.8%／チャンス目1%／7揃い0.2%。<br>
-    設定6：ベル63.5%／ハズレ10%／弱スイカ10%／弱チェリー12%／強スイカ1%／強チェリー1.5%／チャンス目1%／7揃い1%。
-  </p>
-  <p><b>ベル内部振り分け：</b><br>
-    通常ベル：70%。左上・中中・右下。30pt・50ptを各50%。<br>
-    強ベル：10%。上段。300ptが70%、500ptが20%、600ptが10%。<br>
-    中ベル：設定1・2では20%、設定3以上では15%。中段。50ptが50%、100ptが30%、200ptが10%、300ptが10%。<br>
-    特殊ベル：設定3以上で5%。下段。設定3=333pt、設定4=444pt、設定5=555pt、設定6=666pt。
-  </p>
+
   <p><b>ベル停止順：</b><br>通常ベル：中→左→右<br>強ベル：右→中→左<br>中ベル：中→右→左<br>特殊ベル：右→左→中</p>
+
   <p><b>チェリー告知：</b>左リールにチェリーが止まったらチェリー系レア役確定。チェリー系レア役以外では左リールにチェリーは出ない。</p>
-  <p><b>レア役：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12Gから抽選。</p>
-  <p><b>7 RUSH：</b>5G固定。ベルと7揃いのポイントは通常時の2倍。ベル以外のレア役はポイント・G数加算なし。終了後は7 JUDGEへ。</p>
-  <p><b>7 JUDGE：</b>3G固定。毎G継続抽選。ハズレの継続率は設定別、レア役は継続確定。7揃いは継続確定＋777 RUSH突入。</p>
-  <p><b>7 JUDGE中の小役確率・ハズレ継続率：</b><br>
-    設定1：ハズレ90%（継続15%）／弱スイカ3%／弱チェリー5%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
-    設定2：ハズレ85%（継続20%）／弱スイカ5%／弱チェリー8%／強スイカ0.4%／強チェリー1%／チャンス目0.4%／7揃い0.2%。<br>
-    設定3：ハズレ80%（継続30%）／弱スイカ7%／弱チェリー10%／強スイカ0.5%／強チェリー1.8%／チャンス目0.5%／7揃い0.2%。<br>
-    設定4：ハズレ75%（継続35%）／弱スイカ9%／弱チェリー12%／強スイカ0.5%／強チェリー2%／チャンス目0.5%／7揃い1%。<br>
-    設定5：ハズレ70%（継続40%）／弱スイカ10%／弱チェリー12%／強スイカ0.5%／強チェリー2%／チャンス目0.5%／7揃い5%。<br>
-    設定6：ハズレ65%（継続42%）／弱スイカ12%／弱チェリー12%／強スイカ0%／強チェリー1%／チャンス目0%／7揃い10%。<br>
-    レア役は継続確定。7揃いは777 RUSHへ。
-  </p>
-  <p><b>777 RUSH：</b>7G固定で開始。レア役は777pt獲得＋通常時と同じG数加算。ベルと7揃いのポイントは通常時の2倍。0Gになると7 JUDGEへ戻る。</p>
-  <p><b>通常時のゲーム数加算：</b>弱チェリー・弱スイカは+2Gまたは+4G。強チェリー・強スイカ・チャンス目は+6G・+8G・+12G。</p>
-  <p><b>RUSHゲージ：</b><br>777〜1000pt → 1000〜1500pt → 1500〜2500pt → 2500〜5000pt → 5000〜7500pt → 7500〜12500pt → 12500〜18000pt。</p>
+
+  <p><b>レア役のゲーム数加算（通常・777 RUSH）：</b>弱チェリー・弱スイカは+2G／+4G。強チェリー・強スイカ・チャンス目は+4G／+6G／+8G。</p>
+
+  <p><b>7 RUSH：</b>5G固定。通常・中・強ベルと7揃いのポイントは通常時の2倍（特殊ベルは1倍）。ベル以外のレア役はポイント・G数加算なし。終了後は7 JUDGEへ。</p>
+
+  <p><b>超7 RUSH：</b>7 JUDGEを3回突破して7が3つ虹色になると7 RUSHが超7 RUSHになる（5G固定）。開始時にルーレットで倍率が決まり、通常・中・強ベルと7揃いが×倍。通常の突破：×3=20%・×5=60%・×7=20%。レア役での突破：×5=15%・×7=30%・×10=40%・×15=10%・×20=5%。特殊ベルは1倍。終了後は超7 JUDGEへ（超7 RUSHに入ったらずっと超7）。超7 JUDGE：3G固定。レア役は継続確定。成功するたびに超7 RUSH（倍率ルーレット）が継続し、失敗で終了。</p>
+
+  <p><b>7 JUDGE：</b>3G固定。毎G継続抽選。継続成功したGですぐプチュン演出→7 RUSHへ復帰（虹色の7が1つ点灯）。ハズレの継続率は設定別、レア役は継続確定。7揃いは継続確定＋777 RUSH突入。</p>
+
+  <p><b>777 RUSH：</b>7G固定で開始。レア役は777pt獲得＋通常時と同じG数加算。通常・中・強ベルと7揃いのポイントは通常時の2倍（特殊ベルは1倍）。0Gになると7 JUDGEへ戻る。</p>
+
   <p class="small">※設定は内部抽選です。現在の設定は画面に表示されません。</p>
 </details>
 
@@ -801,9 +1010,7 @@ button{
   </div>
 </div>
 
-<div class="puchun" id="puchun" aria-hidden="true">
-  <div class="puchun-number">777</div>
-</div>
+<div class="puchun" id="puchun"><div class="rays"></div><div class="flare"></div><div class="dot"></div><div class="beam"></div><div class="boom"></div><svg class="big7" viewBox="0 0 100 110"><path d="M10 12H95L91 31L51 98H24L62 33H5Z" fill="url(#gRed)"/><path d="M14 17H88L87 22H12Z" fill="#fff" opacity=".55"/></svg><canvas id="fx"></canvas><div class="doortxt" id="doortxt"></div><div class="perfecttxt" id="perfecttxt"></div><div class="shutL"></div><div class="shutR"></div></div>
 
 <script>
 (() => {
@@ -818,6 +1025,10 @@ const SYMBOL = {
   seven:"7"
 };
 
+const SVGS={"7":'<svg viewBox="0 0 100 110"><path d="M10 12H95L91 31L51 98H24L62 33H5Z" fill="url(#gRed)" stroke="#400" stroke-width="4" stroke-linejoin="round"/><path d="M14 16H86" stroke="#fff" stroke-width="4" opacity=".6"/></svg>',"🔔":'<svg viewBox="0 0 100 100"><path d="M50 8a6 6 0 0 1 6 6v2C74 20 82 36 82 56v10l8 10H10l8-10V56C18 36 26 20 44 16v-2a6 6 0 0 1 6-6z" fill="url(#gG)" stroke="#7a4300" stroke-width="3"/><circle cx="50" cy="84" r="8" fill="#e9a400" stroke="#7a4300" stroke-width="2"/><path d="M30 34Q36 24 46 22" stroke="#fff" stroke-width="4" fill="none" opacity=".8"/></svg>',"🍒":'<svg viewBox="0 0 100 100"><path d="M32 66Q40 30 56 12M70 70Q66 36 56 12" stroke="#2a6a1a" stroke-width="4" fill="none"/><path d="M56 12Q80 4 92 22Q70 28 56 12z" fill="#3c3"/><circle cx="30" cy="72" r="20" fill="#e0183a" stroke="#600" stroke-width="3"/><circle cx="70" cy="74" r="18" fill="#e0183a" stroke="#600" stroke-width="3"/><circle cx="24" cy="65" r="5" fill="#fff" opacity=".7"/></svg>',"🍉":'<svg viewBox="0 0 100 100"><path d="M5 30H95A45 45 0 0 1 5 30z" fill="#1c8a2a" stroke="#063" stroke-width="3"/><path d="M12 32H88A38 38 0 0 1 12 32z" fill="#f33"/><path d="M12 32H88" stroke="#cfc" stroke-width="3"/><g fill="#111"><ellipse cx="34" cy="48" rx="3" ry="5"/><ellipse cx="50" cy="56" rx="3" ry="5"/><ellipse cx="66" cy="48" rx="3" ry="5"/></g></svg>'};
+function setCell(c,sym){c.dataset.sym=sym;c.innerHTML=SVGS[sym];c.classList.toggle("seven",sym===SYMBOL.seven)}
+let soundOn=true;
+function cabFx(role){const c=$("cab");c.classList.add("fx");setTimeout(()=>c.classList.remove("fx"),800);if(["strongCherry","strongWatermelon","chance","seven"].includes(role)){c.classList.remove("shake");void c.offsetWidth;c.classList.add("shake")}}
 const NORMAL_SYMBOLS = [SYMBOL.bell,SYMBOL.watermelon,SYMBOL.seven];
 const ALL_SYMBOLS = [SYMBOL.bell,SYMBOL.cherry,SYMBOL.watermelon,SYMBOL.seven];
 
@@ -843,64 +1054,64 @@ const SETTING_WEIGHTS = [
 /* 通常時の小役確率 */
 const ROLE_TABLES = {
   1:[
-    {value:"bell",weight:6000},
-    {value:"miss",weight:2550},
-    {value:"weakWatermelon",weight:500},
-    {value:"weakCherry",weight:700},
-    {value:"strongWatermelon",weight:50},
-    {value:"strongCherry",weight:150},
-    {value:"chance",weight:40},
-    {value:"seven",weight:10}
+    {value:"bell",weight:600},
+    {value:"miss",weight:255},
+    {value:"weakWatermelon",weight:50},
+    {value:"weakCherry",weight:70},
+    {value:"strongWatermelon",weight:5},
+    {value:"strongCherry",weight:15},
+    {value:"chance",weight:4},
+    {value:"seven",weight:1}
   ],
   2:[
-    {value:"bell",weight:6000},
-    {value:"miss",weight:2200},
-    {value:"weakWatermelon",weight:600},
-    {value:"weakCherry",weight:800},
-    {value:"strongWatermelon",weight:100},
-    {value:"strongCherry",weight:180},
-    {value:"chance",weight:100},
-    {value:"seven",weight:20}
+    {value:"bell",weight:600},
+    {value:"miss",weight:250},
+    {value:"weakWatermelon",weight:50},
+    {value:"weakCherry",weight:70},
+    {value:"strongWatermelon",weight:7},
+    {value:"strongCherry",weight:15},
+    {value:"chance",weight:6},
+    {value:"seven",weight:2}
   ],
   3:[
-    {value:"bell",weight:6200},
-    {value:"miss",weight:2000},
-    {value:"weakWatermelon",weight:600},
-    {value:"weakCherry",weight:800},
-    {value:"strongWatermelon",weight:100},
-    {value:"strongCherry",weight:180},
-    {value:"chance",weight:100},
-    {value:"seven",weight:20}
+    {value:"bell",weight:630},
+    {value:"miss",weight:230},
+    {value:"weakWatermelon",weight:50},
+    {value:"weakCherry",weight:70},
+    {value:"strongWatermelon",weight:0},
+    {value:"strongCherry",weight:20},
+    {value:"chance",weight:0},
+    {value:"seven",weight:0}
   ],
   4:[
-    {value:"bell",weight:6200},
-    {value:"miss",weight:1800},
-    {value:"weakWatermelon",weight:800},
-    {value:"weakCherry",weight:800},
-    {value:"strongWatermelon",weight:100},
-    {value:"strongCherry",weight:180},
-    {value:"chance",weight:100},
+    {value:"bell",weight:620},
+    {value:"miss",weight:200},
+    {value:"weakWatermelon",weight:40},
+    {value:"weakCherry",weight:40},
+    {value:"strongWatermelon",weight:20},
+    {value:"strongCherry",weight:40},
+    {value:"chance",weight:20},
     {value:"seven",weight:20}
   ],
   5:[
-    {value:"bell",weight:6000},
-    {value:"miss",weight:1700},
-    {value:"weakWatermelon",weight:900},
-    {value:"weakCherry",weight:1000},
-    {value:"strongWatermelon",weight:100},
-    {value:"strongCherry",weight:180},
-    {value:"chance",weight:100},
-    {value:"seven",weight:20}
+    {value:"bell",weight:700},
+    {value:"miss",weight:150},
+    {value:"weakWatermelon",weight:30},
+    {value:"weakCherry",weight:30},
+    {value:"strongWatermelon",weight:5},
+    {value:"strongCherry",weight:30},
+    {value:"chance",weight:5},
+    {value:"seven",weight:50}
   ],
   6:[
-    {value:"bell",weight:6350},
-    {value:"miss",weight:1000},
-    {value:"weakWatermelon",weight:1000},
-    {value:"weakCherry",weight:1200},
-    {value:"strongWatermelon",weight:100},
-    {value:"strongCherry",weight:150},
-    {value:"chance",weight:100},
-    {value:"seven",weight:100}
+    {value:"bell",weight:770},
+    {value:"miss",weight:100},
+    {value:"weakWatermelon",weight:0},
+    {value:"weakCherry",weight:0},
+    {value:"strongWatermelon",weight:20},
+    {value:"strongCherry",weight:20},
+    {value:"chance",weight:10},
+    {value:"seven",weight:80}
   ]
 };
 
@@ -962,6 +1173,52 @@ const JUDGE_TABLES = {
   ]
 };
 
+const SUPER_JUDGE_TABLES = {
+  1:[
+    {value:"miss",weight:900},
+    {value:"weakWatermelon",weight:38},
+    {value:"weakCherry",weight:50},
+    {value:"strongCherry",weight:10},
+    {value:"seven",weight:2}
+  ],
+  2:[
+    {value:"miss",weight:870},
+    {value:"weakWatermelon",weight:48},
+    {value:"weakCherry",weight:70},
+    {value:"strongCherry",weight:10},
+    {value:"seven",weight:2}
+  ],
+  3:[
+    {value:"miss",weight:840},
+    {value:"weakWatermelon",weight:50},
+    {value:"weakCherry",weight:80},
+    {value:"strongCherry",weight:25},
+    {value:"seven",weight:5}
+  ],
+  4:[
+    {value:"miss",weight:800},
+    {value:"weakWatermelon",weight:70},
+    {value:"weakCherry",weight:90},
+    {value:"strongCherry",weight:30},
+    {value:"seven",weight:10}
+  ],
+  5:[
+    {value:"miss",weight:750},
+    {value:"weakWatermelon",weight:80},
+    {value:"weakCherry",weight:100},
+    {value:"strongCherry",weight:30},
+    {value:"seven",weight:40}
+  ],
+  6:[
+    {value:"miss",weight:650},
+    {value:"weakWatermelon",weight:100},
+    {value:"weakCherry",weight:150},
+    {value:"strongCherry",weight:0},
+    {value:"seven",weight:100}
+  ]
+};
+const SUPER_JUDGE_MISS_CONTINUE = {1: 15, 2: 18, 3: 22, 4: 28, 5: 30, 6: 30};
+
 const JUDGE_MISS_CONTINUE = {
   1:15, 2:20, 3:30, 4:35, 5:40, 6:42
 };
@@ -979,15 +1236,14 @@ let gaugeStage = 0;
 let gaugeAdvancePending = false;
 let specialZone = false;
 let judgeContinue = false;
+let superChain = false;
 
 let rainbowSevens = 0;
 let pointPopTimer = null;
 
-/* ゲーム数ポップアップ用 */
-let gamePopTimer = null;
-
 /* =========================
    効果音（外部音源不要）
+   iPhoneでもWeb Audio APIで再生
 ========================= */
 
 let audioContext = null;
@@ -1011,6 +1267,7 @@ function tone(freq,duration,type="sine",volume=0.05,delay=0,endFreq=null){
   const ctx = ensureAudio();
   if(!ctx)return;
 
+  if(!soundOn)return;
   const start = ctx.currentTime + delay;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -1073,22 +1330,11 @@ function playSound(name){
       tone(1320,0.35,"triangle",0.08,0.36);
       tone(1760,0.40,"sine",0.07,0.50);
       break;
-
-    case "gameAdd":
-      tone(660,0.12,"sine",0.055);
-      tone(880,0.15,"sine",0.06,0.12);
-      tone(1175,0.20,"triangle",0.07,0.25);
-      break;
   }
 }
 
-function randInt(n){
-  return Math.floor(Math.random()*n);
-}
-
-function pick(arr){
-  return arr[randInt(arr.length)];
-}
+function randInt(n){return Math.floor(Math.random()*n)}
+function pick(arr){return arr[randInt(arr.length)]}
 
 function weighted(items){
   const available=items.filter(item=>item.weight>0);
@@ -1118,11 +1364,9 @@ function addLog(text){
 }
 
 /* ベル獲得PTをリールに重ねて表示 */
-function showPointPop(amount){
+function showPointPop(amount,unit="PT",plus=false){
   const pop=$("pointPop");
   const text=$("pointPopText");
-
-  if(!pop||!text)return;
 
   if(pointPopTimer){
     clearTimeout(pointPopTimer);
@@ -1132,37 +1376,13 @@ function showPointPop(amount){
   pop.classList.remove("show");
   void pop.offsetWidth;
 
-  text.textContent=`+${amount.toLocaleString("ja-JP")}pt`;
+  text.innerHTML=`${plus?"+":""}${amount.toLocaleString("ja-JP")}<small>${unit}</small>`;
   pop.classList.add("show");
 
   pointPopTimer=setTimeout(()=>{
     pop.classList.remove("show");
     pointPopTimer=null;
   },1500);
-}
-
-/* ゲーム数加算を大きな水色表示で知らせる */
-function showGamePop(amount){
-  const pop=$("gamePop");
-  const text=$("gamePopText");
-
-  if(!pop||!text)return;
-
-  if(gamePopTimer){
-    clearTimeout(gamePopTimer);
-    gamePopTimer=null;
-  }
-
-  pop.classList.remove("show");
-  void pop.offsetWidth;
-
-  text.textContent=`+${amount}G`;
-  pop.classList.add("show");
-
-  gamePopTimer=setTimeout(()=>{
-    pop.classList.remove("show");
-    gamePopTimer=null;
-  },1800);
 }
 
 /* 液晶上部の777を更新 */
@@ -1172,78 +1392,121 @@ function updateSevenIndicators(){
   }
 }
 
-/* プチュン→巨大な虹色7→暗転して復帰 */
+/* 暗転演出：シャッター→青閃光→点に収束→プチュン→ブラックアウト→ビーム→爆発→巨大7 */
+function noiseBurst(d,vol,delay,hp=0){const ctx=ensureAudio();if(!ctx||!soundOn)return;const n=Math.floor(ctx.sampleRate*d),b=ctx.createBuffer(1,n,ctx.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const src=ctx.createBufferSource(),g=ctx.createGain(),f=ctx.createBiquadFilter();f.type="highpass";f.frequency.value=hp;src.buffer=b;g.gain.value=vol;src.connect(f);f.connect(g);g.connect(ctx.destination);src.start(ctx.currentTime+delay)}
+function puchunSound(){noiseBurst(.012,.45,0,3000);tone(2800,.16,"sine",.22,0,60);tone(95,.16,"sine",.25,.02,35);tone(2200,.05,"sine",.05,.17,1100)}
+function sevenSound(){noiseBurst(.5,.35,0,300);tone(70,.9,"sine",.3,0,30);[523,659,784,1047,1319,1568].forEach((f,i)=>{tone(f,.35,"sawtooth",.05,.1+i*.07);tone(f*2,.3,"sine",.04,.1+i*.07)});[523,659,784].forEach(f=>tone(f,1.4,"triangle",.07,.6))}
+let confettiRun=false;
+function confetti(){const cv=$("fx"),x=cv.getContext("2d");cv.width=innerWidth;cv.height=innerHeight;const P=[];for(let i=0;i<220;i++){const a=Math.random()*6.283,v=4+Math.random()*16;P.push({x:cv.width/2,y:cv.height/2,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2,s:3+Math.random()*7,h:Math.random()*360})}confettiRun=true;(function f(){if(!confettiRun)return;x.clearRect(0,0,cv.width,cv.height);for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.vx*=.99;p.h+=8;x.fillStyle=`hsl(${p.h},100%,60%)`;x.fillRect(p.x,p.y,p.s,p.s*1.6)}requestAnimationFrame(f)})()}
 async function playPuchun(){
-  const layer = $("puchun");
-  const number = layer.querySelector(".puchun-number");
-
-  number.textContent = "7";
-
-  layer.classList.remove("show", "reveal", "blackout");
-  void layer.offsetWidth;
-
-  layer.classList.add("show");
-  playSound("puchun");
-
+  const L=$("puchun"),ph=c=>{L.className="puchun show "+c};
+  if(window.flyAnim){window.flyAnim.cancel();window.flyAnim=null}
+  L.className="puchun";void L.offsetWidth;
+  ph("p-off");tone(4200,.38,"sine",.04,0,500);await sleep(400);
+  ph("p-black");puchunSound();await sleep(1100);
+  ph("p-seven");sevenSound();confetti();await sleep(2300);
+  const idx=Math.min(rainbowSevens,2),big=L.querySelector(".big7"),t=$("sevenMark"+idx).getBoundingClientRect(),u=Math.min(innerWidth,innerHeight)/100;
+  L.className="puchun show p-seven fly";
+  window.flyAnim=big.animate([{transform:"none"},{transform:`translate(${t.left+t.width/2-innerWidth/2}px,${t.top+t.height/2-innerHeight/2}px) scale(${t.height/(92*u)})`}],{duration:650,easing:"cubic-bezier(.6,0,.9,.5)",fill:"forwards"});
   await sleep(650);
-
-  layer.classList.add("reveal");
-  playSound("rainbow");
-
-  await sleep(1550);
-
-  layer.classList.add("blackout");
-
-  await sleep(350);
-
-  layer.classList.remove("show", "reveal", "blackout");
-  number.textContent = "7";
+  rainbowSevens=Math.min(3,rainbowSevens+1);updateSevenIndicators();
+  const mk=$("sevenMark"+idx);mk.classList.remove("pop");void mk.offsetWidth;mk.classList.add("pop");
+  noiseBurst(.2,.3,0,2000);tone(1568,.5,"sine",.08,0);tone(2093,.5,"sine",.06,.05);
+  L.classList.remove("show");await sleep(380);confettiRun=false;L.className="puchun";
+}
+const RC_TABLE=[[777,10,50],[1000,50,150],[1500,150,250],[2500,250,350],[5000,350,500],[8000,500,1250],[12500,1250,3000],[18000,3000,5000],[22222,5000,8000],[30000,8000,10000],[40000,10000,13000],[50000,13000,15000],[77777,15000,30000]];
+const PT_MAX=77777;
+let lastRC=0,maxWatch=null;
+function calcRC(p){
+  if(p>=PT_MAX)return 30000;
+  let lo=0;
+  for(let i=0;i<RC_TABLE.length;i++){
+    const [hi,a,b]=RC_TABLE[i];
+    if(i===0?p<hi:p<=hi){
+      const pos=Math.min(1,Math.max(0,(p-lo)/(hi-lo)));
+      const t=Math.min(1,Math.max(0,pos*0.85+Math.random()*0.15));
+      const step=b>=500?10:5;
+      return Math.min(b,Math.max(a,Math.round((a+(b-a)*t)/step)*step));
+    }
+    lo=hi;
+  }
+  return 30000;
+}
+function startMaxWatch(){
+  if(maxWatch)return;
+  maxWatch=setInterval(()=>{if(busy)return;clearInterval(maxWatch);maxWatch=null;endMax()},250);
+}
+async function endMax(){
+  if(ended)return;
+  ended=true;busy=true;
+  $("overlay").classList.remove("show");
+  addLog("🌟 ptが上限に達しました！PERFECT！");
+  const L=$("puchun");
+  L.className="puchun show p-seven p-perfect";
+  $("perfecttxt").innerHTML="<small>ptが上限に達しました</small><b>PERFECT</b>";
+  sevenSound();confetti();
+  for(let i=0;i<6;i++){
+    [523,659,784,1047,1319,1568].forEach((f,j)=>tone(f,.5,"triangle",.08,i*.7+j*.06));
+    noiseBurst(.3,.4,i*.7,500);
+  }
+  await sleep(4400);
+  confettiRun=false;L.className="puchun";
+  endModal("PERFECT","ptが上限に達しました！\n\n最終ポイント："+PT_MAX.toLocaleString("ja-JP")+"pt","もう一度",reset,"ホームに戻る",goHome);
 }
 
+async function doorClose(){
+  const L=$("puchun");L.className="puchun show door";void L.offsetWidth;
+  const perfect=points>=PT_MAX,rc=lastRC.toLocaleString("ja-JP");
+  $("doortxt").innerHTML=`${perfect?"PERFECT!":"残念…"}<small>${points.toLocaleString("ja-JP")}PT</small><em>設定${setting}でした</em><b>RCカード ${rc}RC</b>`;
+  L.classList.add("p-shut");noiseBurst(.3,.3,0,200);tone(110,.35,"sawtooth",.1,0,45);
+  await sleep(3400);L.className="puchun";
+}
+function endModal(...a){
+  lastRC=calcRC(points);
+  a[1]+=`\n設定${setting}でした\n\nRCカード：${lastRC.toLocaleString("ja-JP")}RC獲得！`;
+  try{localStorage.setItem("slotResult",JSON.stringify({pt:points,rc:lastRC,setting}))}catch(e){}
+  doorClose().then(()=>{showModal(...a);$("modalReset").style.display="none"});
+}
+
+const GAUGE_STEPS=[0,777,1000,1500,2500,5000,8000,12500,18000,22222,30000,40000,50000];
 function getGaugeBounds(){
-  if(mode==="normal")return {start:0,end:777};
-
-  const end=RUSH_LIMITS[Math.min(gaugeStage,RUSH_LIMITS.length-1)];
-  const start=gaugeStage===0?777:RUSH_LIMITS[gaugeStage-1];
-
-  return {start,end};
+  let i=0;
+  while(i<GAUGE_STEPS.length-1&&points>GAUGE_STEPS[i+1])i++;
+  const last=i>=GAUGE_STEPS.length-1;
+  return {start:GAUGE_STEPS[i],end:last?null:GAUGE_STEPS[i+1],stage:i};
 }
 
 function updateGauge(){
   const fill=$("gaugeFill");
-  const bounds=getGaugeBounds();
-  const start=bounds.start;
-  const end=bounds.end;
-  let ratio;
-
-  if(mode==="normal"){
-    ratio=Math.min(points/777,1);
-  }else{
-    ratio=Math.min(Math.max((points-start)/(end-start),0),1);
-  }
+  const {start,end,stage}=getGaugeBounds();
+  const ratio=end===null?1:Math.min(Math.max((points-start)/(end-start),0),1);
+  const h=(200+stage*30)%360;
 
   fill.style.width=`${ratio*100}%`;
+  fill.style.background=`linear-gradient(90deg,hsl(${h},90%,52%),hsl(${(h+45)%360},95%,60%))`;
   fill.classList.toggle("max",ratio>=1);
 
-  $("gaugeRange").textContent=
-    `${start.toLocaleString("ja-JP")}〜${end.toLocaleString("ja-JP")} PT`;
-
-  $("gaugeCurrent").textContent=`${Math.floor(points).toLocaleString("ja-JP")} PT`;
-  $("gaugeMax").textContent=`MAX ${end.toLocaleString("ja-JP")} PT`;
+  const fmt=n=>n.toLocaleString("ja-JP");
+  $("gaugeRange").textContent=end===null?`${fmt(start)}〜MAX！`:`${fmt(start)}〜${fmt(end)} PT`;
+  $("gaugeStart").textContent=fmt(start)+"〜";
+  $("gaugeCurrent").textContent=`${fmt(Math.floor(points))} PT`;
+  $("gaugeMax").textContent=end===null?"MAX！":`MAX ${fmt(end)} PT`;
 }
 
+let gBump=false,superRush=false,superMult=1,judgeRare=false;
 function update(){
   $("games").textContent=mode==="judge"&&games===0?"Last":games;
   $("gamesUnit").style.display=mode==="judge"&&games===0?"none":"inline";
   $("gamesLabel").textContent=mode==="judge"?"JUDGE 残りG数":"残りG数";
 
   $("points").textContent=points.toLocaleString("ja-JP");
+  if(gBump){gBump=false;const g=$("games");g.classList.remove("gb");void g.offsetWidth;g.classList.add("gb")}
 
   const badge=$("rushBadge");
   badge.classList.remove("seven-rush");
 
   if(mode==="rush"){
-    badge.textContent="7 RUSH";
+    badge.textContent=superRush?`超7 RUSH ×${superMult}`:"7 RUSH";
   }else if(mode==="judge"){
     badge.textContent="7 JUDGE";
   }else if(mode==="sevenRush"){
@@ -1254,7 +1517,6 @@ function update(){
   }
 
   $("lcdPanel").classList.toggle("seven-rush-screen",mode==="sevenRush");
-
   $("gaugeTitle").textContent=
     mode==="sevenRush"?"777 RUSH POINT GAUGE":"POINT GAUGE";
 
@@ -1265,7 +1527,7 @@ function update(){
     $("lcdMessage").textContent="777PTを超えてチャンスをつかめ！";
     $("lcdMessage").classList.remove("hot");
   }else if(mode==="rush"){
-    $("lcdMessage").textContent="7 RUSH！ベルと7揃いで大量ポイント！";
+    $("lcdMessage").textContent=superRush?`超7 RUSH！ベルと7揃いが×${superMult}倍！`:"7 RUSH！ベルと7揃いで大量ポイント！";
     $("lcdMessage").classList.add("hot");
   }else if(mode==="judge"){
     $("lcdMessage").textContent="継続をつかめ！レア役なら継続確定！";
@@ -1275,11 +1537,13 @@ function update(){
     $("lcdMessage").classList.add("hot");
   }
 
+  $("cab").dataset.mode=(mode==="rush"&&superRush)?"sevenRush":mode;
+  $("modeLabel").textContent={normal:specialZone?"PT特化ゾーン":"通常",rush:superRush?`超7 RUSH ×${superMult}`:"7 RUSH",judge:superChain?"超7 JUDGE":"7 JUDGE",sevenRush:"777 RUSH"}[mode];
   updateSevenIndicators();
   updateGauge();
 
   $("spin").disabled=busy||ended||games<=0;
-  $("spin").textContent=mode==="judge"?"JUDGE SPIN":"SPIN";
+  $("spin").textContent="START";
 }
 
 /* ポイントはリール停止後に加算する */
@@ -1291,7 +1555,8 @@ function awardPoints(amount){
     gaugeAdvancePending=false;
   }
 
-  points+=amount;
+  points=Math.min(points+amount,PT_MAX);
+  if(points>=PT_MAX)startMaxWatch();
 
   if(mode==="normal"&&points>777){
     specialZone=true;
@@ -1310,51 +1575,23 @@ function getOutcome(){
 }
 
 function getJudgeOutcome(){
-  return weighted(JUDGE_TABLES[setting]);
+  return weighted((superChain?SUPER_JUDGE_TABLES:JUDGE_TABLES)[setting]);
 }
 
-/* ベル内部振り分け */
+/* ベル内部振り分け（設定別・ユーザー指定の確率。通常時／7 RUSH／777 RUSH共通） */
+const BELL_DATA={"kinds": {"1": [70, 5, 25, 0], "2": [68, 7, 25, 0], "3": [64, 7, 26, 3], "4": [50, 10, 35, 5], "5": [30, 23, 40, 7], "6": [20, 20, 50, 10]}, "pts": {"1": [{"30": 70, "50": 30}, {"300": 80, "500": 15, "600": 5}, {"30": 40, "50": 40, "100": 15, "300": 5}, {}], "2": [{"30": 70, "50": 30}, {"300": 80, "500": 15, "600": 5}, {"30": 40, "50": 40, "100": 15, "300": 5}, {}], "3": [{"30": 60, "50": 40}, {"300": 75, "500": 20, "600": 5}, {"30": 35, "50": 40, "100": 15, "300": 10}, {"333": 100}], "4": [{"30": 60, "50": 40}, {"300": 67, "500": 25, "600": 8}, {"30": 30, "50": 30, "100": 25, "300": 15}, {"444": 100}], "5": [{"30": 20, "50": 80}, {"300": 70, "500": 0, "600": 30}, {"30": 0, "50": 30, "100": 50, "200": 20}, {"555": 100}], "6": [{"30": 0, "50": 100}, {"300": 60, "500": 0, "600": 40}, {"30": 0, "50": 20, "100": 50, "200": 30}, {"666": 100}]}};
+const BELL_KINDS=[
+  {name:"通常ベル",cells:[[0,0],[1,1],[2,2]],stopOrder:[1,0,2]},
+  {name:"強ベル",cells:[[0,0],[1,0],[2,0]],stopOrder:[2,1,0]},
+  {name:"中ベル",cells:[[0,1],[1,1],[2,1]],stopOrder:[1,2,0]},
+  {name:"特殊ベル",cells:[[0,2],[1,2],[2,2]],stopOrder:[2,0,1]}
+];
 function getBellPattern(){
-  const patterns=[
-    {
-      name:"通常ベル",weight:700,
-      cells:[[0,0],[1,1],[2,2]],symbol:SYMBOL.bell,
-      stopOrder:[1,0,2],
-      pointOptions:[{value:30,weight:50},{value:50,weight:50}]
-    },
-    {
-      name:"強ベル",weight:100,
-      cells:[[0,0],[1,0],[2,0]],symbol:SYMBOL.bell,
-      stopOrder:[2,1,0],
-      pointOptions:[
-        {value:300,weight:70},
-        {value:500,weight:20},
-        {value:600,weight:10}
-      ]
-    },
-    {
-      name:"中ベル",weight:setting<=2?200:150,
-      cells:[[0,1],[1,1],[2,1]],symbol:SYMBOL.bell,
-      stopOrder:[1,2,0],
-      pointOptions:[
-        {value:50,weight:50},
-        {value:100,weight:30},
-        {value:200,weight:10},
-        {value:300,weight:10}
-      ]
-    },
-    {
-      name:"特殊ベル",weight:setting<=2?0:50,
-      cells:[[0,2],[1,2],[2,2]],symbol:SYMBOL.bell,
-      stopOrder:[2,0,1],
-      pointOptions:[{value:setting*111,weight:100}]
-    }
-  ];
-
-  const pattern=weighted(patterns.map(p=>({value:p,weight:p.weight})));
-  pattern.payout=weighted(pattern.pointOptions);
-
-  return pattern;
+  const i=weighted(BELL_DATA.kinds[setting].map((w,idx)=>({value:idx,weight:w})));
+  const k=BELL_KINDS[i];
+  const pts=BELL_DATA.pts[setting][i];
+  const payout=Number(weighted(Object.entries(pts).map(([v,w])=>({value:v,weight:w}))));
+  return {name:k.name,cells:k.cells,symbol:SYMBOL.bell,stopOrder:k.stopOrder,payout};
 }
 
 function sameCells(a,b){
@@ -1432,7 +1669,7 @@ function createBoard(role,target,fixedCells={}){
   }
 }
 
-/* 結果作成。ここではポイント・G数を加算しない */
+/* 結果作成。ここではポイントを加算しない */
 function buildOutcome(role){
   let target=null;
   let targetSymbol=null;
@@ -1462,28 +1699,28 @@ function buildOutcome(role){
   }else if(role==="weakCherry"){
     target=[[0,1],[1,1],[2,1]];
     targetSymbol=SYMBOL.cherry;
-    extraGames=pick([2,4]);
+    extraGames=weighted([{value:2,weight:70},{value:4,weight:30}]);
     name="弱チェリー";
     detail=`🍒 チェリー成立！ ゲーム数 +${extraGames}G`;
 
   }else if(role==="strongCherry"){
     target=[[0,1],[1,1],[2,1]];
     targetSymbol=SYMBOL.cherry;
-    extraGames=pick([6,8,12]);
+    extraGames=weighted([{value:4,weight:30},{value:6,weight:65},{value:8,weight:5}]);
     name="🔥 強チェリー ★★★";
     detail=`🍒🍒🍒 強チェリー3段階！ ゲーム数 +${extraGames}G`;
 
   }else if(role==="weakWatermelon"){
     target=[[0,0],[1,1],[2,2]];
     targetSymbol=SYMBOL.watermelon;
-    extraGames=pick([2,4]);
+    extraGames=weighted([{value:2,weight:70},{value:4,weight:30}]);
     name="弱スイカ";
     detail=`🍉 弱スイカ成立！ ゲーム数 +${extraGames}G`;
 
   }else if(role==="strongWatermelon"){
     target=[[0,0],[1,0],[2,0]];
     targetSymbol=SYMBOL.watermelon;
-    extraGames=pick([6,8,12]);
+    extraGames=weighted([{value:4,weight:30},{value:6,weight:65},{value:8,weight:5}]);
     name="強スイカ";
     detail=`🍉 強スイカ成立！ ゲーム数 +${extraGames}G`;
 
@@ -1492,7 +1729,7 @@ function buildOutcome(role){
     fixedCells["0,0"]=SYMBOL.seven;
     fixedCells["1,1"]=SYMBOL.cherry;
     fixedCells["2,2"]=SYMBOL.watermelon;
-    extraGames=pick([6,8,12]);
+    extraGames=weighted([{value:4,weight:30},{value:6,weight:65},{value:8,weight:5}]);
     name="チャンス目";
     detail=`チャンス目成立！ ゲーム数 +${extraGames}G`;
 
@@ -1538,13 +1775,9 @@ function drawBoard(){
     for(let y=0;y<3;y++){
       const cell=document.createElement("div");
       cell.className="cell";
-      cell.textContent=board[y][x];
       cell.dataset.x=x;
       cell.dataset.y=y;
-
-      if(board[y][x]===SYMBOL.seven){
-        cell.classList.add("seven");
-      }
+      setCell(cell,board[y][x]);
 
       reel.appendChild(cell);
     }
@@ -1574,7 +1807,7 @@ function highlight(cells){
 
 function highlightCherry(){
   document.querySelectorAll('.cell[data-x="0"]').forEach(cell=>{
-    if(cell.textContent===SYMBOL.cherry){
+    if(cell.dataset.sym===SYMBOL.cherry){
       cell.classList.add("cherry-hit");
     }
   });
@@ -1583,89 +1816,54 @@ function highlightCherry(){
 /* 役に応じた停止順でリールを止める */
 async function spinAnimation(outcome){
   const reels=Array.from(document.querySelectorAll(".reel"));
-
-  reels.forEach(reel=>{
-    reel.classList.add("spinning");
-    reel.classList.remove("stopped");
+  $("cab").classList.add("spinning");
+  reels.forEach((reel,x)=>{
+    reel.classList.add("spinning");reel.classList.remove("stopped");
+    const st=document.createElement("div");st.className="strip";
+    const cherryOk=x!==0||outcome.role==="weakCherry"||outcome.role==="strongCherry";
+    for(let i=0;i<6;i++){const c=document.createElement("div");c.className="cell";setCell(c,pick(cherryOk?ALL_SYMBOLS:NORMAL_SYMBOLS));st.appendChild(c)}
+    st.innerHTML+=st.innerHTML;st.innerHTML+=st.innerHTML.slice(0,0);reel.appendChild(st);
   });
-
-  animationTimer=setInterval(()=>{
-    reels.forEach((reel,x)=>{
-      if(!reel.classList.contains("spinning"))return;
-
-      reel.querySelectorAll(".cell").forEach(cell=>{
-        let symbol=pick(ALL_SYMBOLS);
-
-        if(
-          x===0&&
-          outcome.role!=="weakCherry"&&
-          outcome.role!=="strongCherry"
-        ){
-          symbol=pick(NORMAL_SYMBOLS);
-        }
-
-        cell.textContent=symbol;
-        cell.classList.toggle("seven",symbol===SYMBOL.seven);
-      });
-    });
-  },75);
-
-  const stopOrder=outcome.stopOrder||[0,1,2];
-
-  for(const x of stopOrder){
+  for(const x of (outcome.stopOrder||[0,1,2])){
     await sleep(650);
-
     const reel=reels[x];
-    reel.classList.remove("spinning");
-    reel.classList.add("stopped");
-
+    reel.classList.remove("spinning");reel.classList.add("stopped","bump");
+    reel.querySelector(".strip")?.remove();
+    setTimeout(()=>reel.classList.remove("bump"),150);
     playSound("stop");
-
-    reel.querySelectorAll(".cell").forEach(cell=>{
-      const cx=Number(cell.dataset.x);
-      const cy=Number(cell.dataset.y);
-
-      cell.textContent=board[cy][cx];
-      cell.classList.toggle("seven",board[cy][cx]===SYMBOL.seven);
-    });
-
-    if(
-      x===0&&
-      (outcome.role==="weakCherry"||outcome.role==="strongCherry")
-    ){
-      reel.classList.add("cherry-stop");
-      highlightCherry();
-
+    if(x===0&&(outcome.role==="weakCherry"||outcome.role==="strongCherry")){
+      reel.classList.add("cherry-stop");highlightCherry();
       if(outcome.role==="strongCherry"){
-        const cherryCells=Array.from(reel.querySelectorAll(".cell"))
-          .filter(cell=>cell.textContent===SYMBOL.cherry);
-
-        for(let stage=1;stage<=3;stage++){
-          $("result").textContent=`🔥 強チェリー ${stage}段階！`;
-          cherryCells.forEach(cell=>cell.classList.add("strong-stage"));
-          await sleep(280);
-          cherryCells.forEach(cell=>cell.classList.remove("strong-stage"));
-          await sleep(100);
-        }
-      }else{
-        $("result").textContent="🍒 弱チェリー成立！";
-      }
+        const cc=Array.from(reel.querySelectorAll(".cell")).filter(c=>c.dataset.sym===SYMBOL.cherry);
+        for(let stage=1;stage<=3;stage++){$("result").textContent=`🔥 強チェリー ${stage}段階！`;cc.forEach(c=>c.classList.add("strong-stage"));await sleep(280);cc.forEach(c=>c.classList.remove("strong-stage"));await sleep(100)}
+      }else $("result").textContent="🍒 弱チェリー成立！";
     }
   }
-
-  clearInterval(animationTimer);
-  animationTimer=null;
-
+  $("cab").classList.remove("spinning");
   highlight(outcome.target);
-
-  if(outcome.role==="weakCherry"||outcome.role==="strongCherry"){
-    highlightCherry();
-  }
-
+  if(outcome.role==="weakCherry"||outcome.role==="strongCherry")highlightCherry();
   await sleep(150);
 }
 
+function autoNotice(title){
+  showModal(title,"","",()=>{});
+  const m=document.querySelector(".modal");
+  m.classList.add("notice");
+  $("modalText").style.display="none";$("modalMain").style.display="none";
+  $("modalSecond").classList.add("hidden");$("modalReset").style.display="none";
+  tone(523,.5,"triangle",.1,0);tone(784,.5,"triangle",.1,.08);tone(1047,.7,"triangle",.1,.16);noiseBurst(.25,.3,0,1500);
+  setTimeout(()=>{
+    $("overlay").classList.remove("show");
+    m.classList.remove("notice");
+    $("modalText").style.display="";$("modalMain").style.display="";$("modalReset").style.display="";
+    update();
+  },2200);
+}
+
 function showModal(title,text,mainText,mainAction,secondText=null,secondAction=null){
+  $("modalMain").style.display="";
+  document.querySelector(".modal").classList.remove("notice","super");
+  $("modalText").style.display="";$("modalReset").style.display="";
   $("modalTitle").textContent=title;
   $("modalText").textContent=text;
   $("modalMain").textContent=mainText;
@@ -1697,25 +1895,62 @@ function enterRush(){
   addLog("🎉 PT特化ゾーン終了！7 RUSH突入！");
   update();
 
-  showModal(
-    "7 RUSH!",
-    `累計 ${points.toLocaleString("ja-JP")}pt！\n\n7 RUSH突入！\n5G固定！ベルと7揃いのポイントが2倍！`,
+  autoNotice(
+    "7 RUSH",
+    `累計 ${points.toLocaleString("ja-JP")}pt！\n\n7 RUSH突入！\n5G固定！通常・中・強ベルと7揃いが2倍！\n（特殊ベルは1倍）`,
     "7 RUSH開始",
     ()=>update()
   );
 }
 
+async function enterSuperRush(rare){
+  const mult=weighted((rare
+    ?[[5,15],[7,30],[10,40],[15,10],[20,5]]
+    :[[3,20],[5,60],[7,20]]).map(([value,weight])=>({value,weight})));
+  mode="rush";superRush=true;superChain=true;superMult=mult;
+  games=5;gaugeStage=0;gaugeAdvancePending=false;
+  addLog(`🌈 超7 RUSH突入！×${mult}倍！${rare?"（レア役突破）":""}`);
+  update();
+  busy=true;await superIntro(mult);busy=false;
+  update();
+}
+
+async function superIntro(mult){
+  showModal("超7 RUSH","","",()=>{});
+  const m=document.querySelector(".modal"),h=$("modalTitle");
+  m.classList.add("notice","super");
+  ["modalText","modalMain","modalReset"].forEach(i=>$(i).style.display="none");
+  $("modalSecond").classList.add("hidden");
+  h.textContent="超7 RUSH";h.className="";
+  [262,330,392,523,659,784,1047,1319].forEach((f,i)=>tone(f,.45,"sawtooth",.07,i*.08));
+  noiseBurst(.5,.4,0,300);tone(70,1,"sine",.3,0,30);
+  await sleep(2100);
+  const V=[3,5,7,10,15,20];let i=0,d=60;
+  h.classList.add("roll");
+  const step=()=>{h.textContent="×"+V[i%6];tone(900+(i%6)*140,.06,"square",.04,0);i++};
+  for(let n=0;n<15;n++){step();await sleep(d);d*=1.1}
+  while(V[i%6]!==mult){step();await sleep(d);d*=1.1}
+  step();await sleep(d);
+  h.classList.add("hit");h.textContent=`×${mult}倍！`;
+  noiseBurst(.4,.5,0,200);tone(80,.8,"sine",.3,0,30);[523,659,784,1047].forEach(f=>tone(f,1.2,"triangle",.09,0));
+  await sleep(1900);
+  $("overlay").classList.remove("show");
+  m.classList.remove("notice","super");h.className="";h.textContent="";
+  ["modalText","modalMain","modalReset"].forEach(i=>$(i).style.display="");
+}
+
 function enterJudge(){
+  superRush=false;superMult=1;
   mode="judge";
   games=3;
   judgeContinue=false;
 
-  addLog("7 RUSH終了！7 JUDGEへ突入！");
+  addLog(superChain?"超7 RUSH終了！超7 JUDGEへ突入！":"7 RUSH終了！7 JUDGEへ突入！");
   update();
 
   showModal(
-    "7 JUDGE",
-    "継続ジャッジ！\n3Gの間に継続をつかめ！\n\nハズレは設定別の継続抽選。\nレア役は継続確定！\n7揃いなら777 RUSH突入！",
+    superChain?"超7 JUDGE":"7 JUDGE",
+    superChain?"3Gの間に継続をつかめ！\n\nハズレは設定別の継続抽選。\nレア役は継続確定！\n成功で超7 RUSH継続！":"継続ジャッジ！\n3Gの間に継続をつかめ！\n\nハズレは設定別の継続抽選。\nレア役は継続確定！\n7揃いなら777 RUSH突入！",
     "JUDGE開始",
     ()=>update()
   );
@@ -1732,7 +1967,7 @@ function enter777Rush(){
 
   showModal(
     "🌈 777 RUSH 🌈",
-    "SPECIAL POINT ZONE\n\n7Gスタート！\nレア役で777PT獲得＋ゲーム数加算！\nベルと7揃いのポイントも2倍！",
+    "SPECIAL POINT ZONE\n\n7Gスタート！\nレア役で777PT獲得＋ゲーム数加算！\n通常・中・強ベルと7揃いは2倍（特殊ベルは1倍）！",
     "777 RUSH開始",
     ()=>update()
   );
@@ -1746,9 +1981,9 @@ function endJudge(){
   addLog("7 JUDGE終了！継続できず終了画面へ。");
   update();
 
-  showModal(
+  endModal(
     "RUSH END",
-    `7 JUDGE失敗…\n\n最終ポイント：${points.toLocaleString("ja-JP")}pt`,
+    `${superChain?"超":""}7 JUDGE失敗…\n\n最終ポイント：${points.toLocaleString("ja-JP")}pt`,
     "もう一度",
     reset,
     "ホームに戻る",
@@ -1757,10 +1992,7 @@ function endJudge(){
 }
 
 function goHome(){
-  reset();
-  $("result").textContent="SPIN READY";
-  $("detail").textContent="10G以内に777ptを超えよう！";
-  $("lcdMessage").textContent="777PTを超えてチャンスをつかめ！";
+  location.href=`home.html?pt=${points}&rc=${lastRC}&setting=${setting}`;
 }
 
 /* JUDGE中の継続抽選 */
@@ -1768,7 +2000,7 @@ function judgeLottery(role){
   if(role==="seven")return "seven";
   if(role!=="miss")return "continue";
 
-  return Math.random()*100<JUDGE_MISS_CONTINUE[setting]?"continue":"fail";
+  return Math.random()*100<(superChain?SUPER_JUDGE_MISS_CONTINUE:JUDGE_MISS_CONTINUE)[setting]?"continue":"fail";
 }
 
 async function spin(){
@@ -1777,11 +2009,10 @@ async function spin(){
   busy=true;
   spinCount++;
 
+  /* 回転開始音 */
   playSound("spin");
 
   const currentMode=mode;
-
-  /* 今回消費する1Gだけ先に減らす */
   games--;
 
   let role;
@@ -1795,13 +2026,15 @@ async function spin(){
     outcome=buildOutcome(role);
   }
 
-  /*
-    ★重要な修正
-    ここでは追加ゲーム数をまだ加算しない。
-    リール停止後に演出を出してから加算する。
-  */
+  /* 通常時と777 RUSH中だけレア役でゲーム数を加算 */
+  if(
+    outcome.extraGames>0&&
+    (currentMode==="normal"||currentMode==="sevenRush")
+  ){
+    /* G数はリール停止後の+G表示のあとで加算する */
+  }
 
-  /* 7 RUSH中はベル・7揃い以外のポイントを無効化 */
+  /* 7 RUSH中はベル以外のレア役でG数を増やさない */
   if(currentMode==="rush"){
     outcome.extraGames=0;
 
@@ -1811,7 +2044,7 @@ async function spin(){
     }
   }
 
-  /* 777 RUSH中のレア役は777PT獲得 */
+  /* 777 RUSHではレア役で777pt＋通常時と同じG数加算 */
   if(currentMode==="sevenRush"){
     if(role!=="bell"&&role!=="miss"){
       outcome.pointGain=777;
@@ -1819,26 +2052,28 @@ async function spin(){
     }
   }
 
-  /* 7 RUSHと777 RUSHではベルのポイント2倍 */
+  /* 7 RUSHと777 RUSHではベル・7揃いのptが2倍 */
   if(
     (currentMode==="rush"||currentMode==="sevenRush")&&
-    role==="bell"
+    role==="bell"&&outcome.name!=="特殊ベル"
   ){
-    outcome.pointGain*=2;
-    outcome.detail=`${outcome.name}！ +${outcome.pointGain}pt（2倍）`;
+    const mm=(currentMode==="rush"&&superRush)?superMult:2;
+    outcome.pointGain*=mm;
+    outcome.detail=`${outcome.name}！ +${outcome.pointGain}pt（${mm}倍）`;
   }
 
-  /* 7 RUSHの7揃いは2000PT、777 RUSHの7揃いは777PT */
   if(
     (currentMode==="rush"||currentMode==="sevenRush")&&
     role==="seven"
   ){
     if(currentMode==="rush"){
-      outcome.pointGain=2000;
-      outcome.detail="+2000pt！！（2倍）";
+      const mm=superRush?superMult:2;
+      outcome.pointGain=1000*mm;
+      outcome.detail=`+${1000*mm}pt！！（${mm}倍）`;
     }else{
       outcome.pointGain=777;
-      outcome.detail="7揃い！ +777PT";
+      outcome.extraGames=weighted([{value:4,weight:30},{value:6,weight:65},{value:8,weight:5}]);
+      outcome.detail=`7揃い！ +777PT ＋${outcome.extraGames}G`;
     }
   }
 
@@ -1850,10 +2085,8 @@ async function spin(){
     :"リール回転中…";
 
   $("detail").textContent="リール回転中…";
-
   update();
 
-  /* リール回転・停止 */
   await spinAnimation(outcome);
 
   /* レア役成立音 */
@@ -1865,47 +2098,7 @@ async function spin(){
     "chance",
     "seven"
   ].includes(role)){
-    playSound("rare");
-  }
-
-  /*
-    ★ゲーム数加算のタイミングを変更
-    777 RUSHでは、リール停止後に大きな水色の+○Gを表示。
-    表示してすぐ数字を変えず、少し待ってから加算する。
-  */
-  if(
-    currentMode==="sevenRush"&&
-    outcome.extraGames>0
-  ){
-    /* 役の結果を先に見せる */
-    $("result").textContent=outcome.name;
-    $("detail").textContent=outcome.detail;
-
-    /* 水色のゲーム数ポップアップ */
-    showGamePop(outcome.extraGames);
-    playSound("gameAdd");
-
-    /* 数字が早く変わらないように待つ */
-    await sleep(1100);
-
-    /* 演出の後にゲーム数を加算 */
-    games+=outcome.extraGames;
-
-    update();
-
-    /* 加算後も少し表示を残す */
-    await sleep(450);
-
-  }else if(
-    currentMode==="normal"&&
-    outcome.extraGames>0
-  ){
-    /*
-      通常時のG数加算は従来どおり。
-      変更対象は777 RUSH中の加算タイミングのみ。
-    */
-    games+=outcome.extraGames;
-    update();
+    playSound("rare");cabFx(role);
   }
 
   /* 全リール停止後にポイント加算 */
@@ -1913,10 +2106,10 @@ async function spin(){
     awardPoints(outcome.pointGain);
   }
 
-  /* ベルの獲得PTをリール上に表示 */
-  if(role==="bell"&&outcome.pointGain>0){
+  /* ベルの獲得PTだけリール上にオーバーレイ */
+  if((role==="bell"||(role==="seven"&&!(currentMode==="sevenRush"&&outcome.extraGames>0)))&&outcome.pointGain>0){
     showPointPop(outcome.pointGain);
-    playSound("points");
+    playSound("points");cabFx("bell");
   }
 
   $("result").textContent=outcome.name;
@@ -1934,6 +2127,17 @@ async function spin(){
     }｜${outcome.name}｜${outcome.detail}`
   );
 
+  /* レア役のG数加算：大きく表示してから上のG数表示に反映 */
+  if(outcome.extraGames>0&&(currentMode==="normal"||currentMode==="sevenRush")){
+    if(currentMode==="sevenRush"&&outcome.pointGain>0){
+      showPointPop(outcome.pointGain);playSound("points");await sleep(950);
+    }
+    showPointPop(outcome.extraGames,"G",true);playSound("points");cabFx("bell");
+    await sleep(1100);
+    games+=outcome.extraGames;
+    gBump=true;
+  }
+
   busy=false;
 
   /* 通常時 */
@@ -1950,7 +2154,7 @@ async function spin(){
       ended=true;
       update();
 
-      showModal(
+      endModal(
         "GAME OVER",
         `ゲーム終了！\n777ptを超えられなかった…\n\n最終ポイント：${points.toLocaleString("ja-JP")}pt`,
         "もう一度遊ぶ",
@@ -1983,10 +2187,7 @@ async function spin(){
     const judgeResult=judgeLottery(role);
 
     /* 7揃いは専用演出から777 RUSHへ */
-    if(judgeResult==="seven"){
-      rainbowSevens=Math.min(3,rainbowSevens+1);
-      updateSevenIndicators();
-
+    if(judgeResult==="seven"&&!superChain){
       addLog("7 JUDGE中の7揃い！継続確定＋777 RUSH！");
       update();
 
@@ -1998,11 +2199,9 @@ async function spin(){
       return;
     }
 
-    if(judgeResult==="continue"){
+    if(judgeResult==="continue"||judgeResult==="seven"){
       judgeContinue=true;
-
-      rainbowSevens=Math.min(3,rainbowSevens+1);
-      updateSevenIndicators();
+      judgeRare=role!=="miss";
 
       addLog(
         role==="miss"
@@ -2013,20 +2212,20 @@ async function spin(){
       addLog("JUDGE：継続抽選に非当選。");
     }
 
-    /* Lastまで消化した時点で継続成功なら暗転演出 */
+    /* 継続成功した“そのG”ですぐプチュン演出→7 RUSHへ復帰 */
+    if(judgeContinue){
+      update();
+
+      busy=true;
+      await playPuchun();
+      busy=false;
+
+      addLog("🌈 プチュン演出成功！7 RUSHへ復帰！");
+      if(superChain||rainbowSevens>=3)enterSuperRush(judgeRare);else enterRush();
+      return;
+    }
+
     if(games<=0){
-      if(judgeContinue){
-        update();
-
-        busy=true;
-        await playPuchun();
-        busy=false;
-
-        addLog("🌈 プチュン演出成功！7 RUSHへ復帰！");
-        enterRush();
-        return;
-      }
-
       endJudge();
       return;
     }
@@ -2062,23 +2261,12 @@ function reset(){
     pointPopTimer=null;
   }
 
-  if(gamePopTimer){
-    clearTimeout(gamePopTimer);
-    gamePopTimer=null;
-  }
-
   $("pointPop").classList.remove("show");
-
-  const gamePop=$("gamePop");
-  if(gamePop){
-    gamePop.classList.remove("show");
-  }
-
-  $("puchun").classList.remove("show","reveal","blackout");
+  $("puchun").className="puchun";confettiRun=false;
 
   mode="normal";
   games=10;
-  points=0;
+  points=0;if(maxWatch){clearInterval(maxWatch);maxWatch=null}
   setting=weighted(SETTING_WEIGHTS);
 
   ended=false;
@@ -2088,6 +2276,7 @@ function reset(){
   gaugeAdvancePending=false;
   specialZone=false;
   judgeContinue=false;
+  superRush=false;superChain=false;superMult=1;
 
   rainbowSevens=0;
   updateSevenIndicators();
@@ -2110,8 +2299,9 @@ function reset(){
 }
 
 $("spin").addEventListener("click",spin);
+$("snd").addEventListener("click",()=>{soundOn=!soundOn;$("snd").textContent=soundOn?"🔊":"🔇";ensureAudio()});
 
-$("reset").addEventListener("click",()=>{
+$("reset")?.addEventListener("click",()=>{
   if(!busy)reset();
 });
 
@@ -2130,7 +2320,6 @@ $("showRules").addEventListener("click",()=>{
 reset();
 
 })();
-
 </script>
 </body>
 </html>
