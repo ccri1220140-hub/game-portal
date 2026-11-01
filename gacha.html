@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>【報酬を手に入れろ】ガチャ</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -104,14 +104,37 @@ h1{text-align:center;margin:10px 0 14px;font-size:24px;line-height:1.3;color:#ff
 #rs{background:#ffffff10;border-radius:14px;padding:12px;margin-bottom:14px;line-height:1.9;font-size:15px}
 #rs .v{color:#ff9ae6;font-weight:900}
 .rbox .sub{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid #fff3;background:#ffffff14;color:#fff;font-size:15px}
+/* ===== コンパクト・ズーム防止 ===== */
+html,body{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow-x:hidden}
+button,a,#snd{touch-action:manipulation}
+main{padding:10px 12px 14px}
+#back,#snd{font-size:12px;padding:5px 10px}
+h1{margin:8px 0 10px;font-size:19px;line-height:1.3}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card{padding:10px 12px;margin:0 0 8px;border-radius:14px}
+.card h2{font-size:12px;margin:0 0 6px}
+.bal{text-align:center}.bal small{font-size:11px}.bal b{font-size:26px;line-height:1.25}
+#wnote{font-size:10px;color:#8d99c8;text-align:center;margin:-2px 0 8px;min-height:12px}
+#rates{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}
+.row{grid-template-columns:22px 46px 1fr;gap:4px;padding:5px 0;border-top:0;border-bottom:1px solid #ffffff12;font-size:12px}
+.row i{font-size:16px}
+.pr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.stp{margin:0;gap:12px}.stp button{width:42px;height:42px;font-size:22px}.stp div{min-width:0;font-size:15px}.stp b{font-size:30px}
+#cost{font-size:13px;margin:0;text-align:right}
+.gold{padding:12px;font-size:17px;border-radius:12px}
+.tiny{font-size:10px;margin:6px 0 0}
+.rbox{padding:14px 12px 16px}.rbox h2{margin:2px 0 10px;font-size:18px}
+#rg{gap:6px;margin-bottom:10px}.chip{padding:5px 2px;border-radius:10px}.chip b{font-size:18px}.chip small{font-size:9px}
+#rs{padding:8px 12px;margin-bottom:10px;line-height:1.7;font-size:14px}
+.rbox .sub{margin-top:8px;padding:10px;font-size:14px}
 </style></head><body>
 <main id="home">
 <div class="top"><a id="back" href="#">← 戻る</a><span id="snd">🔊 音あり</span></div>
-<h1>【報酬を手に入れろ】<br>ガチャ</h1>
-<div class="card bal"><small>所持PT</small><b id="bal">0</b><span id="wnote"></span></div>
-<div class="card"><h2>排出率（毎回この抽選・天井なし）</h2><div id="rates"></div><p class="tiny">報酬のコインはウォレットにそのまま反映されます</p></div>
-<div class="card"><div class="stp"><button id="mn">−</button><div><b id="cnt">1</b>連</div><button id="pl">＋</button></div><div id="cost"></div><button id="go" class="gold">ガチャを引く</button><p class="tiny">1回 50PT ／ 10連 500PT ／ 10連は最高レアの演出を表示</p></div>
-<div class="card"><h2>🎁 所持プレゼント券</h2><div id="vc">0枚</div></div>
+<h1>【報酬を手に入れろ】ガチャ</h1>
+<div class="two"><div class="card bal"><small>所持PT</small><b id="bal">0</b></div><div class="card bal"><small>🎁 プレゼント券</small><b id="vc">0枚</b></div></div>
+<div id="wnote"></div>
+<div class="card"><h2>排出率（毎回同じ抽選・天井なし）／ 報酬</h2><div id="rates"></div><p class="tiny">報酬は「コインカード」としてホームのカード一覧に届きます</p></div>
+<div class="card"><div class="pr"><div class="stp"><button id="mn">−</button><div><b id="cnt">1</b>連</div><button id="pl">＋</button></div><div id="cost"></div></div><button id="go" class="gold">ガチャを引く</button><p class="tiny">1回 50PT ／ 10連 500PT ／ 10連は最高レアの演出を表示</p></div>
 </main>
 
 <div id="show">
@@ -151,8 +174,8 @@ function draw(){let x=rnd(10000);for(let i=0;i<6;i++){if(x<R[i].p)return i;x-=R[
 let count=1,snd=true,busy=false,tok=0,lastRes=null;
 const fmt=n=>n.toLocaleString('ja-JP');
 function safeBack(){const q=new URLSearchParams(location.search).get('returnUrl')||'';try{if(q){const u=new URL(q,location.href);if(u.origin===location.origin)return u.href}}catch(e){}try{if(document.referrer){const u=new URL(document.referrer);if(u.origin===location.origin)return u.href}}catch(e){}return 'https://ccri1220140-hub.github.io/game-portal/home.html.html'}
-$('back').href=safeBack();
-$('rates').innerHTML=R.map(r=>`<div class="row" style="--c:${r.c}"><i${r.k==='虹'?' class="rb"':''}>${r.k}</i><span>${r.p/100}%</span><span>${r.k==='虹'?'1000円プレゼント券':fmt(r.rw)+' コイン'}</span></div>`).join('');
+$('back').href=safeBack();document.addEventListener('dblclick',e=>e.preventDefault());document.addEventListener('gesturestart',e=>e.preventDefault());
+$('rates').innerHTML=R.map(r=>`<div class="row" style="--c:${r.c}"><i${r.k==='虹'?' class="rb"':''}>${r.k}</i><span>${r.p/100}%</span><span>${r.k==='虹'?'1000円券':fmt(r.rw)+'🪙'}</span></div>`).join('');
 function home(){const b=Wallet.get();$('bal').textContent=fmt(b);const cost=count*COST;$('cnt').textContent=count;$('cost').textContent='消費 '+fmt(cost)+' PT';const g=$('go');g.disabled=busy||b<cost;g.textContent=b<cost?'PTが足りません':count+'連で引く';
  $('vc').textContent=(jget(VK,[]).filter(v=>!v.used).length)+'枚';
  $('wnote').innerHTML=Wallet.demo?'テストモード（ポータルのウォレット未検出）<button id="topup">+500 PT</button>':'ポータルのPTと連携中';
@@ -164,7 +187,9 @@ let ac;function tone(f,d=.1,t='square',v=.05,to){if(!snd)return;try{ac=ac||new(w
 /* ===== 引く ===== */
 $('go').onclick=()=>{if(busy)return;const n=count,cost=n*COST,pt=Wallet.get();if(pt<cost)return;
  const res=Array.from({length:n},draw);const gain=res.reduce((s,i)=>s+R[i].rw,0),vn=res.filter(i=>i===5).length;
- if(!Wallet.commit(-cost,gain)){alert('保存に失敗しました。ガチャは実行されていません。');return}
+ const oldCards=jget(CK,[]),arr=Array.isArray(oldCards)?oldCards.slice():[];
+ if(gain>0){arr.push({id:'card_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8),sessionId:'gacha-'+Date.now()+'-'+rnd(1e6),type:'coin',name:n>1?'ガチャ報酬（'+n+'連）':'ガチャ報酬',coin:gain,date:new Date().toLocaleString('ja-JP')});try{localStorage.setItem(CK,JSON.stringify(arr))}catch(e){alert('保存に失敗しました。ガチャは実行されていません。');return}}
+ if(!Wallet.commit(-cost,0)){try{localStorage.setItem(CK,JSON.stringify(oldCards))}catch(e){}alert('PTの保存に失敗しました。ガチャは実行されていません。');return}
  if(vn){const v=jget(VK,[]);for(let j=0;j<vn;j++)v.push({id:'gv-'+Date.now()+'-'+rnd(1e6)+'-'+j,type:'1000円プレゼント券',createdAt:new Date().toISOString(),used:false});try{localStorage.setItem(VK,JSON.stringify(v))}catch(e){}}
  const h=jget(HK,[]);h.push({t:new Date().toISOString(),res:res.map(i=>R[i].k),cost,gain});try{localStorage.setItem(HK,JSON.stringify(h.slice(-50)))}catch(e){}
  lastRes={res,cost,gain,vn};busy=true;tone(300,.2,'sawtooth',.06,900);play(Math.max(...res))};
@@ -205,7 +230,7 @@ function flash(){const e=$('fl');e.classList.remove('on');void e.offsetWidth;e.c
 function cutin(t,c){return new Promise(r=>{const e=$('cut');e.style.setProperty('--c',c);e.querySelector('.ct').textContent=t;e.classList.remove('go');void e.offsetWidth;e.classList.add('go');tone(200,.3,'sawtooth',.07,900);flash();shake(280);setTimeout(()=>{e.classList.remove('go');r()},1150)})}
 function puffs(){const s=$('smoke');s.innerHTML='';for(let i=0;i<10;i++){const e=document.createElement('span');e.className='puff';e.textContent='💨';e.style.left=(W*.25+Math.random()*W*.5)+'px';e.style.top=(H*.22+Math.random()*H*.2)+'px';e.style.setProperty('--dx',(Math.random()*160-80)+'px');e.style.animationDelay=(i*.1)+'s';s.appendChild(e)}}
 function resetShow(){cancelAnimationFrame(raf);clearInterval(hb);sh.classList.remove('on','stop','pulse','shake','bossmode');$('cut').classList.remove('go');$('warn').classList.remove('on');$('rbs').classList.remove('go');$('rev').classList.remove('on');$('boss').className='';$('smoke').innerHTML='';$('msg').textContent=''}
-function reveal(i){const r=R[i],e=$('rev');e.style.setProperty('--c',r.c);const v=$('rv1');v.textContent=r.k+'！';v.className=i===5?'rb':'';$('rv2').textContent=i===5?'1000円プレゼント券 GET！':fmt(r.rw)+' コイン GET！';$('rv3').textContent=lastRes.res.length>1?'他の結果は次の画面で':'';
+function reveal(i){const r=R[i],e=$('rev');e.style.setProperty('--c',r.c);const v=$('rv1');v.textContent=r.k+'！';v.className=i===5?'rb':'';$('rv2').textContent=i===5?'1000円プレゼント券 GET！':fmt(r.rw)+' コインカード GET！';$('rv3').textContent=lastRes.res.length>1?'他の結果は次の画面で':'';
  e.classList.add('on');ts=1;burst(W/2,H*.45,[30,60,90,130,220,320][i],i===5?'rb':r.c,320,1.1);flash();shake(400);[523,659,784,1047].forEach((f,k)=>setTimeout(()=>tone(f,.25,'triangle',.07),k*110));
  setTimeout(()=>{e.onclick=toResult},700)}
 function toResult(){tok++;$('rev').onclick=null;resetShow();showResult()}
@@ -232,7 +257,7 @@ $('skip').onclick=()=>{if(!busy)return;toResult()};
 function showResult(){const {res,cost,gain,vn}=lastRes;const s=res.slice().sort((a,b)=>b-a);
  $('rg').style.gridTemplateColumns=`repeat(${Math.min(5,s.length)},1fr)`;
  $('rg').innerHTML=s.map(i=>`<div class="chip" style="--c:${R[i].c}"><b${i===5?' class="rb"':''}>${R[i].k}</b><small>${i===5?'1000円券':fmt(R[i].rw)+'🪙'}</small></div>`).join('');
- $('rs').innerHTML=`消費：${fmt(cost)} PT<br>獲得：${fmt(gain)} コイン${gain>0?'（ウォレットに反映）':''}${vn?`<br><span class="v">🎁 1000円プレゼント券 ×${vn} 獲得！</span>`:''}`;
+ $('rs').innerHTML=`消費：${fmt(cost)} PT<br>獲得：${fmt(gain)} コイン${gain>0?'（コインカードに保存）':''}${vn?`<br><span class="v">🎁 1000円プレゼント券 ×${vn} 獲得！</span>`:''}`;
  $('res').classList.add('on');busy=false;home()}
 $('again').onclick=()=>{$('res').classList.remove('on');home();if(!$('go').disabled)$('go').click()};
 $('rclose').onclick=()=>{$('res').classList.remove('on');home()};
