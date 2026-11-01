@@ -646,6 +646,11 @@ a.button.merge-start{
 .exchange-bar{position:sticky;bottom:8px;z-index:20;margin-top:14px;padding:12px;border-radius:14px;background:#0b1020f2;border:1px solid #ffd76a88;box-shadow:0 8px 24px #000a}
 .exchange-bar .info{font-weight:800;font-size:13px;line-height:1.6;margin-bottom:8px}
 .exchange-bar .row{display:flex;gap:8px}.exchange-bar .row .button{flex:1;margin:0;padding:11px 6px;font-size:13px}
+.confirm-overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#000a;padding:20px}
+.confirm-overlay.hidden{display:none}
+.confirm-box{width:min(100%,360px);padding:20px;border-radius:16px;background:#101528;border:1px solid #ffd76a88;box-shadow:0 12px 40px #000}
+.confirm-box p{margin:0 0 16px;font-size:14px;font-weight:700;line-height:1.8;white-space:pre-line}
+.confirm-box .row{display:flex;gap:10px}.confirm-box .row .button{flex:1;margin:0}
 </style>
 </head>
 
@@ -849,7 +854,7 @@ a.button.merge-start{
     <h2 class="section-title">🎴 RCカード一覧</h2>
     <p class="section-subtitle">
       獲得したRCカードを保管する場所。<br>
-      「選んでコインに変える」で、好きなカードを何枚でもまとめて交換できるよ。<br>10RC＝1コイン（端数のRCは新しいカードで残るよ）。
+      「選んでコインに変える」で、好きなカードを何枚でもまとめて交換できるよ。<br>10RC＝1コイン（10未満の端数はコインに変換されないよ）。
     </p>
 
     <div class="button-row">
@@ -882,6 +887,16 @@ a.button.merge-start{
   </p>
 </footer>
 
+<div class="confirm-overlay hidden" id="confirmOverlay">
+  <div class="confirm-box">
+    <p id="confirmText"></p>
+    <div class="row">
+      <button class="button secondary" id="confirmCancel" type="button">キャンセル</button>
+      <button class="button gold" id="confirmOk" type="button">確認</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -894,7 +909,7 @@ a.button.merge-start{
     コイン：初期1,000
     PT：使用コインの10分の1
     RC：ゲーム報酬カードに保存
-    RC交換：選んだカードの合計RCの10分の1をコインに変換（端数はカードで残る）
+    RC交換：選んだカードの合計RCの10分の1をコインに変換（端数は変換されない）
 
     ゲーム側でも同じ保存キーを使用すること。
   */
@@ -1109,7 +1124,7 @@ let selectMode = false;
       ? "カードをタップして選んでね（何枚でもOK）"
       : `${selected.size}枚選択中　合計 ${formatNumber(total)} RC<br>` +
         `→ ${formatNumber(coin)} コイン` +
-        (rest > 0 ? `（端数 ${rest} RCはカードで残る）` : "");
+        (rest > 0 ? `（端数 ${rest} RCは変換されない）` : "");
   }
 
   function setSelectMode(on) {
@@ -1118,7 +1133,22 @@ let selectMode = false;
     renderCards();
   }
 
-  function exchangeSelected() {
+  function askConfirm(message) {
+    return new Promise(resolve => {
+      $("confirmText").textContent = message;
+      $("confirmOverlay").classList.remove("hidden");
+      const done = result => {
+        $("confirmOverlay").classList.add("hidden");
+        $("confirmOk").onclick = null;
+        $("confirmCancel").onclick = null;
+        resolve(result);
+      };
+      $("confirmOk").onclick = () => done(true);
+      $("confirmCancel").onclick = () => done(false);
+    });
+  }
+
+  async function exchangeSelected() {
     if (selected.size === 0) {
       showToast("交換するカードを選んでね。");
       return;
@@ -1135,11 +1165,11 @@ let selectMode = false;
       return;
     }
 
-    const ok = confirm(
-      `${chosen.length}枚（合計 ${formatNumber(total)} RC）を交換します。\n\n` +
-      `獲得コイン：${formatNumber(coin)}コイン\n` +
-      (rest > 0 ? `端数 ${rest} RCは新しいカードで残ります。\n` : "") +
-      `\n選んだカードは消えます。交換しますか？`
+    const ok = await askConfirm(
+      rest > 0
+        ? `端数（${rest}RC）はコインに変換されません。よろしいですか？
+（${formatNumber(coin)}コインに交換）`
+        : `${formatNumber(coin)}コインに交換します。よろしいですか？`
     );
     if (!ok) return;
 
@@ -1151,16 +1181,6 @@ let selectMode = false;
       showToast("カードの状態が変わりました。選び直してね。");
       renderCards();
       return;
-    }
-
-    if (rest > 0) {
-      remain.push({
-        id: "card_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8),
-        sessionId: null,
-        name: "RC端数カード",
-        rc: rest,
-        date: new Date().toLocaleString("ja-JP")
-      });
     }
 
     saveCards(remain);
