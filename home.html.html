@@ -651,6 +651,18 @@ a.button.merge-start{
 .confirm-box{width:min(100%,360px);padding:20px;border-radius:16px;background:#101528;border:1px solid #ffd76a88;box-shadow:0 12px 40px #000}
 .confirm-box p{margin:0 0 16px;font-size:14px;font-weight:700;line-height:1.8;white-space:pre-line}
 .confirm-box .row{display:flex;gap:10px}.confirm-box .row .button{flex:1;margin:0}
+/* ===== タブ・固定マージ・ガチャ ===== */
+.pinned{margin:0 0 6px}
+.pin-label{margin:0 2px 8px;color:var(--green);font-size:11px;font-weight:900;letter-spacing:2px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;margin-bottom:14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
+.tab{border:0;border-radius:11px;padding:12px 4px;background:transparent;color:var(--muted);font-size:12px;font-weight:900}
+.tab.active{color:#fff;background:linear-gradient(100deg,#6753d9,#5140a8);box-shadow:0 0 14px #7864ff55}
+.game-card.wide .art.rush-icon{width:90%;height:auto;max-height:140px}
+.thumbnail.gacha{background:radial-gradient(circle at 50% 45%,#6a2fb0 0,#2a1250 55%,#0c0d18 100%)}
+.thumbnail.gacha::before{background:#c77dff;opacity:.5}
+.art.gacha-icon{display:flex;flex-direction:column;align-items:center;gap:8px}
+.gc-gift{font-size:clamp(46px,13vw,66px);filter:drop-shadow(0 0 16px #ffd76acc)}
+.gc-dots{display:flex;gap:6px}.gc-dots i{width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
 </style>
 </head>
 
@@ -698,7 +710,7 @@ a.button.merge-start{
 
       <p class="wallet-note">
         コイン：ゲームプレイに使用<br>
-        PT：使用したコインの10分の1を獲得<br>
+        PT：使用したコインの10分の1を獲得（ガチャで使用）<br>
         RC：ゲーム報酬カードに保存される限定通貨
       </p>
     </div>
@@ -710,13 +722,26 @@ a.button.merge-start{
 
   <!-- 紹介 -->
 
-  <section class="panel hero">
-    <div class="hero-label">WELCOME TO MY WORLD</div>
-    <h2>遊びたいゲームを、<br>ここから始めよう。</h2>
-    <p>
-      自分だけのゲームコレクション。<br>
-      ゲームで獲得したRCカードも、ここで管理できる。
-    </p>
+  <section class="pinned">
+    <div class="pin-label">📌 FREE ／ いつでも無料</div>
+    <article class="game-card wide">
+        <div class="thumbnail merge">
+          <span class="thumbnail-tag">PUZZLE</span>
+          <div class="art" aria-label="花">🌸</div>
+        </div>
+
+        <div class="card-info">
+          <h3>マージガーデン</h3>
+          <p>育てて合成してオーダーを届けよう。報酬のコインはここに反映！</p>
+
+          <span class="price-label">入場料金</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
+
+          <a class="button merge-start" href="merge_garden.html">
+            🌱 あそぶ
+          </a>
+        </div>
+      </article>
   </section>
 
   <!-- ゲーム一覧 -->
@@ -727,14 +752,17 @@ a.button.merge-start{
         <h2>GAME LIBRARY</h2>
         <p>料金を選んでゲームを始めよう</p>
       </div>
-      <div class="game-count">4 TITLES</div>
+      <div class="game-count">5 TITLES</div>
     </div>
 
-    <div class="game-list">
+    <div class="tabs" role="tablist">
+      <button class="tab active" role="tab" data-tab="variety" aria-selected="true" type="button">🎮 バラエティー</button>
+      <button class="tab" role="tab" data-tab="slot" aria-selected="false" type="button">🎰 スロット</button>
+      <button class="tab" role="tab" data-tab="gacha" aria-selected="false" type="button">🎁 ガチャ</button>
+    </div>
 
-      <!-- モンバト -->
-
-      <article class="game-card">
+    <div class="game-list tab-panel" id="tab-variety">
+      <article class="game-card wide">
         <div class="thumbnail monster">
           <span class="thumbnail-tag">BATTLE</span>
           <div class="art mon-icon" aria-label="モンバト">
@@ -762,10 +790,28 @@ a.button.merge-start{
           </button>
         </div>
       </article>
+      <article class="game-card wide">
+        <div class="thumbnail mine">
+          <span class="thumbnail-tag">MINING</span>
+          <div class="art" aria-label="ツルハシ">⛏️</div>
+        </div>
 
-      <!-- 7 RUSH SLOT -->
+        <div class="card-info">
+          <h3>ピッケルドロップ</h3>
+          <p>ツルハシで掘り進めてRCを狙え！獲得したRCはカードでここに保存。</p>
 
-      <article class="game-card">
+          <span class="price-label">入場料金</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">移動は無料（ゲーム内でベットした分だけコイン消費）</div>
+
+          <a class="button merge-start" href="mine-break.html">
+            ⛏️ あそぶ
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div class="game-list tab-panel hidden" id="tab-slot">
+      <article class="game-card wide">
         <div class="thumbnail slot">
           <span class="thumbnail-tag">SLOT</span>
           <div class="art rush-icon" aria-label="7 RUSH">
@@ -800,51 +846,22 @@ a.button.merge-start{
           </button>
         </div>
       </article>
+    </div>
 
-
-      <!-- マージガーデン（入場料なし。報酬コインが財布に入る） -->
-
+    <div class="game-list tab-panel hidden" id="tab-gacha">
       <article class="game-card wide">
-        <div class="thumbnail merge">
-          <span class="thumbnail-tag">PUZZLE</span>
-          <div class="art" aria-label="花">🌸</div>
+        <div class="thumbnail gacha">
+          <span class="thumbnail-tag">GACHA</span>
+          <div class="art gacha-icon" aria-label="ガチャ"><div class="gc-gift">🎁</div><div class="gc-dots"><i style="--c:#e8eeff"></i><i style="--c:#4aa8ff"></i><i style="--c:#4fe07a"></i><i style="--c:#ff4a4a"></i><i style="--c:#ffd24a"></i><i style="--c:#ff7ad9"></i></div></div>
         </div>
-
         <div class="card-info">
-          <h3>マージガーデン</h3>
-          <p>育てて合成してオーダーを届けよう。報酬のコインはここに反映！</p>
-
-          <span class="price-label">入場料金</span>
-          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
-
-          <a class="button merge-start" href="merge_garden.html">
-            🌱 あそぶ
-          </a>
+          <h3>【報酬を手に入れろ】ガチャ</h3>
+          <p>モンスターを倒して報酬をゲット！虹は1000円プレゼント券。</p>
+          <span class="price-label">必要PT（所持 <span id="gachaPt">0</span> PT）</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--gold)">1回 50PT ／ 10連 500PT</div>
+          <a class="button merge-start" href="gacha.html">🎁 あそぶ</a>
         </div>
       </article>
-
-      <!-- ピッケルドロップ（mine-break）：移動は無料。コインはゲーム内のベット分だけ減る -->
-
-      <article class="game-card wide">
-        <div class="thumbnail mine">
-          <span class="thumbnail-tag">MINING</span>
-          <div class="art" aria-label="ツルハシ">⛏️</div>
-        </div>
-
-        <div class="card-info">
-          <h3>ピッケルドロップ</h3>
-          <p>ツルハシで掘り進めてRCを狙え！獲得したRCはカードでここに保存。</p>
-
-          <span class="price-label">入場料金</span>
-          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">移動は無料（ゲーム内でベットした分だけコイン消費）</div>
-
-          <a class="button merge-start" href="mine-break.html">
-            ⛏️ あそぶ
-          </a>
-        </div>
-      </article>
-
-
     </div>
   </section>
 
@@ -1014,6 +1031,7 @@ a.button.merge-start{
 
     $("coinBalance").textContent = formatNumber(wallet.coin);
     $("ptBalance").textContent = formatNumber(wallet.pt);
+    const gp = $("gachaPt"); if (gp) gp.textContent = formatNumber(wallet.pt);
     $("rcBalance").textContent = formatNumber(totalRC());
 
     document.querySelectorAll(".game-start").forEach(button => {
@@ -1423,6 +1441,25 @@ let selectMode = false;
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) syncFromStorage();
   });
+
+  // タブ切り替え
+  const TAB_KEY = "ridokaji_home_tab_v1";
+  function setTab(name) {
+    document.querySelectorAll(".tab").forEach(b => {
+      const on = b.dataset.tab === name;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    document.querySelectorAll(".tab-panel").forEach(p => {
+      p.classList.toggle("hidden", p.id !== "tab-" + name);
+    });
+    try { localStorage.setItem(TAB_KEY, name); } catch (e) {}
+  }
+  document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
+  let startTab = "variety";
+  try { startTab = localStorage.getItem(TAB_KEY) || startTab; } catch (e) {}
+  if (!$("tab-" + startTab)) startTab = "variety";
+  setTab(startTab);
 
   // 起動時
   updateWalletDisplay();
