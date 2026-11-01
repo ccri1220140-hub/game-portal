@@ -877,6 +877,7 @@ main>section.panel:last-of-type{display:none}
 @keyframes pf{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.14) rotate(3deg)}}
 .puchun.p-perfect::after{display:block;content:"";position:absolute;inset:0;background:#fff;z-index:10;pointer-events:none;opacity:0;animation:pfl .5s steps(2) 10}
 @keyframes pfl{50%{opacity:.7}}
+#modalReset{display:none!important}
 </style>
 </head>
 
@@ -1006,7 +1007,7 @@ main>section.panel:last-of-type{display:none}
     <p id="modalText"></p>
     <button id="modalMain" style="background:linear-gradient(180deg,#ffe58a,#ffb92e);color:#231700">続ける</button>
     <button id="modalSecond" class="secondary hidden">ホームに戻る</button>
-    <button id="modalReset" class="secondary">最初から遊ぶ</button>
+    <button id="modalReset" class="secondary" hidden style="display:none!important"></button>
   </div>
 </div>
 
