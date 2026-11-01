@@ -651,18 +651,25 @@ a.button.merge-start{
 .confirm-box{width:min(100%,360px);padding:20px;border-radius:16px;background:#101528;border:1px solid #ffd76a88;box-shadow:0 12px 40px #000}
 .confirm-box p{margin:0 0 16px;font-size:14px;font-weight:700;line-height:1.8;white-space:pre-line}
 .confirm-box .row{display:flex;gap:10px}.confirm-box .row .button{flex:1;margin:0}
+
 /* ===== タブ・固定マージ・ガチャ ===== */
-.pinned{margin:0 0 6px}
-.pin-label{margin:0 2px 8px;color:var(--green);font-size:11px;font-weight:900;letter-spacing:2px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;margin-bottom:14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
-.tab{border:0;border-radius:11px;padding:12px 4px;background:transparent;color:var(--muted);font-size:12px;font-weight:900}
-.tab.active{color:#fff;background:linear-gradient(100deg,#6753d9,#5140a8);box-shadow:0 0 14px #7864ff55}
-.game-card.wide .art.rush-icon{width:90%;height:auto;max-height:140px}
-.thumbnail.gacha{background:radial-gradient(circle at 50% 45%,#6a2fb0 0,#2a1250 55%,#0c0d18 100%)}
-.thumbnail.gacha::before{background:#c77dff;opacity:.5}
-.art.gacha-icon{display:flex;flex-direction:column;align-items:center;gap:8px}
-.gc-gift{font-size:clamp(46px,13vw,66px);filter:drop-shadow(0 0 16px #ffd76acc)}
-.gc-dots{display:flex;gap:6px}.gc-dots i{width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.pinned{margin:0 0 4px}
+.pinned-label{margin:0 2px 8px;color:#a99dff;font-size:10px;font-weight:900;letter-spacing:3px}
+.pinned .game-list{grid-template-columns:1fr}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;margin:0 0 14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
+.tab{min-width:0;padding:10px 4px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--muted);font-size:12px;font-weight:900;line-height:1.4}
+.tab .ti{display:block;font-size:21px;margin-bottom:1px}
+.tab[aria-selected="true"]{color:#fff;border-color:#8b7cff;background:linear-gradient(100deg,#6753d9,#5140a8);box-shadow:0 0 16px #7864ff55}
+.thumbnail.gacha{background:radial-gradient(circle at 50% 45%,#6a3ad8 0,#2a1550 55%,#0c0d18 100%)}
+.thumbnail.gacha::before{background:#ffd24a;opacity:.45}
+.art.gacha-icon{font-size:clamp(46px,13vw,76px);animation:gfloat 2.4s ease-in-out infinite}
+@keyframes gfloat{50%{transform:translateY(-6px) rotate(3deg)}}
+.pt-fee{margin:0 0 9px;font-size:12px;font-weight:900;color:#c1adff}
+/* ===== コインカード ===== */
+.reward-card.coin-card{border-color:#6fd6ff;background:radial-gradient(ellipse at 50% 0,#1d5a7a55,transparent 70%),linear-gradient(145deg,#1c2a3d,#111522)}
+.reward-card.coin-card::after{content:"COIN"}
+.reward-card.coin-card .reward-card-value{color:#8af0ff;text-shadow:0 0 18px #4fc3f755}
+.kind{display:inline-block;margin-bottom:4px;padding:2px 7px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff25;font-size:9px;font-weight:900}
 </style>
 </head>
 
@@ -710,7 +717,7 @@ a.button.merge-start{
 
       <p class="wallet-note">
         コイン：ゲームプレイに使用<br>
-        PT：使用したコインの10分の1を獲得（ガチャで使用）<br>
+        PT：ガチャに使用（1回50PT）／使用コインの10分の1を獲得<br>
         RC：ゲーム報酬カードに保存される限定通貨
       </p>
     </div>
@@ -720,11 +727,15 @@ a.button.merge-start{
     </button>
   </section>
 
-  <!-- 紹介 -->
+  <!-- マージガーデン（無料・常に一番上に固定） -->
 
   <section class="pinned">
-    <div class="pin-label">📌 FREE ／ いつでも無料</div>
-    <article class="game-card wide">
+    <div class="pinned-label">📌 PINNED ・ いつでも無料</div>
+    <div class="game-list">
+
+      <!-- マージガーデン（入場料なし。報酬コインが財布に入る） -->
+
+      <article class="game-card wide">
         <div class="thumbnail merge">
           <span class="thumbnail-tag">PUZZLE</span>
           <div class="art" aria-label="花">🌸</div>
@@ -737,32 +748,37 @@ a.button.merge-start{
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
-          <a class="button merge-start" href="merge%20garden.html">
+          <a class="button merge-start" href="merge_garden.html">
             🌱 あそぶ
           </a>
         </div>
       </article>
+
+    </div>
   </section>
 
-  <!-- ゲーム一覧 -->
+  <!-- ゲーム一覧（タブ切り替え） -->
 
   <section id="gamesSection">
     <div class="section-heading">
       <div>
         <h2>GAME LIBRARY</h2>
-        <p>料金を選んでゲームを始めよう</p>
+        <p>ジャンルを選んで、遊びたいゲームを始めよう</p>
       </div>
       <div class="game-count">5 TITLES</div>
     </div>
 
     <div class="tabs" role="tablist">
-      <button class="tab active" role="tab" data-tab="variety" aria-selected="true" type="button">🎮 バラエティー</button>
-      <button class="tab" role="tab" data-tab="slot" aria-selected="false" type="button">🎰 スロット</button>
-      <button class="tab" role="tab" data-tab="gacha" aria-selected="false" type="button">🎁 ガチャ</button>
+      <button class="tab" type="button" role="tab" data-tab="variety" aria-selected="true"><span class="ti">🎮</span>バラエティー</button>
+      <button class="tab" type="button" role="tab" data-tab="slot" aria-selected="false"><span class="ti">🎰</span>スロット</button>
+      <button class="tab" type="button" role="tab" data-tab="gacha" aria-selected="false"><span class="ti">🎁</span>ガチャ</button>
     </div>
 
-    <div class="game-list tab-panel" id="tab-variety">
-      <article class="game-card wide">
+    <div class="game-list" data-pane="variety">
+
+      <!-- モンバト -->
+
+      <article class="game-card">
         <div class="thumbnail monster">
           <span class="thumbnail-tag">BATTLE</span>
           <div class="art mon-icon" aria-label="モンバト">
@@ -790,7 +806,11 @@ a.button.merge-start{
           </button>
         </div>
       </article>
-      <article class="game-card wide">
+
+
+      <!-- ピッケルドロップ（mine-break）：移動は無料。コインはゲーム内のベット分だけ減る -->
+
+      <article class="game-card">
         <div class="thumbnail mine">
           <span class="thumbnail-tag">MINING</span>
           <div class="art" aria-label="ツルハシ">⛏️</div>
@@ -808,9 +828,14 @@ a.button.merge-start{
           </a>
         </div>
       </article>
+
+
     </div>
 
-    <div class="game-list tab-panel hidden" id="tab-slot">
+    <div class="game-list hidden" data-pane="slot">
+
+      <!-- 7 RUSH SLOT -->
+
       <article class="game-card wide">
         <div class="thumbnail slot">
           <span class="thumbnail-tag">SLOT</span>
@@ -846,20 +871,30 @@ a.button.merge-start{
           </button>
         </div>
       </article>
+
+
     </div>
 
-    <div class="game-list tab-panel hidden" id="tab-gacha">
+    <div class="game-list hidden" data-pane="gacha">
+
+      <!-- ガチャ -->
+
       <article class="game-card wide">
         <div class="thumbnail gacha">
           <span class="thumbnail-tag">GACHA</span>
-          <div class="art gacha-icon" aria-label="ガチャ"><div class="gc-gift">🎁</div><div class="gc-dots"><i style="--c:#e8eeff"></i><i style="--c:#4aa8ff"></i><i style="--c:#4fe07a"></i><i style="--c:#ff4a4a"></i><i style="--c:#ffd24a"></i><i style="--c:#ff7ad9"></i></div></div>
+          <div class="art gacha-icon" aria-label="ガチャ">🎁</div>
         </div>
+
         <div class="card-info">
           <h3>【報酬を手に入れろ】ガチャ</h3>
-          <p>モンスターを倒して報酬をゲット！虹は1000円プレゼント券。</p>
-          <span class="price-label">必要PT（所持 <span id="gachaPt">0</span> PT）</span>
-          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--gold)">1回 50PT ／ 10連 500PT</div>
-          <a class="button merge-start" href="gacha.html">🎁 あそぶ</a>
+          <p>PTでモンスターを討伐！報酬のコインを手に入れよう。</p>
+
+          <span class="price-label">必要PT</span>
+          <div class="pt-fee">1回 50PT ／ 10連 500PT</div>
+
+          <a class="button merge-start" href="gacha.html">
+            🎁 ガチャへ
+          </a>
         </div>
       </article>
     </div>
@@ -871,7 +906,7 @@ a.button.merge-start{
     <h2 class="section-title">🎴 RCカード一覧</h2>
     <p class="section-subtitle">
       獲得したRCカードを保管する場所。<br>
-      「選んでコインに変える」で、好きなカードを何枚でもまとめて交換できるよ。<br>10RC＝1コイン（10未満の端数はコインに変換されないよ）。
+      「選んでコインに変える」で、好きなカードを何枚でもまとめて交換できるよ。<br>10RC＝1コイン（10未満の端数はコインに変換されないよ）。<br>🪙コインカードは、そのままの枚数のコインに交換できるよ。
     </p>
 
     <div class="button-row">
@@ -1031,7 +1066,6 @@ a.button.merge-start{
 
     $("coinBalance").textContent = formatNumber(wallet.coin);
     $("ptBalance").textContent = formatNumber(wallet.pt);
-    const gp = $("gachaPt"); if (gp) gp.textContent = formatNumber(wallet.pt);
     $("rcBalance").textContent = formatNumber(totalRC());
 
     document.querySelectorAll(".game-start").forEach(button => {
@@ -1084,25 +1118,26 @@ let selectMode = false;
     }
 
     list.innerHTML = cards.slice().reverse().map(card => {
-      const rc = Math.max(0, Math.floor(Number(card.rc) || 0));
+      const isCoin = card.type === "coin";
+      const rc = Math.max(0, Math.floor(Number(isCoin ? card.coin : card.rc) || 0));
       const id = escapeHTML(card.id || "");
       const name = escapeHTML(card.name || "ゲーム報酬カード");
       const date = escapeHTML(card.date || "");
       const isSel = selected.has(String(card.id));
 
       return `
-        <article class="reward-card ${selectMode ? "selectable" : ""} ${isSel ? "selected" : ""}" data-card-id="${id}">
+        <article class="reward-card ${isCoin ? "coin-card" : ""} ${selectMode ? "selectable" : ""} ${isSel ? "selected" : ""}" data-card-id="${id}">
           <div class="sel-mark">${isSel ? "✓" : ""}</div>
           <div class="reward-card-top">
             <div>
-              <div class="reward-card-name">${name}</div>
+              <div class="reward-card-name"><span class="kind">${isCoin ? "🪙 コインカード" : "🔥 RCカード"}</span><br>${name}</div>
               <div class="reward-card-date">${date}</div>
             </div>
-            <div aria-hidden="true" style="font-size:25px">🏆</div>
+            <div aria-hidden="true" style="font-size:25px">${isCoin ? "🎁" : "🏆"}</div>
           </div>
 
           <div class="reward-card-value">
-            ${formatNumber(rc)} <small>RC</small>
+            ${formatNumber(rc)} <small>${isCoin ? "コイン" : "RC"}</small>
           </div>
         </article>
       `;
@@ -1120,12 +1155,14 @@ let selectMode = false;
     updateExchangeBar();
   }
 
-  function selectedTotal() {
-    return getCards().reduce((sum, c) => {
-      return selected.has(String(c.id))
-        ? sum + Math.max(0, Math.floor(Number(c.rc) || 0))
-        : sum;
-    }, 0);
+  function selectedParts() {
+    let rc = 0, coin = 0;
+    getCards().forEach(c => {
+      if (!selected.has(String(c.id))) return;
+      if (c.type === "coin") coin += Math.max(0, Math.floor(Number(c.coin) || 0));
+      else rc += Math.max(0, Math.floor(Number(c.rc) || 0));
+    });
+    return { rc, coin, total: Math.floor(rc / 10) + coin, rest: rc % 10 };
   }
 
   function updateExchangeBar() {
@@ -1134,15 +1171,16 @@ let selectMode = false;
       ? "✕ 選択をやめる"
       : "🔄 選んでコインに変える";
 
-    const total = selectedTotal();
-    const coin = Math.floor(total / 10);
-    const rest = total % 10;
+    const sp = selectedParts();
 
     $("selInfo").innerHTML = selected.size === 0
       ? "カードをタップして選んでね（何枚でもOK）"
-      : `${selected.size}枚選択中　合計 ${formatNumber(total)} RC<br>` +
-        `→ ${formatNumber(coin)} コイン` +
-        (rest > 0 ? `（端数 ${rest} RCは変換されない）` : "");
+      : `${selected.size}枚選択中　` +
+        (sp.rc > 0 ? `RC ${formatNumber(sp.rc)}` : "") +
+        (sp.rc > 0 && sp.coin > 0 ? " ＋ " : "") +
+        (sp.coin > 0 ? `コインカード ${formatNumber(sp.coin)}` : "") +
+        `<br>→ ${formatNumber(sp.total)} コイン` +
+        (sp.rest > 0 ? `（端数 ${sp.rest} RCは変換されない）` : "");
   }
 
   function setSelectMode(on) {
@@ -1174,12 +1212,12 @@ let selectMode = false;
 
     const cards = getCards();
     const chosen = cards.filter(c => selected.has(String(c.id)));
-    const total = chosen.reduce((s, c) => s + Math.max(0, Math.floor(Number(c.rc) || 0)), 0);
-    const coin = Math.floor(total / 10);
-    const rest = total % 10;
+    const sp = selectedParts();
+    const coin = sp.total;
+    const rest = sp.rest;
 
     if (coin <= 0) {
-      showToast("合計10RC以上になるように選んでね。");
+      showToast("交換できるコインがありません。10RC以上、またはコインカードを選んでね。");
       return;
     }
 
@@ -1442,24 +1480,26 @@ let selectMode = false;
     if (!document.hidden) syncFromStorage();
   });
 
-  // タブ切り替え
+  /* タブ切り替え（最後に開いたタブを記憶） */
   const TAB_KEY = "ridokaji_home_tab_v1";
+
   function setTab(name) {
-    document.querySelectorAll(".tab").forEach(b => {
-      const on = b.dataset.tab === name;
-      b.classList.toggle("active", on);
-      b.setAttribute("aria-selected", on ? "true" : "false");
-    });
-    document.querySelectorAll(".tab-panel").forEach(p => {
-      p.classList.toggle("hidden", p.id !== "tab-" + name);
+    const tabs = [...document.querySelectorAll(".tab")];
+    if (!tabs.some(t => t.dataset.tab === name)) name = "variety";
+    tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    document.querySelectorAll("[data-pane]").forEach(p => {
+      p.classList.toggle("hidden", p.dataset.pane !== name);
     });
     try { localStorage.setItem(TAB_KEY, name); } catch (e) {}
   }
-  document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
-  let startTab = "variety";
-  try { startTab = localStorage.getItem(TAB_KEY) || startTab; } catch (e) {}
-  if (!$("tab-" + startTab)) startTab = "variety";
-  setTab(startTab);
+
+  document.querySelectorAll(".tab").forEach(t => {
+    t.addEventListener("click", () => setTab(t.dataset.tab));
+  });
+
+  let savedTab = "variety";
+  try { savedTab = localStorage.getItem(TAB_KEY) || "variety"; } catch (e) {}
+  setTab(savedTab);
 
   // 起動時
   updateWalletDisplay();
