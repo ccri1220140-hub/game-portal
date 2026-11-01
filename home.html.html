@@ -625,6 +625,27 @@ a.button.merge-start{
   .card-info h3{font-size:11px}
   .panel{padding:13px}
 }
+
+/* ===== アイコン強化 ===== */
+.thumbnail.slot{background:radial-gradient(circle at 50% 55%,#ff3b30 0,#8a0012 42%,#12040a 100%)}
+.thumbnail.slot::before{width:220px;height:220px;background:conic-gradient(#f33,#fd3,#3f7,#3cf,#d4f,#f33);opacity:.45;filter:blur(18px);animation:rushSpin 8s linear infinite}
+@keyframes rushSpin{to{transform:rotate(360deg)}}
+.art.rush-icon{width:92%;height:88%;font-size:0;filter:drop-shadow(0 0 10px #ffd76acc) drop-shadow(0 4px 10px #000a)}
+.thumbnail.monster{background:radial-gradient(circle at 50% 40%,#7a2418 0,#34173a 55%,#0c0d18 100%)}
+.thumbnail.monster::before{width:200px;height:200px;opacity:.5}
+.art.mon-icon{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(34px,10vw,56px)}
+.mon-swords{position:absolute;inset:-6px 0 auto;text-align:center;font-size:1.9em;opacity:.28;line-height:1}
+.mon-dragon{position:relative;line-height:1;filter:drop-shadow(0 0 14px #ff6a3d) drop-shadow(0 0 28px #ff2b1f)}
+.mon-reels{position:relative;display:flex;gap:4px;padding:4px;border-radius:8px;background:#05060d;border:2px solid #ffb72e}
+.mon-reels i{font-style:normal;font-size:.42em;width:1.5em;height:1.5em;display:grid;place-items:center;background:linear-gradient(#fff,#cfe0ff);border-radius:4px}
+/* ===== 選んでコインに変える ===== */
+.reward-card.selectable{cursor:pointer;transition:.15s}
+.reward-card.selected{outline:3px solid #ffd76a;box-shadow:0 0 18px #ffb72e99;transform:scale(.985)}
+.reward-card .sel-mark{display:none;position:absolute;top:10px;right:12px;width:24px;height:24px;border-radius:50%;border:2px solid #ffd76a;background:#0008;color:#ffd76a;font-weight:900;text-align:center;line-height:20px}
+.reward-card.selectable .sel-mark{display:block}.reward-card.selected .sel-mark{background:#ffd76a;color:#201400}
+.exchange-bar{position:sticky;bottom:8px;z-index:20;margin-top:14px;padding:12px;border-radius:14px;background:#0b1020f2;border:1px solid #ffd76a88;box-shadow:0 8px 24px #000a}
+.exchange-bar .info{font-weight:800;font-size:13px;line-height:1.6;margin-bottom:8px}
+.exchange-bar .row{display:flex;gap:8px}.exchange-bar .row .button{flex:1;margin:0;padding:11px 6px;font-size:13px}
 </style>
 </head>
 
@@ -711,7 +732,11 @@ a.button.merge-start{
       <article class="game-card">
         <div class="thumbnail monster">
           <span class="thumbnail-tag">BATTLE</span>
-          <div class="art" aria-label="ドラゴン">🐉</div>
+          <div class="art mon-icon" aria-label="モンバト">
+            <div class="mon-swords">⚔️</div>
+            <div class="mon-dragon">🐉</div>
+            <div class="mon-reels"><i>🐉</i><i>⚔️</i><i>💎</i></div>
+          </div>
         </div>
 
         <div class="card-info">
@@ -738,7 +763,18 @@ a.button.merge-start{
       <article class="game-card">
         <div class="thumbnail slot">
           <span class="thumbnail-tag">SLOT</span>
-          <div class="art">777</div>
+          <div class="art rush-icon" aria-label="7 RUSH">
+            <svg viewBox="0 0 220 150" width="100%" height="100%">
+              <defs>
+                <linearGradient id="rR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a9a"/><stop offset=".5" stop-color="#e5121f"/><stop offset="1" stop-color="#5a0008"/></linearGradient>
+                <linearGradient id="rB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f33"/><stop offset=".25" stop-color="#fd3"/><stop offset=".5" stop-color="#3f7"/><stop offset=".75" stop-color="#3cf"/><stop offset="1" stop-color="#d4f"/></linearGradient>
+              </defs>
+              <g transform="translate(18 40) scale(.62)"><path d="M10 12H95L91 31L51 98H24L62 33H5Z" fill="url(#rR)" stroke="#300" stroke-width="5" stroke-linejoin="round"/></g>
+              <g transform="translate(142 40) scale(.62)"><path d="M10 12H95L91 31L51 98H24L62 33H5Z" fill="url(#rR)" stroke="#300" stroke-width="5" stroke-linejoin="round"/></g>
+              <g transform="translate(66 6) scale(.9)"><path d="M10 12H95L91 31L51 98H24L62 33H5Z" fill="url(#rB)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><path d="M14 17H88" stroke="#fff" stroke-width="5" opacity=".6"/></g>
+              <text x="110" y="143" text-anchor="middle" font-family="Impact,Arial Black,sans-serif" font-style="italic" font-size="24" fill="#fff" stroke="#c0000f" stroke-width="1.5" letter-spacing="3">7 RUSH</text>
+            </svg>
+          </div>
         </div>
 
         <div class="card-info">
@@ -776,7 +812,7 @@ a.button.merge-start{
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
-          <a class="button merge-start" href="merge%20garden.html">
+          <a class="button merge-start" href="merge_garden.html">
             🌱 あそぶ
           </a>
         </div>
@@ -813,7 +849,7 @@ a.button.merge-start{
     <h2 class="section-title">🎴 RCカード一覧</h2>
     <p class="section-subtitle">
       獲得したRCカードを保管する場所。<br>
-      交換するとカード自体が消え、RCがコインに変わるよ。
+      「選んでコインに変える」で、好きなカードを何枚でもまとめて交換できるよ。<br>10RC＝1コイン（端数のRCは新しいカードで残るよ）。
     </p>
 
     <div class="button-row">
@@ -821,11 +857,19 @@ a.button.merge-start{
         ← ゲーム一覧
       </button>
       <button class="button cyan" id="refreshCardsButton">
-        ↻ 残高を更新
+        🔄 選んでコインに変える
       </button>
     </div>
 
     <div id="cardList" class="card-list"></div>
+
+    <div class="exchange-bar hidden" id="exchangeBar">
+      <div class="info" id="selInfo">カードをタップして選んでね</div>
+      <div class="row">
+        <button class="button secondary" id="selAllButton">全選択</button>
+        <button class="button gold" id="doExchangeButton">コインに変える</button>
+      </div>
+    </div>
   </section>
 
 </main>
@@ -850,7 +894,7 @@ a.button.merge-start{
     コイン：初期1,000
     PT：使用コインの10分の1
     RC：ゲーム報酬カードに保存
-    RC交換：カード全体を消費し、RCの10分の1をコインに変換
+    RC交換：選んだカードの合計RCの10分の1をコインに変換（端数はカードで残る）
 
     ゲーム側でも同じ保存キーを使用すること。
   */
@@ -983,9 +1027,16 @@ a.button.merge-start{
     交換コイン = floor(カードRC / 10)。
   */
 
+let selectMode = false;
+  const selected = new Set();
+
   function renderCards() {
     const cards = getCards();
     const list = $("cardList");
+
+    // 存在しなくなったカードの選択を外す
+    const ids = new Set(cards.map(c => String(c.id)));
+    [...selected].forEach(id => { if (!ids.has(id)) selected.delete(id); });
 
     if (cards.length === 0) {
       list.innerHTML = `
@@ -995,18 +1046,20 @@ a.button.merge-start{
           ゲームを遊んで、報酬カードを獲得しよう！
         </div>
       `;
+      updateExchangeBar();
       return;
     }
 
     list.innerHTML = cards.slice().reverse().map(card => {
       const rc = Math.max(0, Math.floor(Number(card.rc) || 0));
-      const coin = Math.floor(rc / 10);
       const id = escapeHTML(card.id || "");
       const name = escapeHTML(card.name || "ゲーム報酬カード");
       const date = escapeHTML(card.date || "");
+      const isSel = selected.has(String(card.id));
 
       return `
-        <article class="reward-card">
+        <article class="reward-card ${selectMode ? "selectable" : ""} ${isSel ? "selected" : ""}" data-card-id="${id}">
+          <div class="sel-mark">${isSel ? "✓" : ""}</div>
           <div class="reward-card-top">
             <div>
               <div class="reward-card-name">${name}</div>
@@ -1018,29 +1071,109 @@ a.button.merge-start{
           <div class="reward-card-value">
             ${formatNumber(rc)} <small>RC</small>
           </div>
-
-          <button
-            class="button gold exchange-button"
-            data-card-id="${id}"
-            ${rc < 10 ? "disabled" : ""}
-          >
-            🔄 ${formatNumber(coin)}コインに交換してカードを消す
-          </button>
-
-          ${rc < 10 ? `
-            <p style="font-size:10px;color:var(--muted);margin:9px 0 0;line-height:1.7">
-              10 RC未満のため、交換してもコインを獲得できません。
-            </p>
-          ` : ""}
         </article>
       `;
     }).join("");
 
-    list.querySelectorAll(".exchange-button").forEach(button => {
-      button.addEventListener("click", () => {
-        exchangeCard(button.dataset.cardId);
+    list.querySelectorAll(".reward-card").forEach(el => {
+      el.addEventListener("click", () => {
+        if (!selectMode) return;
+        const id = el.dataset.cardId;
+        if (selected.has(id)) selected.delete(id); else selected.add(id);
+        renderCards();
       });
     });
+
+    updateExchangeBar();
+  }
+
+  function selectedTotal() {
+    return getCards().reduce((sum, c) => {
+      return selected.has(String(c.id))
+        ? sum + Math.max(0, Math.floor(Number(c.rc) || 0))
+        : sum;
+    }, 0);
+  }
+
+  function updateExchangeBar() {
+    $("exchangeBar").classList.toggle("hidden", !selectMode);
+    $("refreshCardsButton").textContent = selectMode
+      ? "✕ 選択をやめる"
+      : "🔄 選んでコインに変える";
+
+    const total = selectedTotal();
+    const coin = Math.floor(total / 10);
+    const rest = total % 10;
+
+    $("selInfo").innerHTML = selected.size === 0
+      ? "カードをタップして選んでね（何枚でもOK）"
+      : `${selected.size}枚選択中　合計 ${formatNumber(total)} RC<br>` +
+        `→ ${formatNumber(coin)} コイン` +
+        (rest > 0 ? `（端数 ${rest} RCはカードで残る）` : "");
+  }
+
+  function setSelectMode(on) {
+    selectMode = on;
+    if (!on) selected.clear();
+    renderCards();
+  }
+
+  function exchangeSelected() {
+    if (selected.size === 0) {
+      showToast("交換するカードを選んでね。");
+      return;
+    }
+
+    const cards = getCards();
+    const chosen = cards.filter(c => selected.has(String(c.id)));
+    const total = chosen.reduce((s, c) => s + Math.max(0, Math.floor(Number(c.rc) || 0)), 0);
+    const coin = Math.floor(total / 10);
+    const rest = total % 10;
+
+    if (coin <= 0) {
+      showToast("合計10RC以上になるように選んでね。");
+      return;
+    }
+
+    const ok = confirm(
+      `${chosen.length}枚（合計 ${formatNumber(total)} RC）を交換します。\n\n` +
+      `獲得コイン：${formatNumber(coin)}コイン\n` +
+      (rest > 0 ? `端数 ${rest} RCは新しいカードで残ります。\n` : "") +
+      `\n選んだカードは消えます。交換しますか？`
+    );
+    if (!ok) return;
+
+    // 保存データから再取得して、削除とコイン加算を同じ処理内で行う（二重交換防止）
+    const latest = getCards();
+    const remain = latest.filter(c => !selected.has(String(c.id)));
+
+    if (latest.length - remain.length !== chosen.length) {
+      showToast("カードの状態が変わりました。選び直してね。");
+      renderCards();
+      return;
+    }
+
+    if (rest > 0) {
+      remain.push({
+        id: "card_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8),
+        sessionId: null,
+        name: "RC端数カード",
+        rc: rest,
+        date: new Date().toLocaleString("ja-JP")
+      });
+    }
+
+    saveCards(remain);
+
+    const wallet = getWallet();
+    wallet.coin += coin;
+    saveWallet(wallet);
+
+    selected.clear();
+    selectMode = false;
+    renderCards();
+    updateWalletDisplay();
+    showToast(`${formatNumber(coin)}コイン獲得！`);
   }
 
   function openCards() {
@@ -1053,79 +1186,6 @@ a.button.merge-start{
   function closeCards() {
     $("cardsSection").classList.add("hidden");
     $("gamesSection").scrollIntoView({behavior:"smooth", block:"start"});
-  }
-
-  function exchangeCard(cardId) {
-    if (!cardId) return;
-
-    const cards = getCards();
-    const index = cards.findIndex(card => String(card.id) === String(cardId));
-
-    if (index < 0) {
-      showToast("カードが見つかりません。");
-      renderCards();
-      return;
-    }
-
-    const card = cards[index];
-    const rc = Math.max(0, Math.floor(Number(card.rc) || 0));
-    const coin = Math.floor(rc / 10);
-
-    if (coin <= 0) {
-      showToast("このカードは10 RC未満のため交換できません。");
-      return;
-    }
-
-    const confirmed = confirm(
-      `${formatNumber(rc)} RCのカードを交換します。\n\n` +
-      `獲得コイン：${formatNumber(coin)}コイン\n\n` +
-      `交換すると、このカード自体が消えます。\n` +
-      `交換しますか？`
-    );
-
-    if (!confirmed) return;
-
-    /*
-      同一カードの二重交換防止：
-      現在の保存データからカードを再検索し、
-      カード削除とコイン加算を同じ処理内で行う。
-    */
-
-    const latestCards = getCards();
-    const latestIndex = latestCards.findIndex(
-      item => String(item.id) === String(cardId)
-    );
-
-    if (latestIndex < 0) {
-      showToast("このカードはすでに交換済みです。");
-      renderCards();
-      return;
-    }
-
-    const latestCard = latestCards[latestIndex];
-    const latestRC = Math.max(0, Math.floor(Number(latestCard.rc) || 0));
-    const latestCoin = Math.floor(latestRC / 10);
-
-    if (latestCoin <= 0) {
-      showToast("交換できるコインがありません。");
-      return;
-    }
-
-    const wallet = getWallet();
-
-    // 先にカードを削除して保存し、二重交換を防ぐ。
-    latestCards.splice(latestIndex, 1);
-    saveCards(latestCards);
-
-    wallet.coin += latestCoin;
-    saveWallet(wallet);
-
-    renderCards();
-    updateWalletDisplay();
-
-    showToast(
-      `${formatNumber(latestCoin)}コイン獲得！カードを交換したよ！`
-    );
   }
 
   /*
@@ -1237,11 +1297,14 @@ a.button.merge-start{
   $("showCardsButton").addEventListener("click", openCards);
   $("backToGamesButton").addEventListener("click", closeCards);
 
-  $("refreshCardsButton").addEventListener("click", () => {
+  $("refreshCardsButton").addEventListener("click", () => setSelectMode(!selectMode));
+  $("selAllButton").addEventListener("click", () => {
+    const cards = getCards();
+    if (selected.size === cards.length) selected.clear();
+    else cards.forEach(c => selected.add(String(c.id)));
     renderCards();
-    updateWalletDisplay();
-    showToast("カードと残高を更新しました。");
   });
+  $("doExchangeButton").addEventListener("click", exchangeSelected);
 
   /*
     ゲーム側から呼び出すための共通API。
