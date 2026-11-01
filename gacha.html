@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>【報酬を手に入れろ】ガチャ</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#070913;color:#eef2ff;font-family:"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif}
+body{background:radial-gradient(ellipse at 50% 0,#2a1f5c 0,#0b0e22 55%,#05060d) fixed}
+main{max-width:480px;margin:0 auto;padding:14px 14px 40px}
+.top{display:flex;justify-content:space-between;align-items:center}
+#back,#snd{color:#cdd6ff;text-decoration:none;font-size:14px;background:#ffffff14;border:1px solid #ffffff22;border-radius:999px;padding:6px 12px;cursor:pointer}
+h1{text-align:center;margin:10px 0 14px;font-size:24px;line-height:1.3;color:#ffe9a0;text-shadow:0 0 18px #ffb300aa}
+.card{background:linear-gradient(150deg,#ffffff14,#ffffff06);border:1px solid #ffffff22;border-radius:16px;padding:14px;margin:0 0 12px}
+.card h2{margin:0 0 8px;font-size:14px;color:#aab6e8}
+.bal{text-align:center}.bal small{color:#aab6e8}.bal b{display:block;font-size:34px;color:#ffe27a}
+#wnote{display:block;font-size:11px;color:#8d99c8;margin-top:4px}
+#wnote button{margin-left:6px;font-size:11px;border-radius:8px;border:1px solid #ffffff33;background:#ffffff18;color:#fff;padding:3px 8px}
+.row{display:grid;grid-template-columns:44px 56px 1fr;gap:6px;align-items:center;padding:5px 0;border-top:1px solid #ffffff12;font-size:14px}
+.row:first-of-type{border-top:0}.row i{font-style:normal;font-weight:900;font-size:18px;color:var(--c);text-shadow:0 0 8px var(--c)}
+.row span:last-child{text-align:right;color:#d8e0ff}
+.stp{display:flex;justify-content:center;align-items:center;gap:22px;margin-bottom:8px}
+.stp button{width:48px;height:48px;border-radius:50%;border:1px solid #ffffff44;background:#ffffff18;color:#fff;font-size:24px}
+.stp div{font-size:18px;min-width:80px;text-align:center}.stp b{font-size:38px;color:#ffe27a}
+#cost{text-align:center;color:#aab6e8;margin-bottom:10px}
+.gold{width:100%;padding:15px;border:0;border-radius:14px;font-size:19px;font-weight:900;color:#3a2400;background:linear-gradient(#ffe98a,#f0a91c);box-shadow:0 4px 0 #9a6a10,0 0 22px #ffc43a66;cursor:pointer}
+.gold:disabled{filter:grayscale(1) brightness(.6);box-shadow:none}
+.tiny{font-size:11px;color:#8d99c8;text-align:center;margin:8px 0 0}
+.rb{background:linear-gradient(90deg,#ff5a8a,#ffb347,#fff27a,#7dffb0,#7ad7ff,#c49bff,#ff5a8a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;animation:rbm 2s linear infinite}
+@keyframes rbm{to{background-position:-200% 0}}
+/* ===== 演出 ===== */
+#show{position:fixed;inset:0;z-index:50;display:none;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#4a2468 0,transparent 62%),linear-gradient(#070a1a,#16102e 60%,#2a1230)}
+#show.on{display:block}
+#show.shake{animation:shk .1s linear infinite}
+@keyframes shk{0%{transform:translate(-7px,3px)}25%{transform:translate(6px,-4px)}50%{transform:translate(-4px,-3px)}75%{transform:translate(5px,4px)}}
+#cv{position:absolute;inset:0;width:100%;height:100%;z-index:2}
+#show.stop #cv,#show.stop #boss{filter:grayscale(1) contrast(1.2)}
+#hud{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:0;right:0;text-align:center;z-index:5;transition:opacity .3s}
+#hud small{display:block;color:#aab6e8;font-size:13px;letter-spacing:.2em}
+#hud b{font-size:56px;font-weight:900;color:#fff;text-shadow:0 0 16px #6ab0ff}
+#show.bossmode #hud{opacity:0}
+#skip{position:absolute;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;border:1px solid #fff4;background:#0008;color:#fff;border-radius:999px;padding:8px 14px;font-size:13px}
+#boss{position:absolute;left:50%;top:6%;width:min(96vw,440px);z-index:1;opacity:0;transform:translateX(-50%) scale(.1)}
+#boss svg{width:100%;display:block;overflow:visible}
+.beye{filter:drop-shadow(0 0 6px #ff2d55)}
+#boss.rise{animation:rise 1.5s cubic-bezier(.2,1.3,.4,1) forwards}
+#boss.idle{opacity:1;transform:translateX(-50%) scale(1);animation:bob 2s ease-in-out infinite}
+#boss.shiver{opacity:1;transform:translateX(-50%) scale(1);animation:shv .08s linear infinite}
+#boss.flee{animation:flee 1.6s ease-in forwards}
+#boss.shatter{animation:shatter 1.3s ease-out forwards}
+@keyframes rise{0%{opacity:0;transform:translateX(-50%) translateY(120px) scale(.1)}60%{opacity:1}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+@keyframes bob{50%{transform:translateX(-50%) translateY(-8px) scale(1.02)}}
+@keyframes shv{0%{transform:translateX(-52%) scale(1)}50%{transform:translateX(-48%) scale(1)}}
+@keyframes flee{0%{opacity:1;transform:translateX(-50%) scale(1)}25%{transform:translateX(-50%) translateY(10px) scale(1.04) rotate(-3deg)}100%{opacity:0;transform:translateX(-50%) translateY(-140px) scale(.12) rotate(6deg)}}
+@keyframes shatter{0%{opacity:1;transform:translateX(-50%) scale(1);filter:none}30%{filter:brightness(3) saturate(0);transform:translateX(-50%) scale(1.04)}100%{opacity:0;filter:brightness(6) hue-rotate(200deg);transform:translateX(-50%) scale(1.4)}}
+#smoke{position:absolute;inset:0;z-index:3;pointer-events:none}
+.puff{position:absolute;font-size:44px;animation:puff 1.3s ease-out forwards}
+@keyframes puff{from{opacity:1;transform:translate(0,0) scale(.6)}to{opacity:0;transform:translate(var(--dx),-120px) scale(1.8)}}
+#cut{position:absolute;inset:0;z-index:60;pointer-events:none;display:none}
+#cut.go{display:block}
+#cut .band{position:absolute;left:-10%;right:-10%;top:36%;height:24%;background:linear-gradient(90deg,#000c,#000e,#000c);border-top:5px solid var(--c);border-bottom:5px solid var(--c);box-shadow:0 0 30px var(--c);display:flex;align-items:center;justify-content:center;animation:band 1.15s ease-out forwards}
+#cut .ct{font-size:min(15vw,66px);font-weight:900;font-style:italic;color:#fff;text-shadow:0 0 18px var(--c),3px 3px 0 #000;letter-spacing:.04em;animation:pop 1.15s ease-out forwards}
+#cut .ln{position:absolute;inset:30% 0;background:repeating-linear-gradient(90deg,transparent 0 18px,#ffffff30 18px 20px);animation:ln .4s linear infinite;opacity:.6}
+@keyframes band{0%{transform:translateX(-110%) skewY(-6deg)}14%{transform:translateX(0) skewY(-6deg)}86%{transform:translateX(0) skewY(-6deg)}100%{transform:translateX(110%) skewY(-6deg)}}
+@keyframes pop{0%,10%{transform:scale(.4);opacity:0}25%{transform:scale(1.25);opacity:1}35%,100%{transform:scale(1)}}
+@keyframes ln{to{background-position:40px 0}}
+#msg{position:absolute;left:0;right:0;top:57%;text-align:center;z-index:30;font-size:min(7vw,30px);font-weight:900;color:#fff;text-shadow:0 0 14px #000,0 2px 6px #000;padding:0 10px}
+#msg.pop{animation:mpop .35s ease-out}
+@keyframes mpop{from{transform:scale(1.5);opacity:0}}
+#warn{position:absolute;inset:0;z-index:25;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,transparent 35%,#ff1030cc);display:flex;align-items:center;justify-content:center;font-size:min(14vw,60px);font-weight:900;color:#ff4a5a;text-shadow:0 0 20px #f00;letter-spacing:.1em}
+#warn.on{animation:wrn .5s ease-in-out 3}
+@keyframes wrn{50%{opacity:1}}
+#fl{position:absolute;inset:0;z-index:65;background:#fff;opacity:0;pointer-events:none}
+#fl.on{animation:fl .7s ease-out}
+@keyframes fl{0%{opacity:1}100%{opacity:0}}
+#tsr{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;background:repeating-radial-gradient(circle at 50% 42%,transparent 0 26px,#ffffff26 26px 28px)}
+#show.stop #tsr{opacity:1;animation:tsr 2.8s linear}
+@keyframes tsr{from{transform:scale(1.8)}to{transform:scale(.9)}}
+#tst{position:absolute;left:0;right:0;top:36%;text-align:center;z-index:40;display:none}
+#show.stop #tst{display:block}
+#tst b{display:block;font-size:min(22vw,100px);font-weight:900;color:#fff;text-shadow:0 0 24px #fff,4px 4px 0 #c00;animation:tb .65s ease-in-out infinite}
+#tst span{font-size:min(6vw,24px);color:#ffe9a0;letter-spacing:.2em}
+@keyframes tb{50%{transform:scale(1.12);color:#ffd24a}}
+#show.pulse #tsr{filter:brightness(2)}
+#rbs{position:absolute;inset:0;z-index:35;pointer-events:none;width:100%;height:100%}
+#rbs path{fill:none;stroke-width:16;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;vector-effect:non-scaling-stroke;opacity:0}
+#rbs.go path{opacity:1;animation:slash .45s ease-out forwards}
+#rbs.go path+path{animation-delay:.05s}
+@keyframes slash{to{stroke-dashoffset:0}}
+#rev{position:absolute;inset:0;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,#0000 0,#000b 75%);text-align:center}
+#rev.on{display:flex}
+#rv1{font-size:min(40vw,190px);font-weight:900;color:var(--c);text-shadow:0 0 40px var(--c),0 0 90px var(--c);animation:rvp .8s cubic-bezier(.2,1.5,.4,1)}
+@keyframes rvp{from{transform:scale(.2);opacity:0}}
+#rv2{font-size:24px;font-weight:900;margin-top:6px;text-shadow:0 2px 8px #000}
+#rv3{font-size:13px;color:#cfd8ff;margin-top:10px}
+#rv4{font-size:13px;color:#fff9;margin-top:26px;animation:bl 1.2s infinite}
+@keyframes bl{50%{opacity:.2}}
+#res{position:fixed;inset:0;z-index:90;display:none;overflow:auto;background:#05070fee}
+#res.on{display:block}
+.rbox{max-width:480px;margin:0 auto;padding:22px 16px 40px}
+.rbox h2{text-align:center;color:#ffe9a0}
+#rg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.chip{border:2px solid var(--c);border-radius:12px;padding:8px 2px;text-align:center;background:#ffffff0c;box-shadow:0 0 12px color-mix(in srgb,var(--c) 40%,transparent)}
+.chip b{display:block;font-size:24px;color:var(--c);text-shadow:0 0 8px var(--c)}.chip small{font-size:10px;color:#dfe6ff}
+#rs{background:#ffffff10;border-radius:14px;padding:12px;margin-bottom:14px;line-height:1.9;font-size:15px}
+#rs .v{color:#ff9ae6;font-weight:900}
+.rbox .sub{width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1px solid #fff3;background:#ffffff14;color:#fff;font-size:15px}
+</style></head><body>
+<main id="home">
+<div class="top"><a id="back" href="#">← 戻る</a><span id="snd">🔊 音あり</span></div>
+<h1>【報酬を手に入れろ】<br>ガチャ</h1>
+<div class="card bal"><small>所持RC</small><b id="bal">0</b><span id="wnote"></span></div>
+<div class="card"><h2>排出率（毎回この抽選・天井なし）</h2><div id="rates"></div></div>
+<div class="card"><div class="stp"><button id="mn">−</button><div><b id="cnt">1</b>連</div><button id="pl">＋</button></div><div id="cost"></div><button id="go" class="gold">ガチャを引く</button><p class="tiny">1回 1000RC ／ 最大10連 ／ 10連は最高レアの演出を表示</p></div>
+<div class="card"><h2>🎁 所持プレゼント券</h2><div id="vc">0枚</div></div>
+</main>
+
+<div id="show">
+ <div id="boss"></div>
+ <canvas id="cv"></canvas>
+ <div id="hud"><small>討伐数</small><b id="kc">0</b></div>
+ <div id="smoke"></div>
+ <div id="tsr"></div>
+ <div id="tst"><b>どっち！？</b><span>金か…　虹か…！</span></div>
+ <div id="warn">⚠ WARNING ⚠</div>
+ <div id="msg"></div>
+ <svg id="rbs" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="rg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ff5a8a"/><stop offset=".25" stop-color="#ffd24a"/><stop offset=".5" stop-color="#7dffb0"/><stop offset=".75" stop-color="#7ad7ff"/><stop offset="1" stop-color="#c49bff"/></linearGradient></defs><path pathLength="100" d="M-5 105 L105 -5" stroke="url(#rg)"/><path pathLength="100" d="M-5 105 L105 -5" stroke="#fff" style="stroke-width:5px"/></svg>
+ <div id="cut"><div class="ln"></div><div class="band"><span class="ct"></span></div></div>
+ <div id="fl"></div>
+ <div id="rev"><div id="rv1"></div><div id="rv2"></div><div id="rv3"></div><div id="rv4">タップで結果へ</div></div>
+ <button id="skip">スキップ ▶▶</button>
+</div>
+
+<div id="res"><div class="rbox"><h2>ガチャ結果</h2><div id="rg"></div><div id="rs"></div><button id="again" class="gold">もう一度引く</button><button id="rclose" class="sub">閉じる</button></div></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const R=[{k:'白',c:'#e8eeff',p:600,rw:200,n:10},{k:'青',c:'#4aa8ff',p:250,rw:800,n:30},{k:'緑',c:'#4fe07a',p:100,rw:2000,n:50},{k:'赤',c:'#ff4a4a',p:40,rw:5000,n:80},{k:'金',c:'#ffd24a',p:9,rw:10000,n:100},{k:'虹',c:'#ff7ad9',p:1,rw:0,n:100}];
+const COST=1000;
+/* ===== ウォレット（ポータルとの接続部分はここだけ） ===== */
+const WK='ridokaji_wallet_v1',DK='monbato_gacha_demo_rc',VK='monbato_gacha_vouchers_v1',HK='monbato_gacha_history_v1';
+const NK=['rc','RC','balance','coins','coin','amount','points'];
+function jget(k,f){try{const v=localStorage.getItem(k);return v==null?f:JSON.parse(v)}catch(e){return f}}
+const Wallet={mode:'demo',key:null,
+ detect(){const w=jget(WK,null);if(typeof w==='number'){this.mode='num';return}if(w&&typeof w==='object'){for(const k of NK){if(typeof w[k]==='number'){this.mode='obj';this.key=k;return}}}this.mode='demo'},
+ get(){if(this.mode==='num')return Number(jget(WK,0))||0;if(this.mode==='obj')return Number((jget(WK,{})||{})[this.key])||0;const v=localStorage.getItem(DK);return v==null?10000:Number(v)||0},
+ set(n){try{if(this.mode==='num')localStorage.setItem(WK,JSON.stringify(n));else if(this.mode==='obj'){const w=jget(WK,{});w[this.key]=n;localStorage.setItem(WK,JSON.stringify(w))}else localStorage.setItem(DK,String(n));return true}catch(e){return false}}};
+Wallet.detect();
+/* ===== 抽選（毎回1000分率・暗号品質の乱数・天井なし） ===== */
+function rnd(n){const a=new Uint32Array(1),lim=Math.floor(4294967296/n)*n;do{crypto.getRandomValues(a)}while(a[0]>=lim);return a[0]%n}
+function draw(){let x=rnd(1000);for(let i=0;i<6;i++){if(x<R[i].p)return i;x-=R[i].p}return 0}
+/* ===== ホーム ===== */
+let count=1,snd=true,busy=false,tok=0,lastRes=null;
+const fmt=n=>n.toLocaleString('ja-JP');
+function safeBack(){const q=new URLSearchParams(location.search).get('returnUrl')||'';try{if(q){const u=new URL(q,location.href);if(u.origin===location.origin)return u.href}}catch(e){}try{if(document.referrer){const u=new URL(document.referrer);if(u.origin===location.origin)return u.href}}catch(e){}return 'https://ccri1220140-hub.github.io/game-portal/home.html.html'}
+$('back').href=safeBack();
+$('rates').innerHTML=R.map(r=>`<div class="row" style="--c:${r.c}"><i${r.k==='虹'?' class="rb"':''}>${r.k}</i><span>${r.p/10}%</span><span>${r.k==='虹'?'1000円プレゼント券':fmt(r.rw)+' RC'}</span></div>`).join('');
+function home(){const b=Wallet.get();$('bal').textContent=fmt(b);const cost=count*COST;$('cnt').textContent=count;$('cost').textContent='消費 '+fmt(cost)+' RC';const g=$('go');g.disabled=busy||b<cost;g.textContent=b<cost?'RCが足りません':count+'連で引く';
+ $('vc').textContent=(jget(VK,[]).filter(v=>!v.used).length)+'枚';
+ $('wnote').innerHTML=Wallet.mode==='demo'?'テストモード（ポータルのウォレット未検出）<button id="topup">+10000 RC</button>':'連携中：'+WK+(Wallet.key?'.'+Wallet.key:'');
+ const t=$('topup');if(t)t.onclick=()=>{Wallet.set(Wallet.get()+10000);home()}}
+$('mn').onclick=()=>{count=Math.max(1,count-1);home()};$('pl').onclick=()=>{count=Math.min(10,count+1);home()};
+$('snd').onclick=()=>{snd=!snd;$('snd').textContent=snd?'🔊 音あり':'🔇 音なし'};
+/* ===== サウンド ===== */
+let ac;function tone(f,d=.1,t='square',v=.05,to){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;o.type=t;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(n+d)}catch(e){}}
+/* ===== 引く ===== */
+$('go').onclick=()=>{if(busy)return;const n=count,cost=n*COST,bal=Wallet.get();if(bal<cost)return;
+ const res=Array.from({length:n},draw);const gain=res.reduce((s,i)=>s+R[i].rw,0),vn=res.filter(i=>i===5).length;
+ if(!Wallet.set(bal-cost+gain)){alert('RCの保存に失敗しました。ガチャは実行されていません。');return}
+ if(vn){const v=jget(VK,[]);for(let j=0;j<vn;j++)v.push({id:'gv-'+Date.now()+'-'+rnd(1e6)+'-'+j,type:'1000円プレゼント券',createdAt:new Date().toISOString(),used:false});try{localStorage.setItem(VK,JSON.stringify(v))}catch(e){}}
+ const h=jget(HK,[]);h.push({t:new Date().toISOString(),res:res.map(i=>R[i].k),cost,gain});try{localStorage.setItem(HK,JSON.stringify(h.slice(-50)))}catch(e){}
+ lastRes={res,cost,gain,vn};busy=true;tone(300,.2,'sawtooth',.06,900);play(Math.max(...res))};
+/* ===== 演出エンジン ===== */
+const cv=$('cv'),cx=cv.getContext('2d'),sh=$('show');
+let W=0,H=0,hx=0,hy=0,mons=[],parts=[],slashes=[],kills=0,ts=1,tt=0,fleeing=false,spawning=true,raf=0,last=0,rbHero=false,hb=0,shT=0;
+function fit(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);hx=W/2;hy=H*.8}
+addEventListener('resize',fit);
+const HUES=['#7be07b','#ff7a7a','#7ab8ff','#c58aff','#ffc65a'];
+const SH=[h=>`<path d="M5 35Q3 15 20 11Q37 15 35 35Z" fill="${h}" stroke="#0009" stroke-width="2"/><circle cx="14" cy="24" r="3.6" fill="#fff"/><circle cx="26" cy="24" r="3.6" fill="#fff"/><circle cx="14.6" cy="24.6" r="1.7" fill="#111"/><circle cx="26.6" cy="24.6" r="1.7" fill="#111"/><path d="M14 30Q20 34 26 30" stroke="#111" stroke-width="1.6" fill="none"/>`,
+h=>`<path d="M9 15L5 3L17 11ZM31 15L35 3L23 11Z" fill="#2a2030"/><circle cx="20" cy="22" r="13" fill="${h}" stroke="#0009" stroke-width="2"/><path d="M11 18L18 22M29 18L22 22" stroke="#111" stroke-width="2.6" stroke-linecap="round"/><circle cx="14.5" cy="23" r="2" fill="#ff3"/><circle cx="25.5" cy="23" r="2" fill="#ff3"/><path d="M13 30L16 34L20 30L24 34L27 30Z" fill="#fff" stroke="#111"/>`,
+h=>`<path d="M20 14Q10 4 2 12Q6 16 5 24Q12 20 16 26L20 20L24 26Q28 20 35 24Q34 16 38 12Q30 4 20 14Z" fill="${h}" stroke="#0009" stroke-width="2"/><circle cx="16" cy="19" r="2.2" fill="#ff3"/><circle cx="24" cy="19" r="2.2" fill="#ff3"/>`];
+const SPR=[];SH.forEach(f=>HUES.forEach(h=>{const i=new Image();i.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">${f(h)}</svg>`);SPR.push({i,h})}));
+$('boss').innerHTML=`<svg viewBox="0 0 300 260"><defs><linearGradient id="bgd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3a78"/><stop offset="1" stop-color="#08060f"/></linearGradient><radialGradient id="bgl"><stop offset="0" stop-color="#ff2d55" stop-opacity=".55"/><stop offset="1" stop-color="#ff2d55" stop-opacity="0"/></radialGradient></defs><ellipse cx="150" cy="120" rx="150" ry="125" fill="url(#bgl)"/><g id="bw" fill="url(#bgd)" stroke="#000" stroke-width="3" stroke-linejoin="round"><path d="M170 120L290 10Q292 60 300 110L270 104L282 150L248 130L246 176L214 150L208 190L180 160Z"/><path d="M290 10L300 110M290 10L282 150M290 10L246 176M290 10L208 190" fill="none" stroke="#ff2d55" stroke-width="2.5"/></g><use href="#bw" transform="translate(300 0) scale(-1 1)"/><path d="M110 150Q150 120 190 150Q214 220 192 260L108 260Q86 220 110 150Z" fill="url(#bgd)" stroke="#000" stroke-width="3"/><path d="M112 50Q80 40 70 0Q112 18 132 46ZM188 50Q220 40 230 0Q188 18 168 46Z" fill="#d8d0e8" stroke="#000" stroke-width="3"/><path d="M150 28Q192 28 196 70Q198 110 170 128Q150 140 130 128Q102 110 104 70Q108 28 150 28Z" fill="url(#bgd)" stroke="#000" stroke-width="3"/><path class="beye" d="M116 72Q132 58 146 78Q130 84 116 72ZM184 72Q168 58 154 78Q170 84 184 72Z" fill="#ff2d55"/><path d="M108 58L146 80M192 58L154 80" stroke="#000" stroke-width="6" stroke-linecap="round"/><path d="M126 108Q150 124 174 108" stroke="#000" stroke-width="4" fill="none"/><path d="M132 110L136 126L142 114ZM168 110L164 126L158 114Z" fill="#fff"/></svg>`;
+function spawn(){const r=Math.random(),s=SPR[rnd(SPR.length)];let x,y;if(r<.4){x=-30;y=Math.random()*H*.7}else if(r<.8){x=W+30;y=Math.random()*H*.7}else{x=Math.random()*W;y=-30}mons.push({x,y,s,sz:34+Math.random()*18,sp:50+Math.random()*60,ph:Math.random()*6,a:1,dead:false})}
+function burst(x,y,n,col,sp,life=.5){for(let i=0;i<n;i++){const a=Math.random()*6.283,v=sp*(.3+Math.random());parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:life,L:life,r:3+Math.random()*4,c:col==='rb'?`hsl(${Math.random()*360},100%,65%)`:col})}}
+function step(dt){tt+=dt;if(spawning&&!fleeing&&mons.length<26&&Math.random()<dt*40)spawn();
+ for(const m of mons){const dx=hx-m.x,dy=hy-m.y,d=Math.hypot(dx,dy)||1;if(fleeing){m.x-=dx/d*300*dt;m.y-=dy/d*300*dt;m.a-=dt*1.1}else if(d>75){m.x+=dx/d*m.sp*dt+Math.sin(tt*3+m.ph)*30*dt;m.y+=dy/d*m.sp*dt}else m.y+=Math.sin(tt*6+m.ph)*20*dt}
+ mons=mons.filter(m=>m.a>0&&!m.dead);
+ for(const p of parts){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;p.l-=dt}parts=parts.filter(p=>p.l>0);
+ for(const s of slashes)s.l-=dt;slashes=slashes.filter(s=>s.l>0)}
+function heroCol(){return rbHero?`hsl(${(tt*400)%360},100%,65%)`:'#ffd24a'}
+function paint(){cx.clearRect(0,0,W,H);const hc=heroCol();
+ const g=cx.createRadialGradient(hx,hy,4,hx,hy,80+Math.sin(tt*5)*6);g.addColorStop(0,hc);g.addColorStop(1,'transparent');cx.globalAlpha=.4;cx.fillStyle=g;cx.beginPath();cx.arc(hx,hy,90,0,6.283);cx.fill();cx.globalAlpha=1;
+ for(const m of mons){cx.globalAlpha=Math.max(0,m.a);if(m.s.i.complete)cx.drawImage(m.s.i,m.x-m.sz/2,m.y-m.sz/2,m.sz,m.sz)}cx.globalAlpha=1;
+ cx.fillStyle='#10131f';cx.beginPath();cx.moveTo(hx,hy-26);cx.lineTo(hx+17,hy+24);cx.lineTo(hx-17,hy+24);cx.closePath();cx.fill();cx.fillStyle='#e8d8c0';cx.beginPath();cx.arc(hx,hy-31,8,0,6.283);cx.fill();
+ cx.strokeStyle=hc;cx.lineWidth=4;cx.shadowColor=hc;cx.shadowBlur=12;cx.beginPath();cx.moveTo(hx+14,hy-2);cx.lineTo(hx+32,hy-42);cx.stroke();
+ for(const s of slashes){cx.strokeStyle='#fff';cx.lineWidth=1+4*s.l/.14;cx.beginPath();cx.moveTo(s.x1,s.y1);cx.lineTo(s.x2,s.y2);cx.stroke()}cx.shadowBlur=0;
+ for(const p of parts){cx.globalAlpha=Math.max(0,p.l/p.L);cx.fillStyle=p.c;cx.fillRect(p.x,p.y,p.r,p.r)}cx.globalAlpha=1}
+function loop(now){raf=requestAnimationFrame(loop);const dt=Math.min(.05,(now-last)/1000||0)*ts;last=now;step(dt);paint()}
+function killOne(){let b=null,bd=1e9;for(const m of mons){const d=Math.hypot(m.x-hx,m.y-hy);if(!m.dead&&d<bd){bd=d;b=m}}
+ if(b){b.dead=true;slashes.push({x1:hx+32,y1:hy-42,x2:b.x,y2:b.y,l:.14});burst(b.x,b.y,8,b.s.h,170)}
+ kills++;$('kc').textContent=kills;tone(420+Math.random()*380,.05,'square',.03)}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function shake(ms){clearTimeout(shT);sh.classList.add('shake');shT=setTimeout(()=>sh.classList.remove('shake'),ms)}
+function msg(t){const e=$('msg');e.textContent=t;e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}
+function flash(){const e=$('fl');e.classList.remove('on');void e.offsetWidth;e.classList.add('on')}
+function cutin(t,c){return new Promise(r=>{const e=$('cut');e.style.setProperty('--c',c);e.querySelector('.ct').textContent=t;e.classList.remove('go');void e.offsetWidth;e.classList.add('go');tone(200,.3,'sawtooth',.07,900);flash();shake(280);setTimeout(()=>{e.classList.remove('go');r()},1150)})}
+function puffs(){const s=$('smoke');s.innerHTML='';for(let i=0;i<10;i++){const e=document.createElement('span');e.className='puff';e.textContent='💨';e.style.left=(W*.25+Math.random()*W*.5)+'px';e.style.top=(H*.22+Math.random()*H*.2)+'px';e.style.setProperty('--dx',(Math.random()*160-80)+'px');e.style.animationDelay=(i*.1)+'s';s.appendChild(e)}}
+function resetShow(){cancelAnimationFrame(raf);clearInterval(hb);sh.classList.remove('on','stop','pulse','shake','bossmode');$('cut').classList.remove('go');$('warn').classList.remove('on');$('rbs').classList.remove('go');$('rev').classList.remove('on');$('boss').className='';$('smoke').innerHTML='';$('msg').textContent=''}
+function reveal(i){const r=R[i],e=$('rev');e.style.setProperty('--c',r.c);const v=$('rv1');v.textContent=r.k+'！';v.className=i===5?'rb':'';$('rv2').textContent=i===5?'1000円プレゼント券 GET！':fmt(r.rw)+' RC GET！';$('rv3').textContent=lastRes.res.length>1?'他の結果は次の画面で':'';
+ e.classList.add('on');ts=1;burst(W/2,H*.45,[30,60,90,130,220,320][i],i===5?'rb':r.c,320,1.1);flash();shake(400);[523,659,784,1047].forEach((f,k)=>setTimeout(()=>tone(f,.25,'triangle',.07),k*110));
+ setTimeout(()=>{e.onclick=toResult},700)}
+function toResult(){tok++;$('rev').onclick=null;resetShow();showResult()}
+async function play(best){const my=++tok,ok=async ms=>{await wait(ms);return my===tok};
+ fit();resetShow();sh.classList.add('on');kills=0;mons=[];parts=[];slashes=[];fleeing=false;spawning=true;ts=1;rbHero=false;$('kc').textContent=0;$('rev').onclick=null;
+ last=performance.now();raf=requestAnimationFrame(loop);for(let i=0;i<14;i++)spawn();
+ for(let k=0;k<5;k++){const n=R[k].n;while(kills<n){killOne();if(!await ok(Math.max(50,150-kills)))return}
+  await cutin(n+'体討伐！',R[k].c);if(my!==tok)return;
+  if(best<4&&k===best){await cutin('退散っ！💨',R[k].c);if(my!==tok)return;fleeing=true;tone(600,.6,'sine',.06,150);if(!await ok(1300))return;reveal(best);return}}
+ /* ここからボス戦（金 or 虹） */
+ sh.classList.add('bossmode');spawning=false;fleeing=true;$('warn').classList.add('on');tone(70,1.4,'sawtooth',.12,40);shake(1500);if(!await ok(1600))return;
+ $('boss').className='rise';tone(110,.9,'sawtooth',.14,45);shake(900);if(!await ok(1500))return;$('boss').className='idle';msg('巨大モンスター出現！');if(!await ok(1700))return;
+ msg('立ち向かう…！');if(!await ok(1000))return;
+ /* 時間が止まる */
+ ts=0;sh.classList.add('stop');msg('');let b=0;hb=setInterval(()=>{tone(60,.16,'sine',.2);sh.classList.toggle('pulse',b++%2===0)},650);tone(60,.2,'sine',.2);if(!await ok(3000))return;
+ clearInterval(hb);sh.classList.remove('stop','pulse');ts=1;flash();
+ if(best===4){$('boss').className='shiver';msg('…！？');tone(200,.6,'sawtooth',.06,90);if(!await ok(1000))return;
+  msg('巨大モンスターは逃げ出した…！💨');$('boss').className='flee';puffs();tone(500,1.2,'sine',.06,100);if(!await ok(1900))return;reveal(4)}
+ else{rbHero=true;msg('覚醒…！ 全力の一撃！');[392,523,659,784,1047].forEach((f,k)=>setTimeout(()=>tone(f,.3,'triangle',.07),k*130));if(!await ok(1200))return;
+  await cutin('虹の一閃！','#ff7ad9');if(my!==tok)return;$('rbs').classList.add('go');flash();shake(800);if(!await ok(250))return;
+  $('boss').className='shatter';burst(W/2,H*.3,180,'rb',420,1.4);tone(900,.8,'sawtooth',.1,60);if(!await ok(1500))return;reveal(5)}}
+$('skip').onclick=()=>{if(!busy)return;toResult()};
+/* ===== 結果 ===== */
+function showResult(){const {res,cost,gain,vn}=lastRes;const s=res.slice().sort((a,b)=>b-a);
+ $('rg').style.gridTemplateColumns=`repeat(${Math.min(5,s.length)},1fr)`;
+ $('rg').innerHTML=s.map(i=>`<div class="chip" style="--c:${R[i].c}"><b${i===5?' class="rb"':''}>${R[i].k}</b><small>${i===5?'1000円券':fmt(R[i].rw)+'RC'}</small></div>`).join('');
+ $('rs').innerHTML=`消費：${fmt(cost)} RC<br>獲得：${fmt(gain)} RC<br>差引：${gain-cost>=0?'+':''}${fmt(gain-cost)} RC${vn?`<br><span class="v">🎁 1000円プレゼント券 ×${vn} 獲得！</span>`:''}`;
+ $('res').classList.add('on');busy=false;home()}
+$('again').onclick=()=>{$('res').classList.remove('on');home();if(!$('go').disabled)$('go').click()};
+$('rclose').onclick=()=>{$('res').classList.remove('on');home()};
+fit();home();
+})();
+</script></body></html>
