@@ -1109,9 +1109,9 @@ const ROLE_TABLES = {
     {value:"weakWatermelon",weight:0},
     {value:"weakCherry",weight:0},
     {value:"strongWatermelon",weight:20},
-    {value:"strongCherry",weight:20},
+    {value:"strongCherry",weight:30},
     {value:"chance",weight:10},
-    {value:"seven",weight:80}
+    {value:"seven",weight:70}
   ]
 };
 
@@ -1163,13 +1163,13 @@ const JUDGE_TABLES = {
     {value:"seven",weight:500}
   ],
   6:[
-    {value:"miss",weight:6500},
-    {value:"weakWatermelon",weight:1200},
-    {value:"weakCherry",weight:1200},
+    {value:"miss",weight:650},
+    {value:"weakWatermelon",weight:120},
+    {value:"weakCherry",weight:150},
     {value:"strongWatermelon",weight:0},
-    {value:"strongCherry",weight:100},
+    {value:"strongCherry",weight:0},
     {value:"chance",weight:0},
-    {value:"seven",weight:1000}
+    {value:"seven",weight:80}
   ]
 };
 
@@ -1220,7 +1220,7 @@ const SUPER_JUDGE_TABLES = {
 const SUPER_JUDGE_MISS_CONTINUE = {1: 15, 2: 18, 3: 22, 4: 28, 5: 30, 6: 30};
 
 const JUDGE_MISS_CONTINUE = {
-  1:15, 2:20, 3:30, 4:35, 5:40, 6:42
+  1:15, 2:20, 3:30, 4:35, 5:40, 6:25
 };
 
 let mode = "normal";
@@ -1414,6 +1414,21 @@ async function playPuchun(){
   noiseBurst(.2,.3,0,2000);tone(1568,.5,"sine",.08,0);tone(2093,.5,"sine",.06,.05);
   L.classList.remove("show");await sleep(380);confettiRun=false;L.className="puchun";
 }
+const _q=new URLSearchParams(location.search);
+const ENTRY=Math.max(1,Number(_q.get("entry"))||50),LAUNCH=_q.get("launchId")||"";
+try{
+  const P="ridokaji_pending_launch_v1",p=JSON.parse(localStorage.getItem(P)||"null");
+  if(p&&p.status==="pending"&&LAUNCH&&String(p.launchId)===LAUNCH){p.status="consumed";p.consumedAt=new Date().toISOString();localStorage.setItem(P,JSON.stringify(p))}
+}catch(e){}
+function saveRewardCard(rc){
+  const K="ridokaji_cards_v1";
+  const sid="7rush_"+(LAUNCH||Date.now().toString(36)+Math.random().toString(36).slice(2,6));
+  let cards=[];
+  try{cards=JSON.parse(localStorage.getItem(K)||"[]");if(!Array.isArray(cards))cards=[]}catch(e){cards=[]}
+  if(cards.some(c=>c.sessionId===sid))return;
+  cards.push({id:"card_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8),sessionId:sid,name:"7 RUSH SLOT報酬",rc,date:new Date().toLocaleString("ja-JP")});
+  try{localStorage.setItem(K,JSON.stringify(cards))}catch(e){}
+}
 const RC_TABLE=[[777,10,50],[1000,50,150],[1500,150,250],[2500,250,350],[5000,350,500],[8000,500,1250],[12500,1250,3000],[18000,3000,5000],[22222,5000,8000],[30000,8000,10000],[40000,10000,13000],[50000,13000,15000],[77777,15000,30000]];
 const PT_MAX=77777;
 let lastRC=0,maxWatch=null;
@@ -1462,10 +1477,11 @@ async function doorClose(){
   await sleep(3400);L.className="puchun";
 }
 function endModal(...a){
-  lastRC=calcRC(points);
-  a[1]+=`\n設定${setting}でした\n\nRCカード：${lastRC.toLocaleString("ja-JP")}RC獲得！`;
+  lastRC=Math.round(calcRC(points)*ENTRY/50);
+  a[1]+=`\n設定${setting}でした\n\nRCカード：${lastRC.toLocaleString("ja-JP")}RC獲得！\nホームのカード一覧に追加しました`;
   try{localStorage.setItem("slotResult",JSON.stringify({pt:points,rc:lastRC,setting}))}catch(e){}
-  doorClose().then(()=>{showModal(...a);$("modalReset").style.display="none"});
+  saveRewardCard(lastRC);
+  doorClose().then(()=>{showModal(...a);$("modalReset").style.display="none";$("modalMain").style.display="none"});
 }
 
 const GAUGE_STEPS=[0,777,1000,1500,2500,5000,8000,12500,18000,22222,30000,40000,50000];
@@ -1992,7 +2008,7 @@ function endJudge(){
 }
 
 function goHome(){
-  location.href=`home.html?pt=${points}&rc=${lastRC}&setting=${setting}`;
+  location.href="home.html";
 }
 
 /* JUDGE中の継続抽選 */
