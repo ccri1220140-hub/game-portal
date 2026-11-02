@@ -104,10 +104,10 @@ const $=s=>document.querySelector(s);let fast=false;
 const K={w:'ridokaji_wallet_v1',c:'ridokaji_cards_v1',t:'ridokaji_tickets_v1'},HOME_URL='home.html';
 const rd=(k,d)=>{try{const x=localStorage.getItem(k);return x===null?d:JSON.parse(x)}catch(e){return d}};
 const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let S={coin:0,pt:0,rc:0,bt:0,dt:0};
-function load(){const w=rd(K.w,{coin:1000,pt:0}),t=rd(K.t,{bt:0,dt:0});S.coin=Math.max(0,Math.floor(+w.coin||0));S.pt=Math.max(0,Math.floor(+w.pt||0));S.bt=+t.bt||0;S.dt=+t.dt||0;
+let S={coin:0,pt:0,rc:0,bt:0,dt:0,st:0};
+function load(){const w=rd(K.w,{coin:1000,pt:0}),t=rd(K.t,{bt:0,dt:0});S.coin=Math.max(0,Math.floor(+w.coin||0));S.pt=Math.max(0,Math.floor(+w.pt||0));S.bt=+t.bt||0;S.dt=+t.dt||0;S.st=+t.st||0;
 S.rc=rd(K.c,[]).reduce((a,c)=>a+Math.max(0,Math.floor(+c.rc||0)),0)}
-function save(){const w=rd(K.w,{coin:1000,pt:0});w.coin=S.coin;w.pt=S.pt;wr(K.w,w);wr(K.t,{bt:S.bt,dt:S.dt});render()}
+function save(){const w=rd(K.w,{coin:1000,pt:0});w.coin=S.coin;w.pt=S.pt;wr(K.w,w);wr(K.t,{bt:S.bt,dt:S.dt,st:S.st});render()}
 const sleep=ms=>new Promise(r=>setTimeout(r,fast?ms/8:ms));
 const fmt=n=>n.toLocaleString();
 function addCard(o){const cs=rd(K.c,[]);cs.push(Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),date:new Date().toLocaleString('ja-JP')},o));wr(K.c,cs);if(o.rc)S.rc+=o.rc}
