@@ -710,6 +710,11 @@ a.button.merge-start{
       </div>
     </div>
 
+    <div class="wallet" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:-6px">
+      <div class="wallet-item"><div class="wallet-icon">🎫</div><div class="wallet-label">ブレイクチケット</div><div class="wallet-value" id="btBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="チケガチャ.html#body">使う</a></div>
+      <div class="wallet-item"><div class="wallet-icon">🎟</div><div class="wallet-label">倍倍チケット</div><div class="wallet-value" id="dtBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="チケガチャ.html#dbl">使う</a></div>
+    </div>
+
     <div class="wallet-row">
       <button class="free-coin" id="freeCoinButton" type="button">
         🪙 +1000コイン
@@ -718,7 +723,7 @@ a.button.merge-start{
       <p class="wallet-note">
         コイン：ゲームプレイに使用<br>
         PT：ガチャに使用（1回50PT）／使用コインの10分の1を獲得<br>
-        RC：ゲーム報酬カードに保存される限定通貨
+        RC：ゲーム報酬カードに保存される限定通貨<br>🎫チケット：チケガチャの報酬（ブレイク／倍倍）
       </p>
     </div>
 
@@ -748,7 +753,7 @@ a.button.merge-start{
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
-          <a class="button merge-start" href="merge%20garden.html">
+          <a class="button merge-start" href="merge_garden.html">
             🌱 あそぶ
           </a>
         </div>
@@ -877,6 +882,21 @@ a.button.merge-start{
 
     <div class="game-list hidden" data-pane="gacha">
 
+      <!-- チケガチャ -->
+      <article class="game-card wide">
+        <div class="thumbnail gacha">
+          <span class="thumbnail-tag">NEW</span>
+          <div class="art gacha-icon" aria-label="チケガチャ">🎫</div>
+        </div>
+        <div class="card-info">
+          <h3>チケガチャ</h3>
+          <p>リドナを殴り倒してチケットをゲット！ブレイクチャンス・倍倍チャンスにも挑戦しよう。</p>
+          <span class="price-label">必要コイン</span>
+          <div class="pt-fee">1回 50 ／ 10回 500 ／ 50回 2,500 ／ 100回 5,000</div>
+          <a class="button merge-start" href="チケガチャ.html">🎫 チケガチャへ</a>
+        </div>
+      </article>
+
       <!-- ガチャ -->
 
       <article class="game-card wide">
@@ -970,7 +990,8 @@ a.button.merge-start{
     wallet: "ridokaji_wallet_v1",
     cards: "ridokaji_cards_v1",
     pending: "ridokaji_pending_launch_v1",
-    launchHistory: "ridokaji_launch_history_v1"
+    launchHistory: "ridokaji_launch_history_v1",
+    tickets: "ridokaji_tickets_v1"
   };
 
   const DEFAULT_WALLET = {
@@ -1067,6 +1088,9 @@ a.button.merge-start{
     $("coinBalance").textContent = formatNumber(wallet.coin);
     $("ptBalance").textContent = formatNumber(wallet.pt);
     $("rcBalance").textContent = formatNumber(totalRC());
+    const tk = readJSON(KEYS.tickets, {bt:0, dt:0}) || {};
+    $("btBalance").textContent = formatNumber(tk.bt) + "枚";
+    $("dtBalance").textContent = formatNumber(tk.dt) + "枚";
 
     document.querySelectorAll(".game-start").forEach(button => {
       const game = button.dataset.game;
