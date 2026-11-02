@@ -656,7 +656,7 @@ a.button.merge-start{
 .pinned{margin:0 0 4px}
 .pinned-label{margin:0 2px 8px;color:#a99dff;font-size:10px;font-weight:900;letter-spacing:3px}
 .pinned .game-list{grid-template-columns:1fr}
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;margin:0 0 14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;margin:0 0 14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
 .tab{min-width:0;padding:10px 4px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--muted);font-size:12px;font-weight:900;line-height:1.4}
 .tab .ti{display:block;font-size:21px;margin-bottom:1px}
 .tab[aria-selected="true"]{color:#fff;border-color:#8b7cff;background:linear-gradient(100deg,#6753d9,#5140a8);box-shadow:0 0 16px #7864ff55}
@@ -670,6 +670,7 @@ a.button.merge-start{
 .reward-card.coin-card::after{content:"COIN"}
 .reward-card.coin-card .reward-card-value{color:#8af0ff;text-shadow:0 0 18px #4fc3f755}
 .kind{display:inline-block;margin-bottom:4px;padding:2px 7px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff25;font-size:9px;font-weight:900}
+.tab{font-size:10px;padding:10px 1px}
 </style>
 </head>
 
@@ -711,8 +712,8 @@ a.button.merge-start{
     </div>
 
     <div class="wallet" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:-6px">
-      <div class="wallet-item"><div class="wallet-icon">🎫</div><div class="wallet-label">ブレイクチケット</div><div class="wallet-value" id="btBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="チケガチャ.html#body">使う</a></div>
-      <div class="wallet-item"><div class="wallet-icon">🎟</div><div class="wallet-label">倍倍チケット</div><div class="wallet-value" id="dtBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="チケガチャ.html#dbl">使う</a></div>
+      <div class="wallet-item"><div class="wallet-icon">🎫</div><div class="wallet-label">ブレイクチケット</div><div class="wallet-value" id="btBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="ブレイクチャンス.html">使う</a></div>
+      <div class="wallet-item"><div class="wallet-icon">🎟</div><div class="wallet-label">倍倍チケット</div><div class="wallet-value" id="dtBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="倍倍チャンス.html">使う</a></div>
     </div>
 
     <div class="wallet-row">
@@ -777,6 +778,7 @@ a.button.merge-start{
       <button class="tab" type="button" role="tab" data-tab="variety" aria-selected="true"><span class="ti">🎮</span>バラエティー</button>
       <button class="tab" type="button" role="tab" data-tab="slot" aria-selected="false"><span class="ti">🎰</span>スロット</button>
       <button class="tab" type="button" role="tab" data-tab="gacha" aria-selected="false"><span class="ti">🎁</span>ガチャ</button>
+      <button class="tab" type="button" role="tab" data-tab="break" aria-selected="false"><span class="ti">💥</span>ブレイク・倍倍</button>
     </div>
 
     <div class="game-list" data-pane="variety">
@@ -880,6 +882,37 @@ a.button.merge-start{
 
     </div>
 
+    <div class="game-list hidden" data-pane="break">
+
+      <article class="game-card wide">
+        <div class="thumbnail gacha">
+          <span class="thumbnail-tag">TICKET</span>
+          <div class="art gacha-icon" aria-label="ブレイクチャンス">👾</div>
+        </div>
+        <div class="card-info">
+          <h3>ブレイクチャンス</h3>
+          <p>5体の敵にアタック！突破すればコインやチケットをゲット。全員突破でコンプリート！</p>
+          <span class="price-label">必要チケット</span>
+          <div class="pt-fee">ブレイクチケット 1枚</div>
+          <a class="button merge-start" href="ブレイクチャンス.html">💥 ブレイクチャンスへ</a>
+        </div>
+      </article>
+
+      <article class="game-card wide">
+        <div class="thumbnail gacha">
+          <span class="thumbnail-tag">TICKET</span>
+          <div class="art gacha-icon" aria-label="倍倍チャンス">🌟</div>
+        </div>
+        <div class="card-info">
+          <h3>倍倍チャンス</h3>
+          <p>5つの枠をkeepしてスピン！同じ報酬がそろうほど倍々に。</p>
+          <span class="price-label">必要チケット</span>
+          <div class="pt-fee">倍倍チケット 1枚</div>
+          <a class="button merge-start" href="倍倍チャンス.html">🌟 倍倍チャンスへ</a>
+        </div>
+      </article>
+    </div>
+
     <div class="game-list hidden" data-pane="gacha">
 
       <!-- チケガチャ -->
@@ -890,7 +923,7 @@ a.button.merge-start{
         </div>
         <div class="card-info">
           <h3>チケガチャ</h3>
-          <p>リドナを殴り倒してチケットをゲット！ブレイクチャンス・倍倍チャンスにも挑戦しよう。</p>
+          <p>リドナを殴り倒してRCやチケットをゲット！当てたチケットは「ブレイク・倍倍」タブで使えるよ。</p>
           <span class="price-label">必要コイン</span>
           <div class="pt-fee">1回 50 ／ 10回 500 ／ 50回 2,500 ／ 100回 5,000</div>
           <a class="button merge-start" href="チケガチャ.html">🎫 チケガチャへ</a>
