@@ -722,6 +722,10 @@ a.button.merge-start{
         🪙 +1000コイン
       </button>
 
+      <button class="free-coin" id="testSecretButton" type="button" style="margin-top:8px">
+        🕶 テスト用：シークレットチケット +1
+      </button>
+
       <p class="wallet-note">
         コイン：ゲームプレイに使用<br>
         PT：ガチャに使用（1回50PT）／使用コインの10分の1を獲得<br>
@@ -1441,6 +1445,14 @@ let selectMode = false;
 
   $("monbatoPrice").addEventListener("change", updateWalletDisplay);
   $("rushPrice").addEventListener("change", updateWalletDisplay);
+
+  $("testSecretButton").addEventListener("click", () => {
+    const tk = readJSON(KEYS.tickets, {bt:0, dt:0}) || {};
+    tk.st = Math.max(0, Math.floor(Number(tk.st) || 0)) + 1;
+    saveJSON(KEYS.tickets, tk);
+    updateWalletDisplay();
+    showToast("シークレットチケットを1枚追加しました（テスト用）");
+  });
 
   $("freeCoinButton").addEventListener("click", () => {
     const wallet = getWallet();
