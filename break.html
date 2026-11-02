@@ -85,7 +85,7 @@ small{color:var(--mut);font-size:12px}
 <div id="b-play" style="display:none">
 <div class="en" id="en"></div>
 <div class="row"><button id="b-at" onclick="attack()">アタック</button><button class="s" id="b-all" onclick="attackAll()">まとめてアタック</button></div>
-<div id="b-end" style="display:none" class="row"><button onclick="go('body')">もう一度引く</button><button class="g" onclick="location.href=HOME_URL">ホームに戻る</button></div>
+<div id="b-sum" style="text-align:center;font-weight:900;font-size:18px;margin:10px 0"></div><div id="b-end" style="display:none" class="row"><button onclick="go('body')">もう一度引く</button><button class="g" onclick="location.href=HOME_URL">ホームに戻る</button></div>
 </div></div>
 
 
@@ -145,18 +145,19 @@ let can=!m;setTimeout(()=>can=true,m?3500:0);
 o.onclick=()=>{if(!can)return;cancelAnimationFrame(fwRaf);o.classList.remove('on');r()}})}
 
 /* ===== ブレイクチャンス ===== */
-const EN=[{e:'👾',p:90,r:'800コイン',c:800},{e:'👹',p:75,r:'1000コイン',c:1000},{e:'👺',p:65,r:'2500コイン',c:2500},{e:'🤡',p:70,r:'ブレイクチケット',tk:'bt'},{e:'🐉',p:8,r:'倍倍チケット',tk:'dt'}];
+const EN=[{e:'👾',p:75,r:'800コイン',c:800},{e:'👹',p:75,r:'1000コイン',c:1000},{e:'👺',p:75,r:'2500コイン',c:2500},{e:'🤡',p:65,r:'ブレイクチケット',tk:'bt'},{e:'🐉',p:10,r:'倍倍チケット',tk:'dt'}];
 $('#lineup').innerHTML=EN.map(x=>`<div><i>${x.e}</i><em>${x.p}%</em><b>${x.r.replace('ブレイクチケット','🎫').replace('倍倍チケット','🎟')}</b></div>`).join('');
 let B={sel:null,d:[],busy:false};
-function startBody(){B={sel:null,d:[null,null,null,null,null],busy:false};$('#b-ready').style.display='none';$('#b-play').style.display='';$('#b-end').style.display='none';$('#b-at').disabled=$('#b-all').disabled=false;drawEn()}
+function startBody(){B={sel:null,d:[null,null,null,null,null],busy:false,coin:0};$('#b-sum').textContent='';$('#b-ready').style.display='none';$('#b-play').style.display='';$('#b-end').style.display='none';$('#b-at').disabled=$('#b-all').disabled=false;drawEn()}
 function drawEn(){$('#en').innerHTML=EN.map((x,i)=>`<div class="${B.sel==i?'sel':''}" onclick="selEn(${i})"><i>${B.d[i]===true?'💥':B.d[i]===false?'🛡️':x.e}</i>${x.r}<br><small>${x.p}%</small><em class="${B.d[i]===true?'ok':'ng'}">${B.d[i]===null?'':B.d[i]?'成功！':'失敗！'}</em></div>`).join('')}
 function selEn(i){if(B.busy||B.d[i]!==null)return;B.sel=i;SF.tick();drawEn()}
 async function hit(i){const x=EN[i],ok=Math.random()*100<x.p;const c=$('#en').children[i];c.querySelector('i').textContent='⚔️';anim(c,'shk');SF.hit();await sleep(600);B.d[i]=ok;drawEn();ok?SF.ok():SF.ng();
-if(ok){if(x.c){addCard({type:'coin',name:'ブレイクチャンス報酬',coin:x.c})}
+if(ok){if(x.c){B.coin=(B.coin||0)+x.c;wr('tg_pend',B.coin)}
 else{S[x.tk]++;}save()
 if(x.tk=='bt')await celeb('ブレイクチケット獲得！！','🎫 マイウォレットに追加しました',false)
 if(x.tk=='dt')await celeb('倍倍チャンスチケット当選！！！','🎟 倍倍チャンスに挑戦できます！ ウォレットから使おう',true)}}
-async function after(){if(B.d.some(v=>v===null))return;
+function flush(){const c=+rd('tg_pend',0)||0;if(c>0)addCard({type:'coin',name:'ブレイクチャンス報酬（5体合計）',coin:c});wr('tg_pend',0);if(B)B.coin=0;return c}
+async function after(){if(B.d.some(v=>v===null))return;const tot=flush();$('#b-sum').textContent=tot?`獲得コイン合計：${fmt(tot)}コイン → カード一覧へ`:'コインは獲得できなかった…';
 $('#b-at').disabled=$('#b-all').disabled=true;
 if(B.d.every(v=>v===true))await celeb('COMPLETE!!','<div style="font-size:26px;font-weight:900;color:#ffd43b">5体すべて突破！完全制覇！！</div>👾👹👺🤡🐉 全員撃破！',true,3);
 $('#b-end').style.display=''}
@@ -166,5 +167,6 @@ async function attackAll(){if(B.busy)return;B.busy=true;B.sel=null;
 for(let i=0;i<5;i++){if(B.d[i]===null){await hit(i);await sleep(500)}}B.busy=false;await after()}
 
 
+flush();
 load();render();$('#mt').textContent=mute?'🔇 音OFF':'🔊 音ON';addEventListener('pageshow',()=>{load();render()});addEventListener('focus',()=>{load();render()});document.addEventListener('pointerdown',ac);
 </script></body></html>
