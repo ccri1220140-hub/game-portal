@@ -714,16 +714,11 @@ a.button.merge-start{
     <div class="wallet" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:-6px">
       <div class="wallet-item"><div class="wallet-icon">🎫</div><div class="wallet-label">ブレイクチケット</div><div class="wallet-value" id="btBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="break.html">使う</a></div>
       <div class="wallet-item"><div class="wallet-icon">🎟</div><div class="wallet-label">倍倍チケット</div><div class="wallet-value" id="dtBalance" style="color:#8af0ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="baibai.html">使う</a></div>
-      <div class="wallet-item hidden" id="stItem" style="grid-column:1/-1"><div class="wallet-icon">🕶</div><div class="wallet-label">シークレットチケット</div><div class="wallet-value" id="stBalance" style="color:#e6a8ff">0枚</div><a class="button gold" style="margin-top:8px;min-height:32px;padding:6px;font-size:11px" href="secret.html">使う</a></div>
     </div>
 
     <div class="wallet-row">
       <button class="free-coin" id="freeCoinButton" type="button">
         🪙 +1000コイン
-      </button>
-
-      <button class="free-coin" id="testSecretButton" type="button" style="margin-top:8px">
-        🕶 テスト用：シークレットチケット +1
       </button>
 
       <p class="wallet-note">
@@ -888,21 +883,6 @@ a.button.merge-start{
     </div>
 
     <div class="game-list hidden" data-pane="break">
-
-      <!-- シークレットラッシュ（チケット所持者のみ表示） -->
-      <article class="game-card wide hidden" id="secretCard">
-        <div class="thumbnail gacha">
-          <span class="thumbnail-tag">SECRET</span>
-          <div class="art gacha-icon" aria-label="シークレットラッシュ">🕶</div>
-        </div>
-        <div class="card-info">
-          <h3>シークレットラッシュ</h3>
-          <p>98%で継続する秘密のラッシュ！ハズレを引くまで報酬が積み上がる。</p>
-          <span class="price-label">必要チケット</span>
-          <div class="pt-fee">シークレットチケット 1枚</div>
-          <a class="button merge-start" href="secret.html">🕶 ラッシュへ</a>
-        </div>
-      </article>
 
       <article class="game-card wide">
         <div class="thumbnail gacha">
@@ -1144,9 +1124,6 @@ a.button.merge-start{
     const tk = readJSON(KEYS.tickets, {bt:0, dt:0}) || {};
     $("btBalance").textContent = formatNumber(tk.bt) + "枚";
     $("dtBalance").textContent = formatNumber(tk.dt) + "枚";
-    $("stBalance").textContent = formatNumber(tk.st) + "枚";
-    $("stItem").classList.toggle("hidden", !(Number(tk.st) > 0));
-    $("secretCard").classList.toggle("hidden", !(Number(tk.st) > 0));
 
     document.querySelectorAll(".game-start").forEach(button => {
       const game = button.dataset.game;
@@ -1199,8 +1176,7 @@ let selectMode = false;
 
     list.innerHTML = cards.slice().reverse().map(card => {
       const isCoin = card.type === "coin";
-      const isPt = card.type === "pt";
-      const rc = Math.max(0, Math.floor(Number(isCoin ? card.coin : isPt ? card.pt : card.rc) || 0));
+      const rc = Math.max(0, Math.floor(Number(isCoin ? card.coin : card.rc) || 0));
       const id = escapeHTML(card.id || "");
       const name = escapeHTML(card.name || "ゲーム報酬カード");
       const date = escapeHTML(card.date || "");
@@ -1211,14 +1187,14 @@ let selectMode = false;
           <div class="sel-mark">${isSel ? "✓" : ""}</div>
           <div class="reward-card-top">
             <div>
-              <div class="reward-card-name"><span class="kind">${isCoin ? "🪙 コインカード" : isPt ? "💎 PTカード" : "🔥 RCカード"}</span><br>${name}</div>
+              <div class="reward-card-name"><span class="kind">${isCoin ? "🪙 コインカード" : "🔥 RCカード"}</span><br>${name}</div>
               <div class="reward-card-date">${date}</div>
             </div>
-            <div aria-hidden="true" style="font-size:25px">${isCoin ? "🎁" : isPt ? "💎" : "🏆"}</div>
+            <div aria-hidden="true" style="font-size:25px">${isCoin ? "🎁" : "🏆"}</div>
           </div>
 
           <div class="reward-card-value">
-            ${formatNumber(rc)} <small>${isCoin ? "コイン" : isPt ? "PT" : "RC"}</small>
+            ${formatNumber(rc)} <small>${isCoin ? "コイン" : "RC"}</small>
           </div>
         </article>
       `;
@@ -1237,14 +1213,13 @@ let selectMode = false;
   }
 
   function selectedParts() {
-    let rc = 0, coin = 0, pt = 0;
+    let rc = 0, coin = 0;
     getCards().forEach(c => {
       if (!selected.has(String(c.id))) return;
       if (c.type === "coin") coin += Math.max(0, Math.floor(Number(c.coin) || 0));
-      else if (c.type === "pt") pt += Math.max(0, Math.floor(Number(c.pt) || 0));
       else rc += Math.max(0, Math.floor(Number(c.rc) || 0));
     });
-    return { rc, coin, pt, total: Math.floor(rc / 10) + coin, rest: rc % 10 };
+    return { rc, coin, total: Math.floor(rc / 10) + coin, rest: rc % 10 };
   }
 
   function updateExchangeBar() {
@@ -1261,8 +1236,7 @@ let selectMode = false;
         (sp.rc > 0 ? `RC ${formatNumber(sp.rc)}` : "") +
         (sp.rc > 0 && sp.coin > 0 ? " ＋ " : "") +
         (sp.coin > 0 ? `コインカード ${formatNumber(sp.coin)}` : "") +
-        (sp.pt > 0 ? ` ／ PTカード ${formatNumber(sp.pt)}` : "") +
-        `<br>→ ${formatNumber(sp.total)} コイン` + (sp.pt > 0 ? ` ＋ ${formatNumber(sp.pt)} PT` : "") +
+        `<br>→ ${formatNumber(sp.total)} コイン` +
         (sp.rest > 0 ? `（端数 ${sp.rest} RCは変換されない）` : "");
   }
 
@@ -1299,7 +1273,7 @@ let selectMode = false;
     const coin = sp.total;
     const rest = sp.rest;
 
-    if (coin <= 0 && sp.pt <= 0) {
+    if (coin <= 0) {
       showToast("交換できるコインがありません。10RC以上、またはコインカードを選んでね。");
       return;
     }
@@ -1308,7 +1282,7 @@ let selectMode = false;
       rest > 0
         ? `端数（${rest}RC）はコインに変換されません。よろしいですか？
 （${formatNumber(coin)}コインに交換）`
-        : `${formatNumber(coin)}コイン` + (sp.pt > 0 ? `と${formatNumber(sp.pt)}PT` : "") + `に交換します。よろしいですか？`
+        : `${formatNumber(coin)}コインに交換します。よろしいですか？`
     );
     if (!ok) return;
 
@@ -1326,14 +1300,13 @@ let selectMode = false;
 
     const wallet = getWallet();
     wallet.coin += coin;
-    wallet.pt += sp.pt;
     saveWallet(wallet);
 
     selected.clear();
     selectMode = false;
     renderCards();
     updateWalletDisplay();
-    showToast(`${formatNumber(coin)}コイン` + (sp.pt > 0 ? `・${formatNumber(sp.pt)}PT` : "") + `獲得！`);
+    showToast(`${formatNumber(coin)}コイン獲得！`);
   }
 
   function openCards() {
@@ -1445,14 +1418,6 @@ let selectMode = false;
 
   $("monbatoPrice").addEventListener("change", updateWalletDisplay);
   $("rushPrice").addEventListener("change", updateWalletDisplay);
-
-  $("testSecretButton").addEventListener("click", () => {
-    const tk = readJSON(KEYS.tickets, {bt:0, dt:0}) || {};
-    tk.st = Math.max(0, Math.floor(Number(tk.st) || 0)) + 1;
-    saveJSON(KEYS.tickets, tk);
-    updateWalletDisplay();
-    showToast("シークレットチケットを1枚追加しました（テスト用）");
-  });
 
   $("freeCoinButton").addEventListener("click", () => {
     const wallet = getWallet();
