@@ -208,7 +208,7 @@ S.coin-=cost;const res=[];for(let i=0;i<n;i++)res.push(roll(R));
 const best=Math.max(...res.map(x=>R.indexOf(x)));
 const cnt={};res.forEach(x=>cnt[x.k]=(cnt[x.k]||0)+1);
 let rc=0,bt=0,dt=0;res.forEach(x=>{if(x.rc)rc+=x.rc;if(x.tk=='bt')bt++;if(x.tk=='dt')dt++});
-res.forEach(x=>{if(x.rc)addCard({type:'rc',name:'チケットガチャ報酬（'+x.k+'）',rc:x.rc})});S.bt+=bt;S.dt+=dt;save();
+if(rc>0)addCard({type:'rc',name:`チケットガチャ ${n}連（RC合計）`,rc:rc});S.bt+=bt;S.dt+=dt;save();
 await machine(n);await battle(best);
 const nm=R[best].k,gold=best>=4;
 await celeb(`${nm}！`,best==6?'🎟 倍倍チャンスチケット当選！！':best==5?'🎫 ブレイクチケット獲得！':'',gold);
