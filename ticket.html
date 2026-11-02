@@ -88,7 +88,7 @@ small{color:var(--mut);font-size:12px}
 <div class="mach" id="mach"><div class="mtitle">🎰 チケガチャ</div><div class="dome" id="dome"></div>
 <div class="mbody"><div class="disp" id="disp">コインをいれてね</div><div class="crank" id="crank"></div><div class="tray"><div class="dropcap" id="dcap"></div></div></div></div>
 <div class="grid4" style="margin-top:14px"><button class="cb" onclick="pull(1,50)">1回<span>🪙 50</span></button><button class="cb" onclick="pull(10,500)">10回<span>🪙 500</span></button><button class="cb" onclick="pull(50,2500)">50回<span>🪙 2,500</span></button><button class="cb" onclick="pull(100,5000)">100回<span>🪙 5,000</span></button></div>
-<details class="card"><summary style="font-weight:900">排出率と報酬を見る</summary><small>排出：白45% 青26% 緑15% 赤10% 金3% 虹0.99% 虹㊙︎0.01%<br>報酬：白10RC／青100RC／緑300RC／赤1000RC／金10000RC／虹 ブレイクチケット／虹㊙︎ 倍倍チケット<br>※RCはRCカードに、チケットはウォレットに入ります</small></details>
+<details class="card"><summary style="font-weight:900">排出率と報酬を見る</summary><small>排出：白45% 青26% 緑15% 赤10% 金3% 虹0.99% 虹㊙︎0.01%<br>報酬：白10RC／青100RC／緑250RC／赤500RC／金2500RC／虹 ブレイクチケット／虹㊙︎ シークレットチケット<br>※RCはRCカードに、チケットはウォレットに入ります</small></details>
 </div>
 
 <div class="ov" id="cf"><div id="cfb"></div></div>
@@ -102,10 +102,10 @@ const $=s=>document.querySelector(s);let fast=false;
 const K={w:'ridokaji_wallet_v1',c:'ridokaji_cards_v1',t:'ridokaji_tickets_v1'},HOME_URL='home.html';
 const rd=(k,d)=>{try{const x=localStorage.getItem(k);return x===null?d:JSON.parse(x)}catch(e){return d}};
 const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let S={coin:0,pt:0,rc:0,bt:0,dt:0};
-function load(){const w=rd(K.w,{coin:1000,pt:0}),t=rd(K.t,{bt:0,dt:0});S.coin=Math.max(0,Math.floor(+w.coin||0));S.pt=Math.max(0,Math.floor(+w.pt||0));S.bt=+t.bt||0;S.dt=+t.dt||0;
+let S={coin:0,pt:0,rc:0,bt:0,dt:0,st:0};
+function load(){const w=rd(K.w,{coin:1000,pt:0}),t=rd(K.t,{bt:0,dt:0});S.coin=Math.max(0,Math.floor(+w.coin||0));S.pt=Math.max(0,Math.floor(+w.pt||0));S.bt=+t.bt||0;S.dt=+t.dt||0;S.st=+t.st||0;
 S.rc=rd(K.c,[]).reduce((a,c)=>a+Math.max(0,Math.floor(+c.rc||0)),0)}
-function save(){const w=rd(K.w,{coin:1000,pt:0});w.coin=S.coin;w.pt=S.pt;wr(K.w,w);wr(K.t,{bt:S.bt,dt:S.dt});render()}
+function save(){const w=rd(K.w,{coin:1000,pt:0});w.coin=S.coin;w.pt=S.pt;wr(K.w,w);wr(K.t,{bt:S.bt,dt:S.dt,st:S.st});render()}
 const sleep=ms=>new Promise(r=>setTimeout(r,fast?ms/8:ms));
 const fmt=n=>n.toLocaleString();
 function addCard(o){const cs=rd(K.c,[]);cs.push(Object.assign({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),date:new Date().toLocaleString('ja-JP')},o));wr(K.c,cs);if(o.rc)S.rc+=o.rc}
@@ -133,7 +133,7 @@ function go(v){document.querySelectorAll('.v').forEach(e=>e.classList.remove('on
 if(v=='body'){$('#b-ready').style.display='';$('#b-play').style.display='none'}
 if(v=='dbl'){$('#d-ready').style.display='';$('#d-play').style.display='none';$('#d-end').style.display='none'}
 render();scrollTo(0,0)}
-function render(){const w=`<div>🪙 コイン<b>${fmt(S.coin)}</b></div><div>💎 PT<b>${fmt(S.pt)}</b></div><div>🔥 RC<b>${fmt(S.rc)}</b></div><div>🎫 ブレイクチケット<b>${S.bt}枚</b><button class="s" style="padding:4px 10px;margin-top:4px" onclick="location.href='break.html'">使う</button></div><div>🎟 倍倍チケット<b>${S.dt}枚</b><button class="s" style="padding:4px 10px;margin-top:4px" onclick="location.href='baibai.html'">使う</button></div>`;$('#wal2').innerHTML=w}
+function render(){const w=`<div>🪙 コイン<b>${fmt(S.coin)}</b></div><div>💎 PT<b>${fmt(S.pt)}</b></div><div>🔥 RC<b>${fmt(S.rc)}</b></div><div>🎫 ブレイクチケット<b>${S.bt}枚</b><button class="s" style="padding:4px 10px;margin-top:4px" onclick="location.href='break.html'">使う</button></div><div>🎟 倍倍チケット<b>${S.dt}枚</b><button class="s" style="padding:4px 10px;margin-top:4px" onclick="location.href='baibai.html'">使う</button></div>${S.st>0?`<div>🕶 シークレット<b>${S.st}枚</b><button class="s" style="padding:4px 10px;margin-top:4px" onclick="location.href='secret.html'">使う</button></div>`:''}`;$('#wal2').innerHTML=w}
 function anim(el,c){el.classList.remove(c);void el.offsetWidth;el.classList.add(c)}
 function roll(L){let t=L.reduce((a,x)=>a+x.w,0),r=Math.random()*t;for(const x of L){if((r-=x.w)<0)return x}return L[L.length-1]}
 function confirmBox(t,n,ok){$('#cmt').textContent=t;$('#cmn').textContent=n;$('#cm').classList.add('on');
@@ -147,7 +147,7 @@ let can=!m;setTimeout(()=>can=true,m?3500:0);
 o.onclick=()=>{if(!can)return;cancelAnimationFrame(fwRaf);o.classList.remove('on');r()}})}
 
 /* ===== ブレイクガチャ（チケット抽選） ===== */
-const R=[{k:'白',w:45,rc:10},{k:'青',w:26,rc:100},{k:'緑',w:15,rc:300},{k:'赤',w:10,rc:1000},{k:'金',w:3,rc:10000},{k:'虹',w:.99,tk:'bt'},{k:'虹㊙︎',w:.01,tk:'dt'}];
+const R=[{k:'白',w:45,rc:10},{k:'青',w:26,rc:100},{k:'緑',w:15,rc:250},{k:'赤',w:10,rc:500},{k:'金',w:3,rc:2500},{k:'虹',w:.99,tk:'bt'},{k:'虹㊙︎',w:.01,tk:'st'}];
 function anim(el,c){el.classList.remove(c);void el.offsetWidth;el.classList.add(c)}
 let H,D0,me,rid;const MH=500,RH=1000;
 const say=t=>$('#msg').textContent=t;
@@ -207,12 +207,12 @@ if(S.coin<cost){alert('コインが足りません');return}
 S.coin-=cost;const res=[];for(let i=0;i<n;i++)res.push(roll(R));
 const best=Math.max(...res.map(x=>R.indexOf(x)));
 const cnt={};res.forEach(x=>cnt[x.k]=(cnt[x.k]||0)+1);
-let rc=0,bt=0,dt=0;res.forEach(x=>{if(x.rc)rc+=x.rc;if(x.tk=='bt')bt++;if(x.tk=='dt')dt++});
-if(rc>0)addCard({type:'rc',name:`チケットガチャ ${n}連（RC合計）`,rc:rc});S.bt+=bt;S.dt+=dt;save();
+let rc=0,bt=0,st=0;res.forEach(x=>{if(x.rc)rc+=x.rc;if(x.tk=='bt')bt++;if(x.tk=='st')st++});
+if(rc>0)addCard({type:'rc',name:`チケットガチャ ${n}連（RC合計）`,rc:rc});S.bt+=bt;S.st+=st;save();
 await machine(n);await battle(best);
 const nm=R[best].k,gold=best>=4;
-await celeb(`${nm}！`,best==6?'🎟 倍倍チャンスチケット当選！！':best==5?'🎫 ブレイクチケット獲得！':'',gold);
-$('#rsb').innerHTML=`<h2>${n}回の結果</h2>`+R.filter(x=>cnt[x.k]).map(x=>`<div>${x.k} ×${cnt[x.k]}</div>`).join('')+`<hr><b>獲得 RC：${fmt(rc)}RC</b><br>ブレイクチケット：${bt}枚<br>倍倍チケット：${dt}枚`;
+await celeb(`${nm}！`,best==6?'🕶 シークレットチケット当選！！':best==5?'🎫 ブレイクチケット獲得！':'',gold);
+$('#rsb').innerHTML=`<h2>${n}回の結果</h2>`+R.filter(x=>cnt[x.k]).map(x=>`<div>${x.k} ×${cnt[x.k]}</div>`).join('')+`<hr><b>獲得 RC：${fmt(rc)}RC</b><br>ブレイクチケット：${bt}枚<br>シークレットチケット：${st}枚`;
 $('#rs').classList.add('on')}
 
 
