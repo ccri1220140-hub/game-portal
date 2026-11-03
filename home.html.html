@@ -656,7 +656,16 @@ a.button.merge-start{
 /* ===== タブ・固定マージ・ガチャ ===== */
 .pinned{margin:0 0 4px}
 .pinned-label{margin:0 2px 8px;color:#a99dff;font-size:10px;font-weight:900;letter-spacing:3px}
-.pinned .game-list{grid-template-columns:1fr}
+.pinned .game-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pinned .card-info p{min-height:51px}
+.thumbnail.poko{background:linear-gradient(145deg,#5a3418,#121523)}
+.thumbnail.poko::before{background:#ff9a3d}
+.poko-icon{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;width:clamp(52px,15vw,80px)}
+.poko-icon i{aspect-ratio:1;border-radius:28%;box-shadow:0 3px 0 #0006}
+.poko-icon i:nth-child(1){background:#ff5d5d}
+.poko-icon i:nth-child(2){background:#4da3ff}
+.poko-icon i:nth-child(3){background:#5fd36f}
+.poko-icon i:nth-child(4){background:#ffd93b}
 .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;margin:0 0 14px;border:1px solid var(--line);border-radius:15px;background:#0d1120}
 .tab{min-width:0;padding:10px 4px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--muted);font-size:12px;font-weight:900;line-height:1.4}
 .tab .ti{display:block;font-size:21px;margin-bottom:1px}
@@ -741,7 +750,7 @@ a.button.merge-start{
 
       <!-- マージガーデン（入場料なし。報酬コインが財布に入る） -->
 
-      <article class="game-card wide">
+      <article class="game-card">
         <div class="thumbnail merge">
           <span class="thumbnail-tag">PUZZLE</span>
           <div class="art" aria-label="花">🌸</div>
@@ -749,13 +758,34 @@ a.button.merge-start{
 
         <div class="card-info">
           <h3>マージガーデン</h3>
-          <p>育てて合成してオーダーを届けよう。報酬のコインはここに反映！</p>
+          <p>育てて合成してオーダーを届けよう！</p>
 
           <span class="price-label">入場料金</span>
           <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
 
           <a class="button merge-start" href="merge%20garden.html">
             🌱 あそぶ
+          </a>
+        </div>
+      </article>
+
+      <!-- ぽこぽこパズル（無料。報酬は後で設定） -->
+
+      <article class="game-card">
+        <div class="thumbnail poko">
+          <span class="thumbnail-tag">PUZZLE</span>
+          <div class="art poko-icon" aria-label="ぽこぽこ"><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="card-info">
+          <h3>ぽこぽこパズル</h3>
+          <p>同じ色をそろえてバリアを全部消そう！</p>
+
+          <span class="price-label">入場料金</span>
+          <div style="margin:0 0 9px;font-size:12px;font-weight:900;color:var(--green)">無料</div>
+
+          <a class="button merge-start" href="poko.html">
+            🧩 あそぶ
           </a>
         </div>
       </article>
