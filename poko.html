@@ -52,7 +52,7 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
     <div id="ov" hidden><h2 id="ot"></h2><p id="os"></p><button id="o1"></button><button id="o2" class="sub"></button></div>
   </div>
   <div class="msg" id="msg"></div>
-  <button class="sub" id="home-btn">ホーム</button>
+  <div style="display:flex;gap:10px"><button class="sub" id="home-btn">ホーム</button><button class="sub" id="snd">🔊</button></div>
 </div>
 <script>
 const COLS=8,ROWS=10,STAGES=30;
@@ -60,7 +60,7 @@ const COL=[{c:"#ff5d5d",d:"#c93a3a"},{c:"#4da3ff",d:"#2a78cf"},{c:"#5fd36f",d:"#
 const BOMB=[[1,0],[2,0],[-1,0],[-2,0],[0,1],[0,2],[0,-1],[0,-2],[1,1],[1,-1],[-1,1],[-1,-1]];
 const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const cv=$("c"),ctx=cv.getContext("2d");
-let grid,bar,moves,stageNo,busy=true,sel=null,parts=[],inGame=false,maxStage=1,cleared=0;
+let grid,bar,moves,stageNo,busy=true,sel=null,parts=[],fx=[],inGame=false,maxStage=1,cleared=0;
 try{maxStage=Math.min(+localStorage.getItem("pkpk")||1,STAGES)}catch(e){}
 function save(){try{localStorage.setItem("pkpk",maxStage)}catch(e){}}
 const mk=(t,k,y,x)=>({t,k,x,y});
@@ -124,16 +124,17 @@ function refill(){
   }
 }
 async function clearSet(cells,sp=new Map()){
-  const done=new Set(cells),q=[...cells];
+  const done=new Set(cells),q=[...cells];let W=150,sA=0,sB=0,nBar=0,nHit=0;
   while(q.length){const k=q.pop(),r=Math.floor(k/COLS),c=k%COLS,p=grid[r][c];
-    if(p&&(p.k==="h"||p.k==="v")&&!sp.has(k)){const n=p.k==="h"?COLS:ROWS;for(let i=0;i<n;i++){const nk=p.k==="h"?r*COLS+i:i*COLS+c;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
-    if(p&&p.k==="b"&&!sp.has(k))for(const[dr,dc]of BOMB){const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;
+    if(p&&(p.k==="h"||p.k==="v")&&!sp.has(k)){fx.push({t:"arrow",r,c,d:p.k,l:0});W=Math.max(W,500);sA=1;const n=p.k==="h"?COLS:ROWS;for(let i=0;i<n;i++){const nk=p.k==="h"?r*COLS+i:i*COLS+c;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
+    if(p&&p.k==="b"&&!sp.has(k)&&(fx.push({t:"boom",r,c,l:0}),W=Math.max(W,420),sB=1,true))for(const[dr,dc]of BOMB){const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;fx.push({t:"flash",r:nr,c:nc,l:0});
       const nk=nr*COLS+nc;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
+  if(sB)sfx("bomb");if(sA)sfx("arrow");if(sA||sB)await sleep(W);
   done.forEach(k=>{const r=Math.floor(k/COLS),c=k%COLS,old=grid[r][c];if(!old)return;
-    bar[r][c]=false;
+    if(bar[r][c]>0){bar[r][c]--;bar[r][c]?nHit++:nBar++}
     if(sp.has(k)){grid[r][c]=mk(sp.get(k)==="r"?0:old.t,sp.get(k),old.y,old.x)}
     else{grid[r][c]=null;burst(c,r,COL[old.t].c)}});
-  hud();await sleep(150);
+  hud();sfx("pop");if(nBar||nHit)setTimeout(()=>sfx("barrier"),90);await sleep(150);
   refill();await settle();
 }
 async function resolve(pref){
@@ -144,12 +145,8 @@ async function trySwap(r1,c1,r2,c2){
   if(busy)return;busy=true;sel=null;
   const a=grid[r1][c1],b=grid[r2][c2],k1=r1*COLS+c1,k2=r2*COLS+c2;
   doSwap(r1,c1,r2,c2);await settle();
-  if(a.k==="r"||b.k==="r"){
-    const set=new Set([k1,k2]),other=a.k==="r"?b:a;
-    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];
-      if(a.k==="r"&&b.k==="r"||(p.k!=="r"&&p.t===other.t))set.add(r*COLS+c)}
-    moves--;msg(a.k==="r"&&b.k==="r"?"全消し！":"レインボー！");
-    await clearSet(set);await resolve([]);
+  if(isCombo(a,b)){
+    moves--;await combo(a,b,k1,k2);await resolve([]);
   }else{
     const m=findMatches([k1,k2],r1===r2?"h":"v");
     if(!m.cells.size){doSwap(r1,c1,r2,c2);await settle();msg("そろわないよ");busy=false;return}
@@ -158,7 +155,7 @@ async function trySwap(r1,c1,r2,c2){
   }
   hud();checkEnd();
 }
-function barCount(){return bar.flat().filter(Boolean).length}
+function barCount(){return bar.flat().reduce((x,y)=>x+y,0)}
 async function checkEnd(){
   if(barCount()===0){
     if(stageNo===maxStage&&maxStage<STAGES){maxStage++;save()}
@@ -180,10 +177,12 @@ function startStage(n){
   grid=[];for(let r=0;r<ROWS;r++){grid.push([]);for(let c=0;c<COLS;c++){let t;
     do{t=rnd(5)}while((c>=2&&grid[r][c-1].t===t&&grid[r][c-2].t===t)||(r>=2&&grid[r-1][c].t===t&&grid[r-2][c].t===t));
     grid[r][c]=mk(t,"n",r-ROWS-1-rnd(3),c)}}
-  bar=Array.from({length:ROWS},()=>Array(COLS).fill(false));
-  const nb=Math.min(8+n*2+rnd(4),70);
-  for(let i=0;i<nb;){const r=rnd(ROWS),c=rnd(COLS);if(!bar[r][c]){bar[r][c]=true;i++}}
-  moves=Math.max(4,Math.round(nb*Math.max(.2,.8-n*.03))+3);
+  bar=Array.from({length:ROWS},()=>Array(COLS).fill(0));fx=[];
+  const R=rng(n*7919+13),nb=Math.min(8+n*2+Math.floor(R()*4),70),cl=[];
+  for(let i=0;i<nb;){const r=Math.floor(R()*ROWS),c=Math.floor(R()*COLS);if(!bar[r][c]){bar[r][c]=1;cl.push([r,c]);i++}}
+  const nd=n<4?0:Math.min(Math.floor((n-3)*.6+R()*2),nb);
+  for(let i=0;i<nd;){const[r,c]=cl[Math.floor(R()*cl.length)];if(bar[r][c]===1){bar[r][c]=2;i++}}
+  moves=Math.max(4,Math.round((nb+nd*.6)*Math.max(.2,.8-n*.03))+3);
   if(!hasMove())shuffleBoard();
   hud();msg("となりのブロックと入れ替えよう");busy=true;
   settle().then(()=>{busy=false});
@@ -226,10 +225,11 @@ function piece(p){
 function draw(){
   const s=size;ctx.clearRect(0,0,cv.width,cv.height);
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(bar[r][c]){
-    ctx.fillStyle="rgba(90,200,230,.35)";rr(c*s+2,r*s+2,s-4,s-4,s*.22);
+    ctx.fillStyle=bar[r][c]>1?"rgba(40,100,220,.55)":"rgba(90,200,230,.35)";rr(c*s+2,r*s+2,s-4,s-4,s*.22);if(bar[r][c]>1){ctx.strokeStyle="rgba(20,70,180,.95)";ctx.lineWidth=s*.04;ctx.beginPath();ctx.roundRect(c*s+7,r*s+7,s-14,s-14,s*.14);ctx.stroke()}
     ctx.strokeStyle="rgba(50,160,210,.9)";ctx.lineWidth=s*.04;ctx.beginPath();ctx.roundRect(c*s+3,r*s+3,s-6,s-6,s*.2);ctx.stroke()}
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(!p)continue;p.x=mv(p.x,c);p.y=mv(p.y,r);piece(p)}
   if(sel){ctx.strokeStyle="#ff8a3d";ctx.lineWidth=s*.07;ctx.beginPath();ctx.roundRect(sel.c*s+3,sel.r*s+3,s-6,s-6,s*.3);ctx.stroke()}
+  drawFx();
   parts=parts.filter(p=>p.l>0);
   for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.6;p.l-=.045;ctx.globalAlpha=Math.max(p.l,0);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,s*.08,0,7);ctx.fill()}
   ctx.globalAlpha=1;
@@ -240,7 +240,7 @@ window.addEventListener("resize",()=>{if(inGame)resize()});
 /* ---------- input ---------- */
 let down=null;
 function cellOf(e){const r=cv.getBoundingClientRect();return{r:Math.min(ROWS-1,Math.max(0,Math.floor((e.clientY-r.top)/r.height*ROWS))),c:Math.min(COLS-1,Math.max(0,Math.floor((e.clientX-r.left)/r.width*COLS)))}}
-cv.addEventListener("pointerdown",e=>{if(busy)return;down={...cellOf(e),x:e.clientX,y:e.clientY,done:false};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener("pointerdown",e=>{ac();if(busy)return;down={...cellOf(e),x:e.clientX,y:e.clientY,done:false};cv.setPointerCapture(e.pointerId)});
 cv.addEventListener("pointermove",e=>{
   if(!down||down.done||busy)return;
   const dx=e.clientX-down.x,dy=e.clientY-down.y,th=cv.getBoundingClientRect().width/COLS*.35;
@@ -255,6 +255,87 @@ cv.addEventListener("pointerup",()=>{
   else if(sel&&sel.r===d.r&&sel.c===d.c)sel=null;
   else sel={r:d.r,c:d.c};
 });
+/* ---------- combos / fx / sound ---------- */
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const isArrow=p=>p.k==="h"||p.k==="v";
+const isCombo=(a,b)=>a.k==="r"||b.k==="r"||(isArrow(a)&&(isArrow(b)||b.k==="b"))||(isArrow(b)&&a.k==="b");
+const at=k=>grid[Math.floor(k/COLS)][k%COLS];
+function allOf(t){const s=new Set();for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(p&&p.k!=="r"&&p.t===t)s.add(r*COLS+c)}return s}
+function zap(rk,keys){fx.push({t:"zap",from:[Math.floor(rk/COLS),rk%COLS],to:[...keys].map(k=>[Math.floor(k/COLS),k%COLS]),l:0})}
+async function combo(a,b,k1,k2){
+  const r2=Math.floor(k2/COLS),c2=k2%COLS,set=new Set([k1,k2]);
+  if(a.k==="r"||b.k==="r"){
+    const rk=a.k==="r"?k2:k1,o=a.k==="r"?b:a;
+    if(o.k==="r"){for(let k=0;k<ROWS*COLS;k++)set.add(k);msg("全消し！")}
+    else if(isArrow(o)){allOf(o.t).forEach(k=>{set.add(k);at(k).k=Math.random()<.5?"h":"v"});msg("全部矢印爆弾に！")}
+    else if(o.k==="b"){
+      const ts=[...new Set(grid.flat().filter(p=>p.k!=="r"&&p.t!==o.t).map(p=>p.t))],t2=ts.length?ts[rnd(ts.length)]:o.t;
+      allOf(o.t).forEach(k=>set.add(k));allOf(t2).forEach(k=>set.add(k));
+      set.forEach(k=>{if(at(k).k==="b")at(k).k="n"});msg("2色まとめて消去！")}
+    else{allOf(o.t).forEach(k=>set.add(k));msg("レインボー！")}
+    zap(rk,set);sfx("rainbow");await sleep(650);
+  }else if(isArrow(a)&&isArrow(b)){
+    a.k=b.k="n";for(let i=0;i<COLS;i++)set.add(r2*COLS+i);for(let i=0;i<ROWS;i++)set.add(i*COLS+c2);
+    fx.push({t:"arrow",r:r2,c:c2,d:"h",l:0},{t:"arrow",r:r2,c:c2,d:"v",l:0});msg("十字矢印！");sfx("arrow");await sleep(480);
+  }else{
+    a.k=b.k="n";
+    for(let d=-1;d<=1;d++){const ry=r2+d,cx=c2+d;
+      if(ry>=0&&ry<ROWS){for(let i=0;i<COLS;i++)set.add(ry*COLS+i);fx.push({t:"arrow",r:ry,c:c2,d:"h",l:0})}
+      if(cx>=0&&cx<COLS){for(let i=0;i<ROWS;i++)set.add(i*COLS+cx);fx.push({t:"arrow",r:r2,c:cx,d:"v",l:0})}}
+    msg("太い十字矢印！");sfx("arrow");sfx("bomb");await sleep(480);
+  }
+  await clearSet(set);
+}
+const LIFE={flash:20,boom:26,arrow:40,zap:42};
+function drawFx(){
+  const s=size;fx=fx.filter(f=>f.l<LIFE[f.t]);
+  for(const f of fx){f.l++;
+    if(f.t==="flash"){ctx.fillStyle="rgba(255,150,40,"+.75*(1-f.l/20)+")";rr(f.c*s+2,f.r*s+2,s-4,s-4,s*.22)}
+    else if(f.t==="boom"){
+      const cx=(f.c+.5)*s,cy=(f.r+.5)*s,k=f.l/26,rad=s*(.4+2.2*k),g=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+      g.addColorStop(0,"rgba(255,255,220,"+(1-k)+")");g.addColorStop(.5,"rgba(255,160,40,"+.8*(1-k)+")");g.addColorStop(1,"rgba(255,60,0,0)");
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,rad,0,7);ctx.fill();
+      ctx.strokeStyle="rgba(255,255,255,"+(1-k)+")";ctx.lineWidth=s*.08;ctx.beginPath();ctx.arc(cx,cy,rad*.8,0,7);ctx.stroke()}
+    else if(f.t==="arrow"){
+      const reach=f.l*.45;ctx.save();ctx.translate((f.c+.5)*s,(f.r+.5)*s);if(f.d==="v")ctx.rotate(Math.PI/2);
+      ctx.fillStyle="rgba(255,230,90,"+.4*(1-f.l/40)+")";ctx.fillRect(-reach*s,-s*.45,2*reach*s,s*.9);
+      for(const g of[-1,1]){const x=g*reach*s;
+        ctx.strokeStyle="#fff";ctx.lineWidth=s*.12;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(x,0);ctx.stroke();
+        ctx.fillStyle="#ff8a3d";ctx.beginPath();ctx.moveTo(x+g*s*.32,0);ctx.lineTo(x-g*s*.05,-s*.24);ctx.lineTo(x-g*s*.05,s*.24);ctx.closePath();ctx.fill()}
+      ctx.restore()}
+    else if(f.t==="zap"){
+      const x0=(f.from[1]+.5)*s,y0=(f.from[0]+.5)*s;
+      ctx.save();ctx.lineCap="round";ctx.lineJoin="round";ctx.shadowColor="#bdf";ctx.shadowBlur=s*.3;
+      f.to.forEach(([tr,tc],i)=>{
+        const x1=(tc+.5)*s,y1=(tr+.5)*s;ctx.beginPath();ctx.moveTo(x0,y0);
+        for(let j=1;j<7;j++){const u=j/7;ctx.lineTo(x0+(x1-x0)*u+(Math.random()-.5)*s*.5,y0+(y1-y0)*u+(Math.random()-.5)*s*.5)}
+        ctx.lineTo(x1,y1);ctx.strokeStyle="hsl("+((i*47+f.l*25)%360)+",100%,65%)";ctx.lineWidth=s*.13;ctx.stroke();
+        ctx.strokeStyle="#fff";ctx.lineWidth=s*.04;ctx.stroke();
+        ctx.fillStyle="rgba(255,255,255,"+.55*Math.random()+")";rr(tc*s+2,tr*s+2,s-4,s-4,s*.22)});
+      ctx.restore()}
+  }
+}
+let AC=null,mute=false;
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==="suspended")AC.resume();return AC}
+function tone(f0,f1,d,type,v,delay=0){
+  if(!AC||mute)return;const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d)}
+function noise(d,v,f0,f1){
+  if(!AC||mute)return;const t=AC.currentTime,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),x=b.getChannelData(0);
+  for(let i=0;i<n;i++)x[i]=Math.random()*2-1;
+  const s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;fl.type="lowpass";
+  fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(fl).connect(g).connect(AC.destination);s.start(t)}
+function sfx(n){
+  if(!AC||mute)return;
+  if(n==="pop")tone(520,900,.12,"sine",.25);
+  else if(n==="arrow"){noise(.35,.25,3500,400);tone(1400,300,.3,"sawtooth",.07)}
+  else if(n==="bomb"){noise(.55,.55,900,60);tone(160,35,.5,"sine",.5)}
+  else if(n==="rainbow"){for(let i=0;i<9;i++)tone(500+i*150,700+i*150,.12,"square",.08,i*.06);noise(.7,.2,6000,1500)}
+  else if(n==="barrier"){tone(1500,1500,.25,"sine",.18);tone(2100,2100,.3,"sine",.14,.05);noise(.1,.12,6000,6000)}
+}
+$("snd").onclick=()=>{mute=!mute;$("snd").textContent=mute?"🔇":"🔊";ac()};
 renderHome();
 </script>
 </body>
