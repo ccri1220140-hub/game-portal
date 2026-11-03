@@ -227,11 +227,6 @@ button:disabled{
   cursor:pointer;
 }
 
-.login-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:8px}
-.login-day{border:2px solid rgba(255,255,255,.18);border-radius:10px;padding:5px 1px;text-align:center;font-size:9px;line-height:1.25;background:rgba(0,0,0,.2);color:#d7ccff}
-.login-day b{display:block;font-size:11px;color:#fff}
-.login-day.done{opacity:.45}.login-day.done::after{content:"✓";display:block;font-size:12px;color:#7dff8a}
-.login-day.next{border-color:#ffd43b;box-shadow:0 0 10px #ffd43b88;color:#fff}
 .free-coin:disabled{opacity:.55}
 .free-coin:active{
   transform:scale(.97);
@@ -724,21 +719,12 @@ a.button.merge-start{
     </div>
 
     <div class="wallet-row">
-      <div id="loginDays" class="login-days"></div>
       <button class="free-coin" id="freeCoinButton" type="button">🎁 ログインボーナス</button>
-
-      <button class="free-coin" id="testLoginButton" type="button" style="margin-top:8px">
-        🎁 テスト用：ログボを今日もう一度受け取る
-      </button>
-
-      <button class="free-coin" id="testSecretButton" type="button" style="margin-top:8px">
-        🕶 テスト用：シークレットチケット +1
-      </button>
 
       <p class="wallet-note">
         コイン：ゲームプレイに使用<br>
         PT：ガチャに使用（1回50PT）／使用コインの10分の1を獲得<br>
-        RC：ゲーム報酬カードに保存される限定通貨<br>🎫チケット：チケガチャの報酬（ブレイク／倍倍）
+        RC：ゲーム報酬カードに保存される限定通貨
       </p>
     </div>
 
@@ -1456,19 +1442,10 @@ let selectMode = false;
   $("monbatoPrice").addEventListener("change", updateWalletDisplay);
   $("rushPrice").addEventListener("change", updateWalletDisplay);
 
-  $("testSecretButton").addEventListener("click", () => {
-    const tk = readJSON(KEYS.tickets, {bt:0, dt:0}) || {};
-    tk.st = Math.max(0, Math.floor(Number(tk.st) || 0)) + 1;
-    saveJSON(KEYS.tickets, tk);
-    updateWalletDisplay();
-    showToast("シークレットチケットを1枚追加しました（テスト用）");
-  });
-
   /* ログインボーナス（日付が変わったら受け取れる／受け取った日だけ日数が進む） */
   const LOGIN_KEY = "ridokaji_login_v1";
   const LOGIN_REWARDS = [{c:1000},{c:1000},{c:1000},{c:1000},{c:1000},{bt:1},{c:1000,bt:1}];
-  const LOGIN_LABELS = ["1000<br>コイン","1000<br>コイン","1000<br>コイン","1000<br>コイン","1000<br>コイン","🎫<br>チケット","1000+🎫"];
-  function todayStr() {
+    function todayStr() {
     const d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
@@ -1477,19 +1454,13 @@ let selectMode = false;
     return { day: Math.min(7, Math.max(0, Math.floor(Number(l.day) || 0))), last: String(l.last || "") };
   }
   function renderLogin() {
-    const box = $("loginDays");
-    if (!box) return;
-    const l = getLogin(), done = l.last === todayStr();
-    const next = done ? 0 : (l.day % 7) + 1;
-    const got = done ? l.day : (l.day >= 7 ? 0 : l.day);
-    box.innerHTML = LOGIN_LABELS.map((t, i) =>
-      `<div class="login-day ${i + 1 <= got ? "done" : ""} ${i + 1 === next ? "next" : ""}"><b>${i + 1}日目</b>${t}</div>`
-    ).join("");
     const btn = $("freeCoinButton");
+    if (!btn) return;
+    const l = getLogin(), done = l.last === todayStr();
+    const next = (l.day % 7) + 1;
+    const short = ["+1000コイン","+1000コイン","+1000コイン","+1000コイン","+1000コイン","🎫+1","+1000コイン 🎫+1"][next - 1];
     btn.disabled = done;
-    btn.innerHTML = done
-      ? "✅ 今日は受け取り済み（0時を過ぎたらまた来てね）"
-      : `🎁 ログインボーナス ${next}日目を受け取る`;
+    btn.textContent = done ? "✅ ログボ受け取り済み" : `🎁 ログボ${next}日目 ${short}`;
   }
   $("freeCoinButton").addEventListener("click", () => {
     const l = getLogin();
@@ -1507,12 +1478,6 @@ let selectMode = false;
     updateWalletDisplay();
     const got = [r.c ? `${r.c}コイン` : "", r.bt ? "ブレイクチケット1枚" : ""].filter(Boolean).join(" + ");
     showToast(`ログインボーナス${day}日目：${got}をゲット！`);
-  });
-  $("testLoginButton").addEventListener("click", () => {
-    const l = getLogin();
-    saveJSON(LOGIN_KEY, { day: l.day, last: "" });
-    updateWalletDisplay();
-    showToast("ログボを受け取り直せるようにしました（テスト用）");
   });
   setInterval(renderLogin, 30000);
   document.addEventListener("visibilitychange", renderLogin);
