@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ぽこぽこパズル</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+<style>
+:root{--bg:#fff4d6;--ink:#4a3320;--card:#ffffff;--accent:#ff8a3d;--shadow:#e6c98a;--lock:#d9cfb8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2b2233;--ink:#fff1dc;--card:#3a2f45;--accent:#ff9a55;--shadow:#1c1523;--lock:#4d4258}}
+:root[data-theme="dark"]{--bg:#2b2233;--ink:#fff1dc;--card:#3a2f45;--accent:#ff9a55;--shadow:#1c1523;--lock:#4d4258}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.screen{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+h1{margin:0;font-size:34px;font-weight:800;color:var(--accent);letter-spacing:.05em}
+p{margin:0;font-size:13px}
+#stages{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:min(92vw,400px);max-height:62vh;overflow-y:auto;padding:4px}
+.st{aspect-ratio:1;font-size:20px;font-weight:800;background:var(--card);color:var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--shadow);padding:0;position:relative}
+.st.now{background:var(--accent);color:#fff}
+.st.lock{background:var(--lock);box-shadow:none;opacity:.7;cursor:not-allowed;font-size:16px}
+.st small{position:absolute;bottom:2px;left:0;right:0;font-size:10px}
+.hud{display:flex;gap:8px;width:min(94vw,420px)}
+.hud div{flex:1;background:var(--card);border-radius:14px;padding:6px 8px;box-shadow:0 3px 0 var(--shadow);text-align:center;font-size:11px}
+.hud b{display:block;font-size:20px}
+#wrap{position:relative;width:min(94vw,calc((100dvh - 190px)*0.8),420px);aspect-ratio:8/10;background:var(--card);border-radius:20px;padding:5px;box-shadow:0 5px 0 var(--shadow)}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+button{font:inherit;font-weight:800;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:10px 20px;box-shadow:0 3px 0 rgba(0,0,0,.2);cursor:pointer}
+button.sub{background:var(--card);color:var(--ink);box-shadow:0 3px 0 var(--shadow)}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.msg{min-height:18px;font-size:13px;font-weight:800}
+#ov{position:absolute;inset:0;border-radius:20px;background:rgba(40,25,10,.72);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center}
+#ov h2{margin:0;font-size:28px}
+</style>
+</head>
+<body>
+<div class="screen" id="home">
+  <h1>ぽこぽこ</h1>
+  <p>ステージをえらんでね</p>
+  <div id="stages"></div>
+</div>
+<div class="screen" id="game" hidden>
+  <div class="hud">
+    <div>ステージ<b id="hs">1</b></div>
+    <div>のこり手数<b id="hm">0</b></div>
+    <div>バリア<b id="hb">0</b></div>
+  </div>
+  <div id="wrap">
+    <canvas id="c"></canvas>
+    <div id="ov" hidden><h2 id="ot"></h2><p id="os"></p><button id="o1"></button><button id="o2" class="sub"></button></div>
+  </div>
+  <div class="msg" id="msg"></div>
+  <button class="sub" id="home-btn">ホーム</button>
+</div>
+<script>
+const COLS=8,ROWS=10,STAGES=30;
+const COL=[{c:"#ff5d5d",d:"#c93a3a"},{c:"#4da3ff",d:"#2a78cf"},{c:"#5fd36f",d:"#37a948"},{c:"#ffd93b",d:"#d1a800"},{c:"#f7f7fb",d:"#b9bccb"}];
+const BOMB=[[1,0],[2,0],[-1,0],[-2,0],[0,1],[0,2],[0,-1],[0,-2],[1,1],[1,-1],[-1,1],[-1,-1]];
+const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const cv=$("c"),ctx=cv.getContext("2d");
+let grid,bar,moves,stageNo,busy=true,sel=null,parts=[],inGame=false,maxStage=1,cleared=0;
+try{maxStage=Math.min(+localStorage.getItem("pkpk")||1,STAGES)}catch(e){}
+function save(){try{localStorage.setItem("pkpk",maxStage)}catch(e){}}
+const mk=(t,k,y,x)=>({t,k,x,y});
+const inb=(r,c)=>r>=0&&c>=0&&r<ROWS&&c<COLS;
+
+/* ---------- home ---------- */
+function renderHome(){
+  inGame=false;$("game").hidden=true;$("home").hidden=false;
+  const box=$("stages");box.innerHTML="";
+  for(let i=1;i<=STAGES;i++){
+    const b=document.createElement("button");b.className="st";
+    if(i>maxStage){b.classList.add("lock");b.textContent="🔒";b.disabled=true}
+    else{b.textContent=i;if(i===maxStage)b.classList.add("now");else{const s=document.createElement("small");s.textContent="★";b.append(s)}
+      b.onclick=()=>startStage(i)}
+    box.append(b);
+  }
+}
+$("home-btn").onclick=renderHome;
+
+/* ---------- logic ---------- */
+function findMatches(pref,dir){
+  const H=[],V=[];
+  for(let r=0;r<ROWS;r++){let c=0;while(c<COLS){const p=grid[r][c];if(!p||p.k==="r"){c++;continue}
+    let e=c;while(e+1<COLS&&grid[r][e+1].k!=="r"&&grid[r][e+1].t===p.t)e++;
+    if(e-c>=2)H.push({r,a:c,b:e});c=e+1}}
+  for(let c=0;c<COLS;c++){let r=0;while(r<ROWS){const p=grid[r][c];if(!p||p.k==="r"){r++;continue}
+    let e=r;while(e+1<ROWS&&grid[e+1][c].k!=="r"&&grid[e+1][c].t===p.t)e++;
+    if(e-r>=2)V.push({c,a:r,b:e});r=e+1}}
+  const cells=new Set(),sp=new Map();
+  H.forEach(h=>{for(let x=h.a;x<=h.b;x++)cells.add(h.r*COLS+x);
+    if(h.b-h.a>=4){const ks=[];for(let x=h.a;x<=h.b;x++)ks.push(h.r*COLS+x);sp.set(ks.find(k=>pref.includes(k))??ks[2],"r")}});
+  V.forEach(v=>{for(let y=v.a;y<=v.b;y++)cells.add(y*COLS+v.c);
+    if(v.b-v.a>=4){const ks=[];for(let y=v.a;y<=v.b;y++)ks.push(y*COLS+v.c);sp.set(ks.find(k=>pref.includes(k))??ks[2],"r")}});
+  H.forEach(h=>V.forEach(v=>{if(v.c>=h.a&&v.c<=h.b&&h.r>=v.a&&h.r<=v.b){const k=h.r*COLS+v.c;if(!sp.has(k))sp.set(k,"b")}}));
+  H.forEach(h=>{if(h.b-h.a===3){const ks=[0,1,2,3].map(i=>h.r*COLS+h.a+i);if(!ks.some(k=>sp.has(k)))sp.set(ks.find(k=>pref.includes(k))??ks[1],dir||"h")}});
+  V.forEach(v=>{if(v.b-v.a===3){const ks=[0,1,2,3].map(i=>(v.a+i)*COLS+v.c);if(!ks.some(k=>sp.has(k)))sp.set(ks.find(k=>pref.includes(k))??ks[1],dir||"v")}});
+  return{cells,sp};
+}
+function hasMove(){
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c].k==="r")return true;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)for(const[dr,dc]of[[0,1],[1,0]]){
+    const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;
+    [grid[r][c],grid[nr][nc]]=[grid[nr][nc],grid[r][c]];
+    const ok=findMatches([]).cells.size>0;
+    [grid[r][c],grid[nr][nc]]=[grid[nr][nc],grid[r][c]];
+    if(ok)return true;
+  }
+  return false;
+}
+function shuffleBoard(){
+  const ps=grid.flat();let n=0;
+  do{for(let i=ps.length-1;i>0;i--){const j=rnd(i+1);[ps[i],ps[j]]=[ps[j],ps[i]]}
+    let i=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)grid[r][c]=ps[i++];n++}
+  while((findMatches([]).cells.size||!hasMove())&&n<300);
+}
+function refill(){
+  for(let c=0;c<COLS;c++){
+    const col=[];for(let r=ROWS-1;r>=0;r--)if(grid[r][c])col.push(grid[r][c]);
+    const have=col.length;for(let i=0;i<ROWS-have;i++)col.push(mk(rnd(5),"n",-1-i,c));
+    for(let r=ROWS-1,i=0;r>=0;r--,i++)grid[r][c]=col[i];
+  }
+}
+async function clearSet(cells,sp=new Map()){
+  const done=new Set(cells),q=[...cells];
+  while(q.length){const k=q.pop(),r=Math.floor(k/COLS),c=k%COLS,p=grid[r][c];
+    if(p&&(p.k==="h"||p.k==="v")&&!sp.has(k)){const n=p.k==="h"?COLS:ROWS;for(let i=0;i<n;i++){const nk=p.k==="h"?r*COLS+i:i*COLS+c;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
+    if(p&&p.k==="b"&&!sp.has(k))for(const[dr,dc]of BOMB){const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;
+      const nk=nr*COLS+nc;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
+  done.forEach(k=>{const r=Math.floor(k/COLS),c=k%COLS,old=grid[r][c];if(!old)return;
+    bar[r][c]=false;
+    if(sp.has(k)){grid[r][c]=mk(sp.get(k)==="r"?0:old.t,sp.get(k),old.y,old.x)}
+    else{grid[r][c]=null;burst(c,r,COL[old.t].c)}});
+  hud();await sleep(150);
+  refill();await settle();
+}
+async function resolve(pref){
+  while(true){const m=findMatches(pref);pref=[];if(!m.cells.size)break;await clearSet(m.cells,m.sp)}
+}
+function doSwap(r1,c1,r2,c2){[grid[r1][c1],grid[r2][c2]]=[grid[r2][c2],grid[r1][c1]]}
+async function trySwap(r1,c1,r2,c2){
+  if(busy)return;busy=true;sel=null;
+  const a=grid[r1][c1],b=grid[r2][c2],k1=r1*COLS+c1,k2=r2*COLS+c2;
+  doSwap(r1,c1,r2,c2);await settle();
+  if(a.k==="r"||b.k==="r"){
+    const set=new Set([k1,k2]),other=a.k==="r"?b:a;
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];
+      if(a.k==="r"&&b.k==="r"||(p.k!=="r"&&p.t===other.t))set.add(r*COLS+c)}
+    moves--;msg(a.k==="r"&&b.k==="r"?"全消し！":"レインボー！");
+    await clearSet(set);await resolve([]);
+  }else{
+    const m=findMatches([k1,k2],r1===r2?"h":"v");
+    if(!m.cells.size){doSwap(r1,c1,r2,c2);await settle();msg("そろわないよ");busy=false;return}
+    moves--;msg("");
+    await clearSet(new Set(m.cells),m.sp);await resolve([]);
+  }
+  hud();checkEnd();
+}
+function barCount(){return bar.flat().filter(Boolean).length}
+async function checkEnd(){
+  if(barCount()===0){
+    if(stageNo===maxStage&&maxStage<STAGES){maxStage++;save()}
+    overlay("クリア！","バリアを全部消したよ",stageNo<STAGES?["つぎのステージ",()=>startStage(stageNo+1)]:null,["ホームへ",renderHome]);return}
+  if(moves<=0){overlay("ざんねん…","手数がなくなっちゃった",["もういちど",()=>startStage(stageNo)],["ホームへ",renderHome]);return}
+  if(!hasMove()){msg("シャッフル！");shuffleBoard();await settle()}
+  busy=false;
+}
+function overlay(t,s,b1,b2){
+  $("ot").textContent=t;$("os").textContent=s;
+  [["o1",b1],["o2",b2]].forEach(([id,b])=>{const e=$(id);e.hidden=!b;if(b){e.textContent=b[0];e.onclick=()=>{$("ov").hidden=true;b[1]()}}});
+  $("ov").hidden=false;
+}
+
+/* ---------- stage ---------- */
+function startStage(n){
+  stageNo=n;$("home").hidden=true;$("game").hidden=false;$("ov").hidden=true;inGame=true;sel=null;parts=[];
+  resize();
+  grid=[];for(let r=0;r<ROWS;r++){grid.push([]);for(let c=0;c<COLS;c++){let t;
+    do{t=rnd(5)}while((c>=2&&grid[r][c-1].t===t&&grid[r][c-2].t===t)||(r>=2&&grid[r-1][c].t===t&&grid[r-2][c].t===t));
+    grid[r][c]=mk(t,"n",r-ROWS-1-rnd(3),c)}}
+  bar=Array.from({length:ROWS},()=>Array(COLS).fill(false));
+  const nb=Math.min(8+n*2+rnd(4),70);
+  for(let i=0;i<nb;){const r=rnd(ROWS),c=rnd(COLS);if(!bar[r][c]){bar[r][c]=true;i++}}
+  moves=Math.max(4,Math.round(nb*Math.max(.2,.8-n*.03))+3);
+  if(!hasMove())shuffleBoard();
+  hud();msg("となりのブロックと入れ替えよう");busy=true;
+  settle().then(()=>{busy=false});
+}
+function hud(){$("hs").textContent=stageNo;$("hm").textContent=Math.max(moves,0);$("hb").textContent=barCount()}
+function msg(t){$("msg").textContent=t}
+
+/* ---------- render ---------- */
+let size=1;
+function resize(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);size=cv.width/COLS}
+function burst(c,r,col){for(let i=0;i<5;i++)parts.push({x:(c+.5)*size,y:(r+.5)*size,vx:(Math.random()-.5)*9,vy:-Math.random()*8-1,l:1,c:col})}
+function isSettled(){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(p&&(Math.abs(p.x-c)>.001||Math.abs(p.y-r)>.001))return false}return true}
+function settle(){return new Promise(res=>{const f=()=>{isSettled()?res():requestAnimationFrame(f)};f()})}
+const mv=(v,t)=>{const d=t-v;return Math.abs(d)<.02?t:v+Math.sign(d)*Math.min(Math.abs(d),Math.max(Math.abs(d)*.3,.2))};
+function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function piece(p){
+  const s=size,pad=s*.07,w=s-pad*2,x=p.x*s+pad,y=p.y*s+pad,cx=x+w/2,cy=y+w/2;
+  if(p.k==="r"){
+    const g=ctx.createLinearGradient(x,y,x+w,y+w);["#ff5d5d","#ffd93b","#5fd36f","#4da3ff","#b197fc"].forEach((c,i)=>g.addColorStop(i/4,c));
+    ctx.fillStyle="rgba(0,0,0,.18)";rr(x,y+s*.06,w,w,s*.3);ctx.fillStyle=g;rr(x,y,w,w,s*.3);
+    ctx.fillStyle="#fff";ctx.font="800 "+s*.55+"px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("★",cx,cy+s*.03);return}
+  const col=COL[p.t];
+  ctx.fillStyle=col.d;rr(x,y+s*.06,w,w,s*.3);ctx.fillStyle=col.c;rr(x,y,w,w,s*.3);
+  if(p.k==="h"||p.k==="v"){
+    ctx.save();ctx.translate(cx,cy);if(p.k==="v")ctx.rotate(Math.PI/2);
+    ctx.strokeStyle="#2d2430";ctx.lineWidth=s*.08;ctx.lineCap="round";ctx.lineJoin="round";
+    ctx.beginPath();ctx.moveTo(-s*.27,0);ctx.lineTo(s*.27,0);
+    ctx.moveTo(-s*.27,0);ctx.lineTo(-s*.14,-s*.13);ctx.moveTo(-s*.27,0);ctx.lineTo(-s*.14,s*.13);
+    ctx.moveTo(s*.27,0);ctx.lineTo(s*.14,-s*.13);ctx.moveTo(s*.27,0);ctx.lineTo(s*.14,s*.13);
+    ctx.stroke();ctx.restore();return}
+  if(p.k==="b"){
+    ctx.fillStyle="#2d2430";ctx.beginPath();ctx.arc(cx,cy+s*.05,s*.25,0,7);ctx.fill();
+    ctx.strokeStyle="#2d2430";ctx.lineWidth=s*.05;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(cx+s*.1,cy-s*.15);ctx.quadraticCurveTo(cx+s*.2,cy-s*.3,cx+s*.28,cy-s*.26);ctx.stroke();
+    ctx.fillStyle="#ff9a1f";ctx.beginPath();ctx.arc(cx+s*.29,cy-s*.27,s*.06,0,7);ctx.fill();
+    ctx.fillStyle="rgba(255,255,255,.5)";ctx.beginPath();ctx.arc(cx-s*.09,cy-s*.04,s*.05,0,7);ctx.fill();return}
+  ctx.fillStyle="#4a3320";ctx.beginPath();ctx.arc(cx-s*.17,cy-s*.04,s*.06,0,7);ctx.arc(cx+s*.17,cy-s*.04,s*.06,0,7);ctx.fill();
+  ctx.strokeStyle="#4a3320";ctx.lineWidth=s*.04;ctx.lineCap="round";ctx.beginPath();ctx.arc(cx,cy+s*.04,s*.1,.15*Math.PI,.85*Math.PI);ctx.stroke();
+  ctx.fillStyle="rgba(255,120,120,.5)";ctx.beginPath();ctx.arc(cx-s*.27,cy+s*.08,s*.05,0,7);ctx.arc(cx+s*.27,cy+s*.08,s*.05,0,7);ctx.fill();
+}
+function draw(){
+  const s=size;ctx.clearRect(0,0,cv.width,cv.height);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(bar[r][c]){
+    ctx.fillStyle="rgba(90,200,230,.35)";rr(c*s+2,r*s+2,s-4,s-4,s*.22);
+    ctx.strokeStyle="rgba(50,160,210,.9)";ctx.lineWidth=s*.04;ctx.beginPath();ctx.roundRect(c*s+3,r*s+3,s-6,s-6,s*.2);ctx.stroke()}
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(!p)continue;p.x=mv(p.x,c);p.y=mv(p.y,r);piece(p)}
+  if(sel){ctx.strokeStyle="#ff8a3d";ctx.lineWidth=s*.07;ctx.beginPath();ctx.roundRect(sel.c*s+3,sel.r*s+3,s-6,s-6,s*.3);ctx.stroke()}
+  parts=parts.filter(p=>p.l>0);
+  for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.6;p.l-=.045;ctx.globalAlpha=Math.max(p.l,0);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,s*.08,0,7);ctx.fill()}
+  ctx.globalAlpha=1;
+}
+(function loop(){if(inGame&&grid)draw();requestAnimationFrame(loop)})();
+window.addEventListener("resize",()=>{if(inGame)resize()});
+
+/* ---------- input ---------- */
+let down=null;
+function cellOf(e){const r=cv.getBoundingClientRect();return{r:Math.min(ROWS-1,Math.max(0,Math.floor((e.clientY-r.top)/r.height*ROWS))),c:Math.min(COLS-1,Math.max(0,Math.floor((e.clientX-r.left)/r.width*COLS)))}}
+cv.addEventListener("pointerdown",e=>{if(busy)return;down={...cellOf(e),x:e.clientX,y:e.clientY,done:false};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener("pointermove",e=>{
+  if(!down||down.done||busy)return;
+  const dx=e.clientX-down.x,dy=e.clientY-down.y,th=cv.getBoundingClientRect().width/COLS*.35;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<th)return;
+  down.done=true;let r2=down.r,c2=down.c;
+  if(Math.abs(dx)>Math.abs(dy))c2+=dx>0?1:-1;else r2+=dy>0?1:-1;
+  if(inb(r2,c2))trySwap(down.r,down.c,r2,c2);
+});
+cv.addEventListener("pointerup",()=>{
+  if(!down)return;const d=down;down=null;if(d.done||busy)return;
+  if(sel&&Math.abs(sel.r-d.r)+Math.abs(sel.c-d.c)===1){const s=sel;trySwap(s.r,s.c,d.r,d.c)}
+  else if(sel&&sel.r===d.r&&sel.c===d.c)sel=null;
+  else sel={r:d.r,c:d.c};
+});
+renderHome();
+</script>
+</body>
+</html>
