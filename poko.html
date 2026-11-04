@@ -17,7 +17,11 @@ body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"M P
 .screen{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
 h1{margin:0;font-size:34px;font-weight:800;color:var(--accent);letter-spacing:.05em}
 p{margin:0;font-size:13px}
-#stages{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:min(92vw,400px);max-height:62vh;overflow-y:auto;padding:4px}
+#pages{display:flex;gap:14px;width:min(92vw,400px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.pg{flex:0 0 100%;scroll-snap-align:start}
+.pg h3{margin:0 0 8px;font-size:14px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:4px;max-height:56vh;overflow-y:auto}
+.st.hard{background:#7a2d4f;color:#fff}.st.hard.now{background:#e0344f}
 .st{aspect-ratio:1;font-size:20px;font-weight:800;background:var(--card);color:var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--shadow);padding:0;position:relative}
 .st.now{background:var(--accent);color:#fff}
 .st.lock{background:var(--lock);box-shadow:none;opacity:.7;cursor:not-allowed;font-size:16px}
@@ -39,7 +43,7 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 <div class="screen" id="home">
   <h1>ぽこぽこ</h1>
   <p>ステージをえらんでね</p>
-  <div id="stages"></div>
+  <div id="pages"></div>
 </div>
 <div class="screen" id="game" hidden>
   <div class="hud">
@@ -55,39 +59,53 @@ button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
   <div style="display:flex;gap:10px"><button class="sub" id="home-btn">ホーム</button><button class="sub" id="snd">🔊</button></div>
 </div>
 <script>
-const COLS=8,ROWS=10,STAGES=30;
+const COLS=8,ROWS=10,STAGES=60;
 const COL=[{c:"#ff5d5d",d:"#c93a3a"},{c:"#4da3ff",d:"#2a78cf"},{c:"#5fd36f",d:"#37a948"},{c:"#ffd93b",d:"#d1a800"},{c:"#f7f7fb",d:"#b9bccb"}];
 const BOMB=[[1,0],[2,0],[-1,0],[-2,0],[0,1],[0,2],[0,-1],[0,-2],[1,1],[1,-1],[-1,1],[-1,-1]];
 const $=id=>document.getElementById(id),rnd=n=>Math.floor(Math.random()*n),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const cv=$("c"),ctx=cv.getContext("2d");
 let grid,bar,moves,stageNo,busy=true,sel=null,parts=[],fx=[],inGame=false,maxStage=1,cleared=0;
-try{maxStage=Math.min(+localStorage.getItem("pkpk")||1,STAGES)}catch(e){}
-function save(){try{localStorage.setItem("pkpk",maxStage)}catch(e){}}
+let hole,frame,water,vineAt,vines=[],waterHit=false,waterAny=false,hzMsg="";
+const lock=(r,c)=>vineAt[r][c]>0||water[r][c];
+const mt=(r,c)=>{const p=grid[r][c];return p&&p.k!=="r"&&!water[r][c]&&!(vineAt[r][c]>0)};
+const sep=(r,c)=>hole[r][c]||frame[r][c]||vineAt[r][c]>0||water[r][c];
+let nClear=0,hClear=0;
+try{const a=localStorage.getItem("pk_n"),b=localStorage.getItem("pk_h");
+  if(a!==null||b!==null){nClear=Math.min(30,+a||0);hClear=Math.min(30,+b||0)}
+  else{const o=+localStorage.getItem("pkpk")||1;nClear=Math.min(30,o-1);hClear=o>30?o-31:0}}catch(e){}
+function save(){try{localStorage.setItem("pk_n",nClear);localStorage.setItem("pk_h",hClear)}catch(e){}}
+const canPlay=id=>id<=30?id<=nClear+1:(id-30<=hClear+1&&id-30<=Math.max(1,nClear));
 const mk=(t,k,y,x)=>({t,k,x,y});
 const inb=(r,c)=>r>=0&&c>=0&&r<ROWS&&c<COLS;
 
 /* ---------- home ---------- */
 function renderHome(){
   inGame=false;$("game").hidden=true;$("home").hidden=false;
-  const box=$("stages");box.innerHTML="";
-  for(let i=1;i<=STAGES;i++){
-    const b=document.createElement("button");b.className="st";
-    if(i>maxStage){b.classList.add("lock");b.textContent="🔒";b.disabled=true}
-    else{b.textContent=i;if(i===maxStage)b.classList.add("now");else{const s=document.createElement("small");s.textContent="★";b.append(s)}
-      b.onclick=()=>startStage(i)}
-    box.append(b);
-  }
+  const box=$("pages");box.innerHTML="";
+  [["ノーマル 1〜30　▶ 右へスワイプでハード",0],["🔥 ハード 1〜30",30]].forEach(([t,off])=>{
+    const pg=document.createElement("div");pg.className="pg";const h=document.createElement("h3");h.textContent=t;
+    if(off){const sm=document.createElement("small");sm.style.cssText="display:block;font-weight:500;font-size:11px";sm.textContent="ノーマルの同じ番号をクリアすると解放";h.append(sm)}
+    pg.append(h);
+    const g=document.createElement("div"),cl=off?hClear:nClear;g.className="grid";
+    for(let i=1;i<=30;i++){
+      const id=off+i,b=document.createElement("button");b.className="st"+(off?" hard":"");
+      if(!canPlay(id)){b.classList.add("lock");b.textContent="🔒";b.disabled=true}
+      else{b.textContent=i;if(i>cl)b.classList.add("now");else{const sm=document.createElement("small");sm.textContent="★";b.append(sm)}
+        b.onclick=()=>startStage(id)}
+      g.append(b)}
+    pg.append(g);box.append(pg)});
+  requestAnimationFrame(()=>{box.scrollLeft=stageNo>30?box.scrollWidth:0});
 }
 $("home-btn").onclick=renderHome;
 
 /* ---------- logic ---------- */
 function findMatches(pref,dir){
   const H=[],V=[];
-  for(let r=0;r<ROWS;r++){let c=0;while(c<COLS){const p=grid[r][c];if(!p||p.k==="r"){c++;continue}
-    let e=c;while(e+1<COLS&&grid[r][e+1].k!=="r"&&grid[r][e+1].t===p.t)e++;
+  for(let r=0;r<ROWS;r++){let c=0;while(c<COLS){if(!mt(r,c)){c++;continue}const p=grid[r][c];
+    let e=c;while(e+1<COLS&&mt(r,e+1)&&grid[r][e+1].t===p.t)e++;
     if(e-c>=2)H.push({r,a:c,b:e});c=e+1}}
-  for(let c=0;c<COLS;c++){let r=0;while(r<ROWS){const p=grid[r][c];if(!p||p.k==="r"){r++;continue}
-    let e=r;while(e+1<ROWS&&grid[e+1][c].k!=="r"&&grid[e+1][c].t===p.t)e++;
+  for(let c=0;c<COLS;c++){let r=0;while(r<ROWS){if(!mt(r,c)){r++;continue}const p=grid[r][c];
+    let e=r;while(e+1<ROWS&&mt(e+1,c)&&grid[e+1][c].t===p.t)e++;
     if(e-r>=2)V.push({c,a:r,b:e});r=e+1}}
   const cells=new Set(),sp=new Map();
   H.forEach(h=>{for(let x=h.a;x<=h.b;x++)cells.add(h.r*COLS+x);
@@ -100,9 +118,11 @@ function findMatches(pref,dir){
   return{cells,sp};
 }
 function hasMove(){
-  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c].k==="r")return true;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c]&&grid[r][c].k==="r")return true;
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)for(const[dr,dc]of[[0,1],[1,0]]){
     const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;
+    if(!grid[r][c]||!grid[nr][nc]||lock(r,c)||lock(nr,nc))continue;
+    if(isCombo(grid[r][c],grid[nr][nc]))return true;
     [grid[r][c],grid[nr][nc]]=[grid[nr][nc],grid[r][c]];
     const ok=findMatches([]).cells.size>0;
     [grid[r][c],grid[nr][nc]]=[grid[nr][nc],grid[r][c]];
@@ -111,30 +131,63 @@ function hasMove(){
   return false;
 }
 function shuffleBoard(){
-  const ps=grid.flat();let n=0;
+  const pos=[];for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(grid[r][c])pos.push([r,c]);
+  const ps=pos.map(([r,c])=>grid[r][c]);let n=0;
   do{for(let i=ps.length-1;i>0;i--){const j=rnd(i+1);[ps[i],ps[j]]=[ps[j],ps[i]]}
-    let i=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)grid[r][c]=ps[i++];n++}
+    pos.forEach(([r,c],i)=>{grid[r][c]=ps[i]});n++}
   while((findMatches([]).cells.size||!hasMove())&&n<300);
 }
 function refill(){
   for(let c=0;c<COLS;c++){
-    const col=[];for(let r=ROWS-1;r>=0;r--)if(grid[r][c])col.push(grid[r][c]);
-    const have=col.length;for(let i=0;i<ROWS-have;i++)col.push(mk(rnd(5),"n",-1-i,c));
-    for(let r=ROWS-1,i=0;r>=0;r--,i++)grid[r][c]=col[i];
+    let end=ROWS-1;
+    while(end>=0){
+      if(sep(end,c)){end--;continue}
+      let top=end;while(top-1>=0&&!sep(top-1,c))top--;
+      const col=[];for(let r=end;r>=top;r--)if(grid[r][c])col.push(grid[r][c]);
+      const have=col.length;for(let i=0;i<end-top+1-have;i++)col.push(mk(rnd(5),"n",top-1-i,c));
+      for(let r=end,i=0;r>=top;r--,i++)grid[r][c]=col[i];
+      end=top-1;
+    }
   }
 }
+function hazards(gone){
+  const nb=(r,c)=>[[r+1,c],[r-1,c],[r,c+1],[r,c-1]];let v=0,w=0;
+  vines.forEach(vn=>{if(!vn.alive)return;const[tr,tc]=vn.cells[vn.cells.length-1];
+    if(gone.has(tr*COLS+tc)||nb(tr,tc).some(([r,c])=>inb(r,c)&&gone.has(r*COLS+c))){
+      vn.alive=false;v++;vn.cells.forEach(([r,c])=>{vineAt[r][c]=0;burst(c,r,"#4caf50");burst(c,r,"#9be36a")})}});
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(water[r][c]&&(gone.has(r*COLS+c)||nb(r,c).some(([a,b])=>inb(a,b)&&gone.has(a*COLS+b)))){water[r][c]=false;w++;burst(c,r,"#6ab8ff")}
+  if(v)sfx("vine");if(w){waterHit=true;sfx("water")}
+}
+function growWater(){
+  const cand=[];
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(water[r][c])for(const[a,b]of[[r+1,c],[r-1,c],[r,c+1],[r,c-1]])
+    if(inb(a,b)&&!hole[a][b]&&!water[a][b]&&grid[a][b]&&!cand.some(x=>x[0]===a&&x[1]===b))cand.push([a,b]);
+  if(!cand.length)return;const[a,b]=cand[rnd(cand.length)];water[a][b]=true;burst(b,a,"#6ab8ff");sfx("drip");
+}
 async function clearSet(cells,sp=new Map()){
-  const done=new Set(cells),q=[...cells];let W=150,sA=0,sB=0,nBar=0,nHit=0;
+  const done=new Set(cells),q=[...cells];let W=150,sA=0,sB=0,sR=0,nBar=0,nHit=0;
   while(q.length){const k=q.pop(),r=Math.floor(k/COLS),c=k%COLS,p=grid[r][c];
+    if(vineAt[r][c]>0||water[r][c])continue;
+    if(p&&p.k==="r"&&!sp.has(k)){
+      const cs=[...new Set(grid.flat().filter(x=>x&&x.k!=="r").map(x=>x.t))];
+      if(cs.length){const t=cs[rnd(cs.length)],ks=[];
+        for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const o=grid[y][x];
+          if(o&&o.k!=="r"&&o.t===t){const nk=y*COLS+x;ks.push(nk);if(!done.has(nk)){done.add(nk);q.push(nk)}}}
+        zap(k,ks);sR=1;W=Math.max(W,650)}}
     if(p&&(p.k==="h"||p.k==="v")&&!sp.has(k)){fx.push({t:"arrow",r,c,d:p.k,l:0});W=Math.max(W,500);sA=1;const n=p.k==="h"?COLS:ROWS;for(let i=0;i<n;i++){const nk=p.k==="h"?r*COLS+i:i*COLS+c;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
     if(p&&p.k==="b"&&!sp.has(k)&&(fx.push({t:"boom",r,c,l:0}),W=Math.max(W,420),sB=1,true))for(const[dr,dc]of BOMB){const nr=r+dr,nc=c+dc;if(!inb(nr,nc))continue;fx.push({t:"flash",r:nr,c:nc,l:0});
       const nk=nr*COLS+nc;if(!done.has(nk)){done.add(nk);q.push(nk)}}}
-  if(sB)sfx("bomb");if(sA)sfx("arrow");if(sA||sB)await sleep(W);
+  if(sB)sfx("bomb");if(sA)sfx("arrow");if(sR)sfx("rainbow");if(sA||sB||sR)await sleep(W);
+  const gone=new Set();let nFr=0;
   done.forEach(k=>{const r=Math.floor(k/COLS),c=k%COLS,old=grid[r][c];if(!old)return;
+    if(vineAt[r][c]>0||water[r][c])return;
+    if(frame[r][c]){frame[r][c]=false;nFr++;burst(c,r,"#c98a3a");return}
+    gone.add(k);
     if(bar[r][c]>0){bar[r][c]--;bar[r][c]?nHit++:nBar++}
     if(sp.has(k)){grid[r][c]=mk(sp.get(k)==="r"?0:old.t,sp.get(k),old.y,old.x)}
     else{grid[r][c]=null;burst(c,r,COL[old.t].c)}});
-  hud();sfx("pop");if(nBar||nHit)setTimeout(()=>sfx("barrier"),90);await sleep(150);
+  hazards(gone);
+  hud();sfx("pop");if(nFr)sfx("frame");if(nBar||nHit)setTimeout(()=>sfx("barrier"),90);await sleep(150);
   refill();await settle();
 }
 async function resolve(pref){
@@ -142,7 +195,9 @@ async function resolve(pref){
 }
 function doSwap(r1,c1,r2,c2){[grid[r1][c1],grid[r2][c2]]=[grid[r2][c2],grid[r1][c1]]}
 async function trySwap(r1,c1,r2,c2){
-  if(busy)return;busy=true;sel=null;
+  if(busy)return;sel=null;
+  if(!grid[r1][c1]||!grid[r2][c2]||lock(r1,c1)||lock(r2,c2)){msg("そこは動かせないよ");return}
+  busy=true;waterHit=false;waterAny=water.some(row=>row.some(Boolean));
   const a=grid[r1][c1],b=grid[r2][c2],k1=r1*COLS+c1,k2=r2*COLS+c2;
   doSwap(r1,c1,r2,c2);await settle();
   if(isCombo(a,b)){
@@ -153,13 +208,14 @@ async function trySwap(r1,c1,r2,c2){
     moves--;msg("");
     await clearSet(new Set(m.cells),m.sp);await resolve([]);
   }
+  if(waterAny&&!waterHit)growWater();
   hud();checkEnd();
 }
 function barCount(){return bar.flat().reduce((x,y)=>x+y,0)}
 async function checkEnd(){
   if(barCount()===0){
-    if(stageNo===maxStage&&maxStage<STAGES){maxStage++;save()}
-    overlay("クリア！","バリアを全部消したよ",stageNo<STAGES?["つぎのステージ",()=>startStage(stageNo+1)]:null,["ホームへ",renderHome]);return}
+    if(stageNo<=30)nClear=Math.max(nClear,stageNo);else hClear=Math.max(hClear,stageNo-30);save();
+    overlay("クリア！","バリアを全部消したよ",(stageNo!==30&&stageNo<60&&canPlay(stageNo+1))?["つぎのステージ",()=>startStage(stageNo+1)]:null,["ホームへ",renderHome]);return}
   if(moves<=0){overlay("ざんねん…","手数がなくなっちゃった",["もういちど",()=>startStage(stageNo)],["ホームへ",renderHome]);return}
   if(!hasMove()){msg("シャッフル！");shuffleBoard();await settle()}
   busy=false;
@@ -177,17 +233,112 @@ function startStage(n){
   grid=[];for(let r=0;r<ROWS;r++){grid.push([]);for(let c=0;c<COLS;c++){let t;
     do{t=rnd(5)}while((c>=2&&grid[r][c-1].t===t&&grid[r][c-2].t===t)||(r>=2&&grid[r-1][c].t===t&&grid[r-2][c].t===t));
     grid[r][c]=mk(t,"n",r-ROWS-1-rnd(3),c)}}
-  bar=Array.from({length:ROWS},()=>Array(COLS).fill(0));fx=[];
-  const R=rng(n*7919+13),nb=Math.min(8+n*2+Math.floor(R()*4),70),cl=[];
-  for(let i=0;i<nb;){const r=Math.floor(R()*ROWS),c=Math.floor(R()*COLS);if(!bar[r][c]){bar[r][c]=1;cl.push([r,c]);i++}}
-  const nd=n<4?0:Math.min(Math.floor((n-3)*.6+R()*2),nb);
-  for(let i=0;i<nd;){const[r,c]=cl[Math.floor(R()*cl.length)];if(bar[r][c]===1){bar[r][c]=2;i++}}
-  moves=Math.max(4,Math.round((nb+nd*.6)*Math.max(.2,.8-n*.03))+3);
+  const mkA=v=>Array.from({length:ROWS},()=>Array(COLS).fill(v));
+  bar=mkA(0);fx=[];hole=mkA(false);frame=mkA(false);water=mkA(false);vineAt=mkA(0);vines=[];hzMsg="";
+  const R=rng(n*7919+13);
+  if(n<=30){
+    const nb=Math.min(8+n*2+Math.floor(R()*4),70),cl=[];
+    for(let i=0;i<nb;){const r=Math.floor(R()*ROWS),c=Math.floor(R()*COLS);if(!bar[r][c]){bar[r][c]=1;cl.push([r,c]);i++}}
+    const nd=n<4?0:Math.min(Math.floor((n-3)*.6+R()*2),nb);
+    for(let i=0;i<nd;){const[r,c]=cl[Math.floor(R()*cl.length)];if(bar[r][c]===1){bar[r][c]=2;i++}}
+    moves=Math.max(4,Math.round((nb+nd*.6)*Math.max(.2,.8-n*.03))+3);
+  }else moves=hardStage(n-30,R);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(hole[r][c])grid[r][c]=null;
   if(!hasMove())shuffleBoard();
-  hud();msg("となりのブロックと入れ替えよう");busy=true;
+  hud();msg(hzMsg||"となりのブロックと入れ替えよう");busy=true;
   settle().then(()=>{busy=false});
 }
-function hud(){$("hs").textContent=stageNo;$("hm").textContent=Math.max(moves,0);$("hb").textContent=barCount()}
+function hardStage(h,R){
+  const NM={vine:"ツタ",frame:"枠",hole:"穴",water:"水"};
+  const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const occ=Array.from({length:ROWS},()=>Array(COLS).fill(false)),pocket=[];
+  const rc=()=>[Math.floor(R()*ROWS),Math.floor(R()*COLS)];
+  const types=["frame","hole",R()<.5?"vine":"water"];
+  if(types.includes("hole")){
+    const nh=3+Math.floor(h/3);
+    for(let i=0,t=0;i<nh&&t<300;t++){const[r,c]=rc();if(!occ[r][c]){occ[r][c]=true;hole[r][c]=true;i++}}
+    if(h>=15)for(let i=0,t=0,np=h>=24?2:1;i<np&&t<300;t++){
+      const r=2+Math.floor(R()*(ROWS-4)),c=1+Math.floor(R()*(COLS-2)),ns=[[r,c],[r+1,c],[r-1,c],[r,c+1],[r,c-1]];
+      if(ns.some(([a,b])=>occ[a][b]))continue;
+      ns.forEach(([a,b],j)=>{occ[a][b]=true;if(j)hole[a][b]=true});pocket.push([r,c]);i++}
+  }
+  const cand=shuf([].concat(...Array.from({length:ROWS},(_,r)=>Array.from({length:COLS},(_,c)=>[r,c]))).filter(([r,c])=>!hole[r][c]&&!pocket.some(q=>q[0]===r&&q[1]===c)));
+  const nb=Math.min(12+h*2,62);let L=0;
+  [...pocket,...cand].slice(0,Math.max(nb,pocket.length)).forEach(([r,c])=>{
+    let v=1;if(R()<Math.min(.7,h*.05))v=2;if(v===2&&h>=5&&R()<Math.min(.6,h*.03+.1))v=3;if(v===3&&h>=12&&R()<Math.min(.5,(h-9)*.03))v=4;
+    bar[r][c]=v;L+=v});
+  if(types.includes("vine"))for(let i=0,t=0,nv=h>=25?4:3;i<nv&&t<400;t++){
+    const[r,c]=rc();if(occ[r][c])continue;
+    const path=[[r,c]],seen=new Set([r*COLS+c]),len=3+Math.floor(R()*3)+(h>15?1:0);
+    while(path.length<len){const[pr,pc]=path[path.length-1];
+      const nx=shuf([[1,0],[-1,0],[0,1],[0,-1]]).map(([a,b])=>[pr+a,pc+b]).filter(([a,b])=>inb(a,b)&&!occ[a][b]&&!seen.has(a*COLS+b));
+      if(!nx.length)break;path.push(nx[0]);seen.add(nx[0][0]*COLS+nx[0][1])}
+    if(path.length<3)continue;
+    const[tr,tc]=path[path.length-1],free=[[tr+1,tc],[tr-1,tc],[tr,tc+1],[tr,tc-1]].filter(([a,b])=>inb(a,b)&&!occ[a][b]&&!seen.has(a*COLS+b));
+    if(!free.length)continue;
+    path.forEach(([a,b])=>{occ[a][b]=true;vineAt[a][b]=vines.length+1});vines.push({cells:path,alive:true});free.forEach(([a,b])=>{occ[a][b]=true});i++}
+  if(types.includes("water")){
+    const WT=Math.min(14,6+Math.ceil(h/4)),two=h>=15,sizes=two?[Math.ceil(WT/2),Math.floor(WT/2)]:[WT];
+    sizes.forEach((sz,idx)=>{
+      for(let t=0;t<200;t++){
+        const c0=two?(idx?4+Math.floor(R()*4):Math.floor(R()*4)):Math.floor(R()*COLS),r0=Math.floor(R()*ROWS);
+        if(occ[r0][c0])continue;
+        const cl=[[r0,c0]],set=new Set([r0*COLS+c0]);
+        while(cl.length<sz){
+          let best=[],bs=-1;
+          for(const[r,c]of cl)for(const[a,b]of[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]){
+            if(!inb(a,b)||occ[a][b]||set.has(a*COLS+b)||(two&&(idx?b<4:b>3)))continue;
+            const sc=[[a+1,b],[a-1,b],[a,b+1],[a,b-1]].filter(([x,y])=>set.has(x*COLS+y)).length;
+            if(sc>bs){bs=sc;best=[[a,b]]}else if(sc===bs)best.push([a,b])}
+          if(!best.length)break;const[a,b]=best[Math.floor(R()*best.length)];cl.push([a,b]);set.add(a*COLS+b)}
+        if(cl.length<sz)continue;
+        if(!cl.some(([r,c])=>[[r+1,c],[r-1,c],[r,c+1],[r,c-1]].some(([a,b])=>inb(a,b)&&!occ[a][b]&&!set.has(a*COLS+b))))continue;
+        cl.forEach(([r,c])=>{occ[r][c]=true;water[r][c]=true});break}});
+  }
+  if(types.includes("frame"))for(let i=0,t=0,nf=Math.min(5+Math.floor(h/2),18);i<nf&&t<500;t++){
+    const[r,c]=rc();if(occ[r][c])continue;occ[r][c]=true;frame[r][c]=true;i++}
+  hzMsg="🔥ハード｜邪魔者："+types.map(x=>NM[x]).join("・");
+  return Math.max(5,Math.round(L*Math.max(.2,.62-h*.015))+4);
+}
+function drawHaz(){
+  const s=size,t=performance.now()/400;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    if(water[r][c]){
+      const x0=c*s,y0=r*s,g=ctx.createLinearGradient(0,y0,0,y0+s);g.addColorStop(0,"rgba(90,190,255,.82)");g.addColorStop(1,"rgba(20,80,200,.9)");
+      ctx.fillStyle=g;rr(x0+1,y0+1,s-2,s-2,s*.2);
+      ctx.strokeStyle="rgba(10,50,150,.95)";ctx.lineWidth=s*.05;ctx.beginPath();ctx.roundRect(x0+2,y0+2,s-4,s-4,s*.2);ctx.stroke();
+      ctx.save();ctx.beginPath();ctx.roundRect(x0+2,y0+2,s-4,s-4,s*.2);ctx.clip();
+      for(let k=0;k<3;k++){ctx.strokeStyle="rgba(220,245,255,"+(.75-k*.2)+")";ctx.lineWidth=s*.04;ctx.beginPath();
+        for(let i=0;i<=10;i++){const x=x0+s*i/10,y=y0+s*(.3+k*.25)+Math.sin(t*1.5+i*.9+r+c+k)*s*.04;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
+      for(let k=0;k<3;k++){const ph=(t*.25+k*.37+(r*7+c*3)*.13)%1;ctx.fillStyle="rgba(235,250,255,"+.7*(1-ph)+")";ctx.beginPath();ctx.arc(x0+s*(.25+k*.25),y0+s*(.9-ph*.7),s*(.04+.02*k),0,7);ctx.fill()}
+      ctx.fillStyle="rgba(255,255,255,.28)";ctx.beginPath();ctx.ellipse(x0+s*.3,y0+s*.2,s*.18,s*.07,-.5,0,7);ctx.fill();
+      ctx.restore()}
+    if(frame[r][c]){ctx.strokeStyle="#a8681a";ctx.lineWidth=s*.12;ctx.beginPath();ctx.roundRect(c*s+s*.06,r*s+s*.06,s*.88,s*.88,s*.2);ctx.stroke();
+      ctx.strokeStyle="#ffd27a";ctx.lineWidth=s*.03;ctx.beginPath();ctx.roundRect(c*s+s*.11,r*s+s*.11,s*.78,s*.78,s*.17);ctx.stroke()}
+    if(hole[r][c]){ctx.fillStyle="#1d1424";ctx.fillRect(c*s,r*s,s,s);ctx.fillStyle="rgba(0,0,0,.4)";rr(c*s+s*.1,r*s+s*.1,s*.8,s*.8,s*.25)}
+  }
+  vines.forEach((v,vi)=>{if(!v.alive)return;
+    v.cells.forEach(([r,c])=>{ctx.fillStyle="rgba(40,130,60,.28)";rr(c*s+s*.06,r*s+s*.06,s*.88,s*.88,s*.25)});
+    const P=v.cells.map(([r,c],i)=>[(c+.5)*s+Math.sin(t*1.3+i+vi)*s*.04,(r+.5)*s+Math.cos(t*1.1+i)*s*.04]);
+    const path=()=>{ctx.beginPath();P.forEach(([x,y],i)=>{if(!i){ctx.moveTo(x,y);return}const[px,py]=P[i-1],sg=i%2?1:-1;
+      ctx.quadraticCurveTo((px+x)/2-(y-py)*.4*sg,(py+y)/2+(x-px)*.4*sg,x,y)})};
+    ctx.lineCap="round";ctx.lineJoin="round";
+    ctx.strokeStyle="#1f6b2f";ctx.lineWidth=s*.13;path();ctx.stroke();
+    ctx.strokeStyle="#6fd05a";ctx.lineWidth=s*.045;path();ctx.stroke();
+    P.forEach(([x,y],i)=>{
+      const[nx,ny]=P[Math.min(i+1,P.length-1)],[qx,qy]=P[Math.max(i-1,0)],base=Math.atan2(ny-qy,nx-qx);
+      if(i<P.length-1)for(const sd of[-1,1]){
+        const a=base+sd*(1.05+Math.sin(t+i*2+sd)*.12),lx=x+Math.cos(a)*s*.2,ly=y+Math.sin(a)*s*.2;
+        ctx.fillStyle=(i+sd)%2?"rgba(60,160,70,.9)":"rgba(110,210,90,.9)";
+        ctx.beginPath();ctx.ellipse(lx,ly,s*.17,s*.075,a,0,7);ctx.fill();
+        ctx.strokeStyle="rgba(20,90,35,.8)";ctx.lineWidth=s*.02;ctx.beginPath();ctx.moveTo(lx-Math.cos(a)*s*.15,ly-Math.sin(a)*s*.15);ctx.lineTo(lx+Math.cos(a)*s*.15,ly+Math.sin(a)*s*.15);ctx.stroke()}
+      if(i>0&&i<P.length-1){const a=base+1.57*(i%2?1:-1);ctx.strokeStyle="#3fa04a";ctx.lineWidth=s*.025;
+        ctx.beginPath();ctx.arc(x+Math.cos(a)*s*.22,y+Math.sin(a)*s*.22,s*.06,a,a+4.6);ctx.stroke()}});
+    const[tx,ty]=P[P.length-1],pu=1+.12*Math.sin(t*3);
+    for(let k=0;k<6;k++){const a=k*Math.PI/3+t*.5;ctx.fillStyle="#ff8fa3";ctx.beginPath();ctx.arc(tx+Math.cos(a)*s*.17*pu,ty+Math.sin(a)*s*.17*pu,s*.09,0,7);ctx.fill()}
+    ctx.fillStyle="#ff4d6d";ctx.beginPath();ctx.arc(tx,ty,s*.14*pu,0,7);ctx.fill();ctx.fillStyle="#fff3b0";ctx.beginPath();ctx.arc(tx,ty,s*.06,0,7);ctx.fill()});
+}
+function hud(){$("hs").textContent=stageNo>30?"H"+(stageNo-30):stageNo;$("hm").textContent=Math.max(moves,0);$("hb").textContent=barCount()}
 function msg(t){$("msg").textContent=t}
 
 /* ---------- render ---------- */
@@ -224,10 +375,13 @@ function piece(p){
 }
 function draw(){
   const s=size;ctx.clearRect(0,0,cv.width,cv.height);
-  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(bar[r][c]){
-    ctx.fillStyle=bar[r][c]>1?"rgba(40,100,220,.55)":"rgba(90,200,230,.35)";rr(c*s+2,r*s+2,s-4,s-4,s*.22);if(bar[r][c]>1){ctx.strokeStyle="rgba(20,70,180,.95)";ctx.lineWidth=s*.04;ctx.beginPath();ctx.roundRect(c*s+7,r*s+7,s-14,s-14,s*.14);ctx.stroke()}
-    ctx.strokeStyle="rgba(50,160,210,.9)";ctx.lineWidth=s*.04;ctx.beginPath();ctx.roundRect(c*s+3,r*s+3,s-6,s-6,s*.2);ctx.stroke()}
+  const BF=["","rgba(90,200,230,.35)","rgba(40,100,220,.55)","rgba(140,60,220,.6)","rgba(220,40,70,.65)"],BS=["","rgba(50,160,210,.9)","rgba(20,70,180,.95)","rgba(100,30,180,.95)","rgba(160,10,40,.95)"];
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(bar[r][c]){const v=bar[r][c];
+    ctx.fillStyle=BF[v];rr(c*s+2,r*s+2,s-4,s-4,s*.22);ctx.strokeStyle=BS[v];ctx.lineWidth=s*.04;
+    for(let i=0;i<v;i++){ctx.beginPath();ctx.roundRect(c*s+3+i*s*.07,r*s+3+i*s*.07,s-6-i*s*.14,s-6-i*s*.14,s*.2);ctx.stroke()}}
   for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(!p)continue;p.x=mv(p.x,c);p.y=mv(p.y,r);piece(p)}
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(p&&(frame[r][c]||vineAt[r][c]>0||water[r][c]))piece(p)}
+  drawHaz();
   if(sel){ctx.strokeStyle="#ff8a3d";ctx.lineWidth=s*.07;ctx.beginPath();ctx.roundRect(sel.c*s+3,sel.r*s+3,s-6,s-6,s*.3);ctx.stroke()}
   drawFx();
   parts=parts.filter(p=>p.l>0);
@@ -258,7 +412,7 @@ cv.addEventListener("pointerup",()=>{
 /* ---------- combos / fx / sound ---------- */
 function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const isArrow=p=>p.k==="h"||p.k==="v";
-const isCombo=(a,b)=>a.k==="r"||b.k==="r"||(isArrow(a)&&(isArrow(b)||b.k==="b"))||(isArrow(b)&&a.k==="b");
+const isCombo=(a,b)=>a.k==="r"||b.k==="r"||(isArrow(a)&&(isArrow(b)||b.k==="b"))||(isArrow(b)&&a.k==="b")||(a.k==="b"&&b.k==="b");
 const at=k=>grid[Math.floor(k/COLS)][k%COLS];
 function allOf(t){const s=new Set();for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=grid[r][c];if(p&&p.k!=="r"&&p.t===t)s.add(r*COLS+c)}return s}
 function zap(rk,keys){fx.push({t:"zap",from:[Math.floor(rk/COLS),rk%COLS],to:[...keys].map(k=>[Math.floor(k/COLS),k%COLS]),l:0})}
@@ -269,14 +423,20 @@ async function combo(a,b,k1,k2){
     if(o.k==="r"){for(let k=0;k<ROWS*COLS;k++)set.add(k);msg("全消し！")}
     else if(isArrow(o)){allOf(o.t).forEach(k=>{set.add(k);at(k).k=Math.random()<.5?"h":"v"});msg("全部矢印爆弾に！")}
     else if(o.k==="b"){
-      const ts=[...new Set(grid.flat().filter(p=>p.k!=="r"&&p.t!==o.t).map(p=>p.t))],t2=ts.length?ts[rnd(ts.length)]:o.t;
+      const ts=[...new Set(grid.flat().filter(p=>p&&p.k!=="r"&&p.t!==o.t).map(p=>p.t))],t2=ts.length?ts[rnd(ts.length)]:o.t;
       allOf(o.t).forEach(k=>set.add(k));allOf(t2).forEach(k=>set.add(k));
       set.forEach(k=>{if(at(k).k==="b")at(k).k="n"});msg("2色まとめて消去！")}
     else{allOf(o.t).forEach(k=>set.add(k));msg("レインボー！")}
-    zap(rk,set);sfx("rainbow");await sleep(650);
+    if(o.k==="r"){fx.push({t:"mega",r:Math.floor(rk/COLS),c:rk%COLS,l:0});sfx("mega");await sleep(720);grid.flat().forEach(x=>{if(x&&x.k==="r")x.k="n"})}
+    else{zap(rk,set);sfx("rainbow");await sleep(650);if(a.k==="r")a.k="n";if(b.k==="r")b.k="n"}
   }else if(isArrow(a)&&isArrow(b)){
     a.k=b.k="n";for(let i=0;i<COLS;i++)set.add(r2*COLS+i);for(let i=0;i<ROWS;i++)set.add(i*COLS+c2);
     fx.push({t:"arrow",r:r2,c:c2,d:"h",l:0},{t:"arrow",r:r2,c:c2,d:"v",l:0});msg("十字矢印！");sfx("arrow");await sleep(480);
+  }else if(a.k==="b"&&b.k==="b"){
+    a.k=b.k="n";
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const dr=Math.abs(r-r2),dc=Math.abs(c-c2);
+      if((dr===0&&dc<=3)||(dc===0&&dr<=3)||(dr===dc&&dr<=2)){set.add(r*COLS+c);fx.push({t:(dr||dc)?"flash":"boom",r,c,l:0})}}
+    msg("超爆発！");sfx("bomb");setTimeout(()=>sfx("bomb"),150);await sleep(450);
   }else{
     a.k=b.k="n";
     for(let d=-1;d<=1;d++){const ry=r2+d,cx=c2+d;
@@ -286,7 +446,7 @@ async function combo(a,b,k1,k2){
   }
   await clearSet(set);
 }
-const LIFE={flash:20,boom:26,arrow:40,zap:42};
+const LIFE={flash:20,boom:26,arrow:40,zap:42,mega:64};
 function drawFx(){
   const s=size;fx=fx.filter(f=>f.l<LIFE[f.t]);
   for(const f of fx){f.l++;
@@ -303,6 +463,17 @@ function drawFx(){
         ctx.strokeStyle="#fff";ctx.lineWidth=s*.12;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(x,0);ctx.stroke();
         ctx.fillStyle="#ff8a3d";ctx.beginPath();ctx.moveTo(x+g*s*.32,0);ctx.lineTo(x-g*s*.05,-s*.24);ctx.lineTo(x-g*s*.05,s*.24);ctx.closePath();ctx.fill()}
       ctx.restore()}
+    else if(f.t==="mega"){
+      const k=f.l/64,cx=(f.c+.5)*s,cy=(f.r+.5)*s,Wd=cv.width,Ht=cv.height,far=Math.hypot(Wd,Ht),ch=Math.min(1,k/.2),rad=s*(.6+1.6*ch);
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,rad);g.addColorStop(0,"rgba(255,255,255,.95)");g.addColorStop(.5,"hsla("+(f.l*20%360)+",100%,60%,.7)");g.addColorStop(1,"rgba(255,255,255,0)");
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,rad,0,7);ctx.fill();
+      if(k>.2){const L=far*Math.min(1,(k-.2)/.25),fade=k>.7?Math.max(0,1-(k-.7)/.3):1;
+        ctx.save();ctx.lineCap="round";
+        for(let i=0;i<12;i++){const ang=i*Math.PI/6+k*.4,x1=cx+Math.cos(ang)*L,y1=cy+Math.sin(ang)*L;
+          ctx.strokeStyle="hsla("+((i*30+f.l*12)%360)+",100%,60%,"+.75*fade+")";ctx.lineWidth=s*.3;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x1,y1);ctx.stroke();
+          ctx.strokeStyle="rgba(255,255,255,"+fade+")";ctx.lineWidth=s*.09;ctx.stroke()}
+        ctx.restore()}
+      if(k>.45){const fl=k<.6?(k-.45)/.15:(k>.8?(1-k)/.2:1);ctx.fillStyle="rgba(255,255,255,"+.85*Math.max(0,fl)+")";ctx.fillRect(0,0,Wd,Ht)}}
     else if(f.t==="zap"){
       const x0=(f.from[1]+.5)*s,y0=(f.from[0]+.5)*s;
       ctx.save();ctx.lineCap="round";ctx.lineJoin="round";ctx.shadowColor="#bdf";ctx.shadowBlur=s*.3;
@@ -333,6 +504,11 @@ function sfx(n){
   else if(n==="arrow"){noise(.35,.25,3500,400);tone(1400,300,.3,"sawtooth",.07)}
   else if(n==="bomb"){noise(.55,.55,900,60);tone(160,35,.5,"sine",.5)}
   else if(n==="rainbow"){for(let i=0;i<9;i++)tone(500+i*150,700+i*150,.12,"square",.08,i*.06);noise(.7,.2,6000,1500)}
+  else if(n==="mega"){for(let i=0;i<14;i++)tone(300+i*130,500+i*160,.14,"sawtooth",.09,i*.05);noise(.9,.25,7000,800);setTimeout(()=>{noise(.6,.5,1500,60);tone(120,30,.6,"sine",.5)},620)}
+  else if(n==="vine"){for(let i=0;i<6;i++)setTimeout(()=>noise(.1,.22,5000,1200),i*60)}
+  else if(n==="frame"){noise(.14,.4,6000,500);tone(260,70,.14,"square",.18);setTimeout(()=>{noise(.1,.3,4500,400);tone(380,90,.1,"square",.12)},70)}
+  else if(n==="water"){tone(1000,350,.16,"sine",.22);tone(1500,500,.14,"sine",.16,.08);tone(800,300,.18,"sine",.12,.16)}
+  else if(n==="drip"){tone(1900,750,.1,"sine",.3);tone(500,300,.2,"sine",.1,.06)}
   else if(n==="barrier"){tone(1500,1500,.25,"sine",.18);tone(2100,2100,.3,"sine",.14,.05);noise(.1,.12,6000,6000)}
 }
 $("snd").onclick=()=>{mute=!mute;$("snd").textContent=mute?"🔇":"🔊";ac()};
