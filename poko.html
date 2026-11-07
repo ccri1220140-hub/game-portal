@@ -884,7 +884,9 @@ function renderMail(){
     b.onclick=()=>{m.got=true;clv+=m.clover;saveC();clvUI();renderMail();toast("🍀 +"+m.clover)};
     d.append(b);L.append(d)});
 }
-$("btn-home").onclick=()=>{location.href="hote.html.html"};
+$("btn-home").onclick=async()=>{const c=["home.html","home.html.html","hote.html.html","hote.html","index.html"];
+  for(const u of c){try{const r=await fetch(u,{method:"HEAD",cache:"no-store"});if(r.ok){location.href=u;return}}catch(e){}}
+  location.href=c[0]};
 $("btn-mail").onclick=()=>{showScreen("mail");renderMail()};
 $("mAll").onclick=()=>{let n=0;mails.forEach(m=>{if(!m.got){m.got=true;clv+=m.clover;n+=m.clover}});if(n){saveC();clvUI();renderMail();toast("🍀 +"+n)}};
 /* ---------- battle ---------- */
