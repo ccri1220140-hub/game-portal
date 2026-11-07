@@ -183,7 +183,7 @@ const lock=(r,c)=>vineAt[r][c]>0||water[r][c]||frame[r][c];
 const mt=(r,c)=>{const p=grid[r][c];return p&&p.k!=="r"&&!water[r][c]&&!(vineAt[r][c]>0)};
 const sep=(r,c)=>hole[r][c]||frame[r][c]||vineAt[r][c]>0||water[r][c];
 let nClear=0,hClear=0;
-const APPVER="177";/* 更新のたびに数字を変えると、進行・コイン・キャラがリセットされる（初回は今のデータを残して番号だけ記録） */
+const APPVER="178";/* 更新のたびに数字を変えると、進行・コイン・キャラがリセットされる（初回は今のデータを残して番号だけ記録） */
 try{const _v=localStorage.getItem("pk_v");if(_v===null)localStorage.setItem("pk_v",APPVER);else if(_v!==APPVER){["pk_n","pk_h","pk_c","pk_o","pk_p","pk_e","pk_l","pk_lt","pk_m","pk_a","pkpk"].forEach(k=>localStorage.removeItem(k));localStorage.setItem("pk_v",APPVER)}}catch(e){}
 try{const a=localStorage.getItem("pk_n"),b=localStorage.getItem("pk_h");
   if(a!==null||b!==null){nClear=Math.min(30,+a||0);hClear=Math.min(30,+b||0)}
